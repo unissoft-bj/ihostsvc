@@ -1,0 +1,17 @@
+<filter>
+
+    <lt name="address" type="macblk" value="ff:ff:ff:ff:ff:ff" />
+    <lt name="address" type="macblk" value="00:0c:4c:10:7d:20" />
+    <lt name="address" type="macblk" value="00:1b:77:1c:92:55" />
+
+    <lt name="types" type="wlsub" value="0x00" />
+    <lt name="types" type="wlsub" value="0x01" />
+    <lt name="types" type="wlsub" value="0x02" />
+    <lt name="types" type="wlsub" value="0x03" />
+    <lt name="types" type="wlsub" value="0x04" />
+    <lt name="types" type="wlsub" value="0x05" />
+
+</filter>
+
+
+                            
