@@ -1,0 +1,10 @@
+    <config>
+    <dbconn user="wlcap" pwd="wlcapatussp" host="127.0.0.1" db="wlsp" />
+    <interface iftype="local" host="192.168.0.128" ifname="mon0" pktpipe="/home/pktpipe" />  
+    <ssh user="super" passwd="sp-admin" port="22" />
+    <rdpp comwin="1" stawin="10" bang="-75" chkfilter="3000" chksta="1500" chkrssil="-90" chkrssih="0" maxtimediff="5" />
+    <ppdb staying="180" losting="120" lf="2" gone="600" />
+</config>
+
+                            
+    
