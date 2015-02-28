@@ -14,10 +14,10 @@ FETCH_ALL = 2
 
 class uDbFactory:
         
-    global log
+    #global log
     # init
-    def __init__(self):
-        log = uLogService().getlogger()
+    def __init__(self,log):
+        self.log = log
         
         # db connection strings
         self.user = 'andy'
@@ -39,10 +39,10 @@ class uDbFactory:
                 self.host = node.getAttribute("host")
                 self.db = node.getAttribute("db")
                 
-                log.debug('dbuser: %s host: %s dbname: %s' % (self.user , self.host , self.db))
+                self.log.debug('dbuser: %s host: %s dbname: %s' % (self.user , self.host , self.db))
                 
         except Exception as e:
-            log.error(e)
+            self.self.log.error(e)
             traceback.print_exc()
 
     def __del__(self):
@@ -57,7 +57,7 @@ class uDbFactory:
             self.cnx = MySQLdb.connect(host=self.host,user=self.user,passwd=self.__pwd,db=self.db)
             self.cusor = self.cnx.cursor()
         except Exception as e:
-            log.error(e)
+            self.self.log.error(e)
             traceback.print_exc()
             if self.cnx is not None:
                 self.cnx.close()
@@ -68,7 +68,7 @@ class uDbFactory:
                 if self.cnx.open == True:
                     self.cnx.close()
         except Exception as e:
-            log.error(e)
+            self.log.error(e)
             traceback.print_exc()
             
     def commit(self):
@@ -76,32 +76,40 @@ class uDbFactory:
 
     def execute(self,strSql):
         try:
-            if self.cnx is None:
+            self.log.debug(strSql)
+            '''
+            if self.cnx is not None:
                 self.Open()
             if self.cnx.open == False:
                 self.Open()
+            '''
             self.cusor.execute(strSql)
         except Exception as e:
-            log.error(e)
+            self.log.error(e)
             traceback.print_exc()
             self.cnx.close()
 
     def execute(self,strSql,values=''):
         try:
-            if self.cnx is None:
+            self.log.debug(strSql)
+            self.log.debug(values)
+            '''
+            if self.cnx is not None:
                 self.Open()
             if self.cnx.open == False:
                 self.Open()
+            '''
             self.cusor.execute(strSql,values)
         except Exception as e:
-            log.error(e)
+            self.log.error(e)
             traceback.print_exc()
             self.cnx.close()
                 
     def fetch_result(self,strSql,mode=FETCH_ONE,rows=1):
-        log.debug(strSql)
+        self.log.debug(strSql)
         if self.cusor == None :
             return
+        self.log.debug(strSql)
         self.cusor.excute(strSql)
         if mode == FETCH_ONE :
             return self.cusor.fetchone()
@@ -111,8 +119,9 @@ class uDbFactory:
             return self.cusor.fetchall()
     
     def fetchone(self,strSql):
-        log.debug(strSql)
+        self.log.debug(strSql)
         if self.cusor == None :
             return
+        self.log.debug(strSql)
         self.cusor.excute(strSql)
         return self.cusor.fetchone()
