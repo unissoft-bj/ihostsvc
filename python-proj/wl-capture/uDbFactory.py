@@ -6,14 +6,19 @@ import os, sys, time, traceback
 import xml.dom.minidom as minidom
 import MySQLdb 
 
+from uLogService import uLogService
+
 FETCH_ONE = 0
 FETCH_MANY = 1
 FETCH_ALL = 2
 
-class uDbFactory:    
-
+class uDbFactory:
+        
+    global log
     # init
     def __init__(self):
+        log = uLogService().getlogger()
+        
         # db connection strings
         self.user = 'andy'
         self.__pwd = ''
@@ -34,12 +39,10 @@ class uDbFactory:
                 self.host = node.getAttribute("host")
                 self.db = node.getAttribute("db")
                 
-                print self.user
-                print self.host
-                print self.db
-                                
+                log.debug('dbuser: %s host: %s dbname: %s' % (self.user , self.host , self.db))
+                
         except Exception as e:
-            print str(e)
+            log.error(e)
             traceback.print_exc()
 
     def __del__(self):
@@ -54,7 +57,7 @@ class uDbFactory:
             self.cnx = MySQLdb.connect(host=self.host,user=self.user,passwd=self.__pwd,db=self.db)
             self.cusor = self.cnx.cursor()
         except Exception as e:
-            print str(e)
+            log.error(e)
             traceback.print_exc()
             if self.cnx is not None:
                 self.cnx.close()
@@ -65,7 +68,7 @@ class uDbFactory:
                 if self.cnx.open == True:
                     self.cnx.close()
         except Exception as e:
-            print str(e)
+            log.error(e)
             traceback.print_exc()
             
     def commit(self):
@@ -79,11 +82,12 @@ class uDbFactory:
                 self.Open()
             self.cusor.execute(strSql)
         except Exception as e:
-            print str(e)
+            log.error(e)
             traceback.print_exc()
             self.cnx.close()
     
     def fetch_result(self,strSql,mode=FETCH_ONE,rows=1):
+        log.debug(strSql)
         if self.cusor == None :
             return
         self.cusor.excute(strSql)
@@ -95,6 +99,7 @@ class uDbFactory:
             return self.cusor.fetchall()
     
     def fetchone(self,strSql):
+        log.debug(strSql)
         if self.cusor == None :
             return
         self.cusor.excute(strSql)
