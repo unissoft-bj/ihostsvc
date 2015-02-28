@@ -85,7 +85,19 @@ class uDbFactory:
             log.error(e)
             traceback.print_exc()
             self.cnx.close()
-    
+
+    def execute(self,strSql,values=''):
+        try:
+            if self.cnx is None:
+                self.Open()
+            if self.cnx.open == False:
+                self.Open()
+            self.cusor.execute(strSql,values)
+        except Exception as e:
+            log.error(e)
+            traceback.print_exc()
+            self.cnx.close()
+                
     def fetch_result(self,strSql,mode=FETCH_ONE,rows=1):
         log.debug(strSql)
         if self.cusor == None :
