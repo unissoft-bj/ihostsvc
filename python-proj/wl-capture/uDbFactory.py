@@ -6,6 +6,10 @@ import os, sys, time, traceback
 import xml.dom.minidom as minidom
 import MySQLdb 
 
+FETCH_ONE = 0
+FETCH_MANY = 1
+FETCH_ALL = 2
+
 class uDbFactory:    
 
     # init
@@ -37,36 +41,61 @@ class uDbFactory:
         except Exception as e:
             print str(e)
             traceback.print_exc()
-            cnx.close()    
 
     def __del__(self):
-        self.Close()
+        self.close()
 
     # set db password
-    def SetDbPassword(self,dbPassword):
+    def setdbpassword(self,dbPassword):
         self.__pwd = dbPassword
     
-    def Open(self):
+    def open(self):
         try:
             self.cnx = MySQLdb.connect(host=self.host,user=self.user,passwd=self.__pwd,db=self.db)
             self.cusor = self.cnx.cursor()
         except Exception as e:
             print str(e)
             traceback.print_exc()
-            self.cnx.close()
-            
-    def Close(self):
-        try:
             if self.cnx is not None:
                 self.cnx.close()
+            
+    def close(self):
+        try:
+            if self.cnx is not None:
+                if self.cnx.open == True:
+                    self.cnx.close()
         except Exception as e:
             print str(e)
             traceback.print_exc()
+            
+    def commit(self):
+        self.cusor.commit()
 
-    def Execute(self,strSql):
+    def execute(self,strSql):
         try:
+            if self.cnx is None:
+                self.Open()
+            if self.cnx.open == False:
+                self.Open()
             self.cusor.execute(strSql)
         except Exception as e:
             print str(e)
             traceback.print_exc()
             self.cnx.close()
+    
+    def fetch_result(self,strSql,mode=FETCH_ONE,rows=1):
+        if self.cusor == None :
+            return
+        self.cusor.excute(strSql)
+        if mode == FETCH_ONE :
+            return self.cusor.fetchone()
+        elif mode == FETCH_MANY :
+            return self.cusor.fetchmany(rows)
+        elif mode == FETCH_ALL :
+            return self.cusor.fetchall()
+    
+    def fetchone(self,strSql):
+        if self.cusor == None :
+            return
+        self.cusor.excute(strSql)
+        return self.cusor.fetchone()
