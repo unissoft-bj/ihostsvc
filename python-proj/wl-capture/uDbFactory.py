@@ -72,7 +72,7 @@ class uDbFactory:
             traceback.print_exc()
             
     def commit(self):
-        self.cusor.commit()
+        self.cnx.commit()
 
     def execute(self,strSql):
         try:
