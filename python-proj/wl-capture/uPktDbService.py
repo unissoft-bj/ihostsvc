@@ -9,6 +9,7 @@ import MySQLdb
 from uLogService import uLogService
 from uDbFactory import uDbFactory
 from uPktModel import uPktModel
+from uStaModel import uStaModel
 
 class uPktDbService:
         
@@ -27,7 +28,7 @@ class uPktDbService:
     #def __del__(self):
 
     # set db password
-    def save(self,pm = uPktModel()):
+    def savepktmodel(self,pm = uPktModel()):
         """create a new record"""
         query = "INSERT INTO wlpkt (mac, ssid,rssi,stat,type,subtype,pmac,bssid,\
             pkttime,timefrac,frameproto,chan,RecTime,srcip)\
@@ -37,3 +38,27 @@ class uPktDbService:
                   pm.chan, pm.RecTime, pm.srcip)
         self.dbf.execute(query, values)
         #self.dbf.commit()
+    
+    def savestamodel(self,om = uStaModel()):
+        """create a new record"""
+        query = "INSERT INTO wlsta (mac, ssid,rssi,stat,firstseen,lastseen,npacket,rectime,srcip) \
+            values (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        values = (om.mac, om.ssid, om.rssi, om.stat, om.firstseen, om.lastseen, \
+                  om.npacket, om.rectime, om.srcip)
+        self.dbf.execute(query, values)
+        #self.dbf.commit()
+    
+    def updatestamodel(self,om = uStaModel()): 
+        
+        query = "UPDATE wlsta SET \
+            ssid = '" + om.ssid + "'," +\
+            "rssi = '" + om.rssi + "'," + \
+            "lastseen = " + "'" + om.lastseen  + "'," +\
+            "npacket = npacket + 1, " + \
+            "recTime = " + "'" + om.rectime +"' " +\
+            "where mac ='" + om.mac + "' and  " + \
+            "srcip = '" + om.srcip + "'"
+        values = None
+        self.dbf.execute(query, values)
+        #self.dbf.commit() 
+              
