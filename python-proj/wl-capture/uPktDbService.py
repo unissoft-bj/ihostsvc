@@ -61,4 +61,32 @@ class uPktDbService:
         values = None
         self.dbf.execute(query, values)
         #self.dbf.commit() 
-              
+
+    def getmacbymacsrcip(self,mac,srcip):
+        query = "select mac from wlsta where mac ='" \
+            + mac + "' and srcip = '" +  srcip + "'  limit 1"
+
+        smac = self.dbf.fetchone(query)  
+        return smac
+     
+    def getstatfirstseenbymacsrcip(self,mac,srcip):
+        query = "select stat,firstseen from wlsta where mac = '" \
+            + mac + "' and srcip = '" +  srcip + "'  limit 1"
+
+        statfirstseen = self.dbf.fetchone(query)  
+        return statfirstseen    
+    
+    def updatestat(self,om = uStaModel()): 
+        
+        query = "UPDATE wlsta SET \
+            stat = '200' " +\
+            "where mac ='" + om.mac + "' and  " + \
+            "srcip = '" + om.srcip + "'"
+        values = None
+        self.dbf.execute(query, values)
+        #self.dbf.commit() 
+        
+    def execute(self,strsql): 
+        query = strsql        
+        self.dbf.execute(query)
+        #self.dbf.commit() 
