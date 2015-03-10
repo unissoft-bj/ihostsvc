@@ -42,7 +42,7 @@ class uDbFactory:
                 self.log.debug('dbuser: %s host: %s dbname: %s' % (self.user , self.host , self.db))
                 
         except Exception as e:
-            self.self.log.error(e)
+            self.log.error(e)
             traceback.print_exc()
 
     def __del__(self):
@@ -54,10 +54,10 @@ class uDbFactory:
     
     def open(self):
         try:
-            self.cnx = MySQLdb.connect(host=self.host,user=self.user,passwd=self.__pwd,db=self.db)
+            self.cnx = MySQLdb.connect(host=self.host,user=self.user,passwd=self.__pwd,db=self.db,charset="utf8")
             self.cusor = self.cnx.cursor()
         except Exception as e:
-            self.self.log.error(e)
+            self.log.error(e)
             traceback.print_exc()
             if self.cnx is not None:
                 self.cnx.close()
@@ -84,10 +84,12 @@ class uDbFactory:
                 self.Open()
             '''
             self.cusor.execute(strSql)
+            self.commit()
+            self.log.debug('execute strsql is ok!')
         except Exception as e:
             self.log.error(e)
             traceback.print_exc()
-            self.cnx.close()
+            #self.cnx.close()
 
     def execute(self,strSql,values=''):
         try:
@@ -99,18 +101,27 @@ class uDbFactory:
             if self.cnx.open == False:
                 self.Open()
             '''
-            self.cusor.execute(strSql,values)
+            if values is None:
+                self.cusor.execute(strSql)
+            else:
+                if values == '':
+                    self.cusor.execute(strSql)
+                else:
+                    self.cusor.execute(strSql,values)
+            self.commit()
+            self.log.debug('execute strsql,values is ok!')
         except Exception as e:
             self.log.error(e)
             traceback.print_exc()
-            self.cnx.close()
+            #self.cnx.close()
                 
     def fetch_result(self,strSql,mode=FETCH_ONE,rows=1):
         self.log.debug(strSql)
         if self.cusor == None :
             return
         self.log.debug(strSql)
-        self.cusor.excute(strSql)
+        self.cusor.execute(strSql)
+        self.log.debug('fetch_result is ok!')
         if mode == FETCH_ONE :
             return self.cusor.fetchone()
         elif mode == FETCH_MANY :
@@ -123,5 +134,6 @@ class uDbFactory:
         if self.cusor == None :
             return
         self.log.debug(strSql)
-        self.cusor.excute(strSql)
+        self.cusor.execute(strSql)
+        self.log.debug('fetchone is ok!')
         return self.cusor.fetchone()
