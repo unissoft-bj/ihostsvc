@@ -364,6 +364,7 @@ class uWlcapController:
         chkstacount = self.chksta
         self.updatewlsta()
         
+        
         idlecount = 0
         try:
             while True:    
@@ -390,8 +391,8 @@ class uWlcapController:
                             self.log.info('run.line <90: %s' % line)
                             time.sleep(1)
                             idlecount = idlecount + 1
-                            self.log.info('run.idlecount[max 30]: %s' % idlecount)
-                            if(idlecount >= 30):
+                            self.log.info('run.idlecount[max 60]: %s' % idlecount)
+                            if(idlecount >= 60):
                                 subprocess.Popen('kill',shell=True)
                                 self.log.info('I have long time no packets are received, I have to quit!')
                                 sys.exit(0)
