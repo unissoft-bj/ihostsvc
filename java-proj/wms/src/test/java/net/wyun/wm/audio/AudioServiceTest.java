@@ -22,6 +22,7 @@ public class AudioServiceTest {
 	
 	@Before
     public void setUp() throws IOException {
+		audioServer = new AudioServer();
         System.out.println("startUp()");
     }
 	

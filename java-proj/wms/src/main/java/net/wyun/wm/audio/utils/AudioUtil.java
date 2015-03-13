@@ -62,7 +62,17 @@ public class AudioUtil {
 			outstream.close();
 			ais.close();
 			
-		
+	}
+	
+    /**
+     * for dev only
+     * @param audio
+     * @throws IOException
+     */
+    public void toFile(byte[] audio) throws IOException{
+    	long ts = System.currentTimeMillis();
+    	String fileName = "C:/Users/Xuecheng/Desktop/audio-" + ts + ".wav";
+		toWAVFile(fileName, audio);
 	}
 
 }

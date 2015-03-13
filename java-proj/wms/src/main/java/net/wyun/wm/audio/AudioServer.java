@@ -18,6 +18,7 @@ import javax.annotation.PreDestroy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -42,24 +43,26 @@ public class AudioServer {
 		super();
 		this.port = port;
 	}
+	
+	@Autowired
+	private PacketService packetService;
 
 
 	private DatagramSocket serverSocket;
 	private boolean contiune = true;
 	
 	@Value("${wm.audio.port}")
-	private int port;
+	private int port = 8888;
 	
 	
 	public void initSocket() throws IOException{
 		//start udp server
 		serverSocket = new DatagramSocket(null);
 		serverSocket.setSoTimeout(20000);
-		serverSocket.bind(new InetSocketAddress(InetAddress.getByName("0.0.0.0"),port));
+		serverSocket.bind(new InetSocketAddress(InetAddress.getByName("0.0.0.0"), port));
 
 		System.out.println("start server on : ==>"  + port);
-		//prepare the buffer for the wav file
-		audioBytes = new byte[frameNum * frameSize];
+		
 		
 	}
 	
@@ -99,17 +102,7 @@ public class AudioServer {
 			//to Speaker, for dev usage only
 			//AudioUtil.toSpeaker(receivePacket.getData());
 
-			//copy data
-			byte[] newBytes = receivePacket.getData();
-			System.arraycopy(newBytes, 0, audioBytes, 0 + frameIndex * frameSize, newBytes.length);
-			frameIndex++;
-			if(frameIndex == frameNum){
-				//to file
-				System.out.println("output to file now.");
-				frameIndex = 0;
-				this.toFile();
-			}
-
+			packetService.addPacket(receivePacket);
 		}
 	}
 	
@@ -120,12 +113,6 @@ public class AudioServer {
 		cleanUp();
 	}
 	
-	
-    public void toFile() throws IOException{
-    	long ts = System.currentTimeMillis();
-    	String fileName = "C:/Users/Xuecheng/Desktop/audio-" + ts + ".wav";
-		AudioUtil.toWAVFile(fileName, audioBytes);
-	}
     
     @PostConstruct
     public void startSvc() throws IOException {
