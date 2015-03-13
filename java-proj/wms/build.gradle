@@ -19,7 +19,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 jar {
-	baseName = "wm-service-oauth"
+	baseName = "wms"
 	version =  "0.1.0"
 }
 
