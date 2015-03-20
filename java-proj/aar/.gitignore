@@ -28,9 +28,9 @@
 
 -# Gradle files
 
--.gradle/
+gradle/
 
--build/
+build/
 .idea/
 -
 
