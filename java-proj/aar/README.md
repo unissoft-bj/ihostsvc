@@ -1,4 +1,4 @@
-# AndroidAudioRecord
+# AndroidAudioRecord (aar project)
 
 wifi matrix recorder is an Android app to stream audio stream from a device to the server.
 
