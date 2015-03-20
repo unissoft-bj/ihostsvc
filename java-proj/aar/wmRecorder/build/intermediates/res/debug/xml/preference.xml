@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="@string/pref_user_profile">
+        <EditTextPreference android:title="@string/pref_user_name"
+                            android:summary="@string/pref_user_name_summary"
+                            android:key="prefUsername">
+        </EditTextPreference>
+        <EditTextPreference android:title="@string/ihost_ip"
+            android:summary="@string/pref_ihost_ip"
+            android:key="prefIhostIp">
+        </EditTextPreference>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/pref_update_setting">
+        <CheckBoxPreference android:key="prefSendReport"
+                            android:defaultValue="false"
+                            android:summary="@string/pref_send_report_summary"
+                            android:title="@string/pref_send_report">
+        </CheckBoxPreference>
+
+        <ListPreference android:key="prefSyncFrequency"
+                        android:entries="@array/syncFrequency"
+                        android:entryValues="@array/syncFrequencyValues"
+                        android:summary="@string/pref_sync_frequency_summary"
+                        android:title="@string/pref_sync_frequency">
+        </ListPreference>
+    </PreferenceCategory>
+
+</PreferenceScreen><!-- From: file:/C:/Users/Xuecheng/git/AndroidAudioRecord/wmRecorder/src/main/res/xml/preference.xml -->

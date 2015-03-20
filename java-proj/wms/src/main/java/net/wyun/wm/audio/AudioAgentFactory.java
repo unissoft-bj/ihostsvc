@@ -31,8 +31,9 @@ public class AudioAgentFactory {
 	@Autowired
 	FileService fileService;
 	
-	@Value("wm.audio.frameNum")
-	private int frameNum = 60; // = 50; //cannot inject static variable
+    //@Value("${wm.audio.port}")
+	//@Value("${wm.audio.frameNum}")
+	private Integer frameNum = 60; // = 50; //cannot inject static variable
 	
 	public AudioAgentFactory(){}
 	

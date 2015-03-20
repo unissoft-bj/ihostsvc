@@ -51,7 +51,7 @@ public class AudioServer {
 	private DatagramSocket serverSocket;
 	private boolean contiune = true;
 	
-	@Value("${wm.audio.port}")
+	//@Value("${wm.audio.port}")
 	private int port = 8888;
 	
 	
@@ -66,11 +66,8 @@ public class AudioServer {
 		
 	}
 	
-	byte[] audioBytes; 
 	private static int frameSize = 8192; //4096;
 	
-	@Value("wm.audio.frameNum")
-	private static int frameNum = 50;
 	public void readStream() throws IOException{
 
 		/**
@@ -104,12 +101,12 @@ public class AudioServer {
 
 			packetService.addPacket(receivePacket);
 		}
+		this.serverSocket.close();
 	}
 	
 	@PreDestroy
 	public void stopSvc(){
 		this.contiune = false;
-		this.serverSocket.close();
 		cleanUp();
 	}
 	
