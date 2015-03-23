@@ -99,7 +99,9 @@ public class AudioServer {
 			//to Speaker, for dev usage only
 			//AudioUtil.toSpeaker(receivePacket.getData());
 
-			packetService.addPacket(receivePacket);
+			if(!packetService.addPacket(receivePacket)){
+				logger.error("pktQ overflow, ATTENTION!!!");
+			}
 		}
 		this.serverSocket.close();
 	}
