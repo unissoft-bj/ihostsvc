@@ -19,12 +19,13 @@ package net.wyun.wm.rest;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+//testing class for wms. we can check if the system is working or not
 @RestController
 public class HomeController {
 
-	@RequestMapping("/")
+	@RequestMapping("/wms")
 	public String home() {
-		return "home";
+		return "{'wms':'matrix wifi system', 'version': '0.1.0'}";
 	}
 
 }

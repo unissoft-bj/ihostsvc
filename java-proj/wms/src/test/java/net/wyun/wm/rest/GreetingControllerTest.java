@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import net.wyun.wm.Application;
-import net.wyun.wm.rest.GreetingController;
+import net.wyun.wm.rest.ResourceController;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -59,7 +59,7 @@ public class GreetingControllerTest {
 	private FilterChainProxy springSecurityFilterChain;
 
 	@InjectMocks
-	GreetingController controller;
+	ResourceController controller;
 
 	private MockMvc mvc;
 

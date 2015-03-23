@@ -26,13 +26,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class GreetingController {
+public class ResourceController {
 
 	private static final String template = "Hello, %s!";
 	private final AtomicLong counter = new AtomicLong();
 
-	@RequestMapping("/greeting")
+	@RequestMapping("/resource")
 	public Greeting greeting(@AuthenticationPrincipal User user) {
+		System.out.println("get resource here: " + user.getName());
 		return new Greeting(counter.incrementAndGet(), String.format(template, user.getName()));
 	}
 
