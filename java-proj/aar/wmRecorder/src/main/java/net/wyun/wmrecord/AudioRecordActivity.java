@@ -53,6 +53,7 @@ public class AudioRecordActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(this.LOG_TAG, "aar activity created.");
         setContentView(R.layout.main);
         startRec = (Button)findViewById(R.id.startrec);
         stopRec = (Button)findViewById(R.id.stoprec);
@@ -69,6 +70,24 @@ public class AudioRecordActivity extends Activity {
 
         stopRec.setEnabled(false);
         updateServerIP();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(this.LOG_TAG, "aar activity resumes.");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(this.LOG_TAG, "aar activity partially visible."); //it should be still recording
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(this.LOG_TAG, "aar activity is in hidden state. recording stops here");
     }
 
     private void updateServerIP(){
@@ -193,6 +212,7 @@ public class AudioRecordActivity extends Activity {
 		int selectedFreqInd = spFrequency.getSelectedItemPosition();
 		int sampleFreq = freqset[selectedFreqInd];
 
+        AudioRecord audioRecord = null;
 		try {
 
 			int minBufferSize = AudioRecord.getMinBufferSize(sampleFreq, 
@@ -203,31 +223,36 @@ public class AudioRecordActivity extends Activity {
             if(minBufferSize < 8192) minBufferSize = 8192;  //to get better recording, 8192
 			byte[] audioData = new byte[minBufferSize];
 			
-			AudioRecord audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC,
+			audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC,
 					sampleFreq,
 					AudioFormat.CHANNEL_CONFIGURATION_MONO,
 					AudioFormat.ENCODING_PCM_16BIT,
 					minBufferSize);
 			
 			audioRecord.startRecording();
-			
+            socket = new DatagramSocket();
+
 			while(recording){
 				int numberOfShort = audioRecord.read(audioData, 0, minBufferSize);
 
                 //putting buffer in the packet
                 DatagramPacket packet = new DatagramPacket(audioData, audioData.length, destination, port);
-                socket = new DatagramSocket();
+
                 socket.send(packet);
-                Log.d("WM", "send pkt to server.");
+                Log.d(this.LOG_TAG, "send pkt to server.");
+
 			}
-			
+			socket = null;
 			audioRecord.stop();
-            //release resource
-            audioRecord.release();
 
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		} finally {
+            //release resource
+            Log.d(this.LOG_TAG, "remember release resource here");
+           if(audioRecord != null) audioRecord.release();
+
+        }
 
 	}
 
