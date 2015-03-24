@@ -32,6 +32,7 @@ dependencies {
 	compile("org.springframework.boot:spring-boot-starter-web")
 	compile("org.springframework.boot:spring-boot-starter-security")
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
+    compile("ch.qos.logback:logback-access:1.1.2")
 	compile("com.fasterxml.jackson.core:jackson-databind")
 	compile("org.hsqldb:hsqldb")
 	providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
