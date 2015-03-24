@@ -23,9 +23,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HomeController {
 
+	public static String HOME_INFO = "{'wms':'matrix wifi system', 'version': '0.1.0'}";
 	@RequestMapping("/wms")
 	public String home() {
-		return "{'wms':'matrix wifi system', 'version': '0.1.0'}";
+		return HOME_INFO;
 	}
 
 }
