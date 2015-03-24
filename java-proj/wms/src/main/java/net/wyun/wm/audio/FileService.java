@@ -11,6 +11,7 @@ import net.wyun.wm.Application;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
  * @author Xuecheng
  */
 @Service
+@EnableScheduling
 @Scope("singleton")
 public class FileService {
 	
@@ -35,11 +37,12 @@ public class FileService {
 	
 	public FileService() { YMD = this.getYMD(Calendar.getInstance());	}
 	
-	@Scheduled(cron = "0 0 0 * * *") // everyday at midnight
+	@Scheduled (cron = "0 0 0 * * *") // everyday at midnight (cron= "0 0/2 * * * ?") //every 2 minutes
     public void updatYMD() throws InterruptedException{
 		TimeUnit.SECONDS.sleep(5);
 		YMD = this.getYMD(Calendar.getInstance());
-        logger.debug("Today number: {}", YMD);
+        logger.info("update Today YMD number : {}", YMD);
+        System.out.println("cron job every 2 minutes");
         
     }
 	
