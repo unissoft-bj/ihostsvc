@@ -1,1 +1,1 @@
-set JAVA_HOME=C:\Java\jdk1.8.0_25
+set JAVA_HOME=C:\java\jre1.8.0_31

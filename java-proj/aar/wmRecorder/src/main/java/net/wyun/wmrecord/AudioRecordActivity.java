@@ -12,6 +12,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioFormat;
@@ -42,6 +43,7 @@ public class AudioRecordActivity extends Activity {
 	
 	Spinner spFrequency;
 	Button startRec, stopRec, setting;
+    Button pauseRec;
 	
 	Boolean recording;
 
@@ -56,18 +58,21 @@ public class AudioRecordActivity extends Activity {
         Log.d(this.LOG_TAG, "aar activity created.");
         setContentView(R.layout.main);
         startRec = (Button)findViewById(R.id.startrec);
+        pauseRec = (Button)findViewById(R.id.pauserec);
         stopRec = (Button)findViewById(R.id.stoprec);
         setting = (Button)findViewById(R.id.setting);
         
         startRec.setOnClickListener(startRecOnClickListener);
+        pauseRec.setOnClickListener(pauseRecOnClickListener);
         stopRec.setOnClickListener(stopRecOnClickListener);
         setting.setOnClickListener(playBackOnClickListener);
-        
+
         spFrequency = (Spinner)findViewById(R.id.frequency);
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, freqText);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spFrequency.setAdapter(adapter);
 
+        pauseRec.setEnabled(false);
         stopRec.setEnabled(false);
         updateServerIP();
     }
@@ -111,6 +116,9 @@ public class AudioRecordActivity extends Activity {
 
             case R.id.menu_settings:
                 Intent i = new Intent(this, UserSettingActivity.class);
+
+                Log.d(this.LOG_TAG,i.toString());
+
                 startActivityForResult(i, RESULT_SETTINGS);
                 break;
         }
@@ -176,9 +184,22 @@ public class AudioRecordActivity extends Activity {
 			recordThread.start();
 			startRec.setEnabled(false);
 			stopRec.setEnabled(true);
+            pauseRec.setEnabled(true);
 
 		}};
-		
+
+    OnClickListener pauseRecOnClickListener
+            = new OnClickListener(){
+        @Override
+        public void onClick(View arg0) {
+
+            LogMessage();
+            //recording = false;
+            //pauseRec.setEnabled(false);
+            //startRec.setEnabled(true);
+            //stopRec.setEnabled(true);
+        }};
+
 	OnClickListener stopRecOnClickListener
 	= new OnClickListener(){
 		
@@ -186,6 +207,7 @@ public class AudioRecordActivity extends Activity {
 		public void onClick(View arg0) {
 			recording = false;
 			startRec.setEnabled(true);
+            pauseRec.setEnabled(false);
 			stopRec.setEnabled(false);
 		}};
 		
@@ -198,6 +220,12 @@ public class AudioRecordActivity extends Activity {
 			}
 		
 	};
+
+    private void LogMessage()
+    {
+        Log.d(this.LOG_TAG,"debug: sdfsdfsdf");
+        Log.i(this.LOG_TAG,"info: fsfafsfsdsd");
+    }
 
     private void startSettingActivity(){
         Intent i = new Intent(this, UserSettingActivity.class);
