@@ -86,11 +86,57 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
         //手动登陆页面
         .state('login1', {
             url: "/login1",
-            templateUrl: "tpls/login1.htm"
+            templateUrl: "tpls/login1.htm",
+            controller:function($scope,$http){
+                $scope.formData = {};
+
+                $scope.login = function(){
+                    // alert($scope.formData.phone);
+                    // alert($scope.formData.acount_pwd);
+                    $http.post("rest/login.php",$scope.formData)
+                    .success(function(response) {
+                    //$scope.hello = response;
+                    //stat1:1，成功，显示用户工作页面
+                    if (response==1) {
+                        window.location.href="#/main";
+                    }else if (response==2) {
+                        window.location.href="#/login1";
+                    }else if (response==3) {
+                        window.location.href="#/login2";
+                    }else{
+                        alert("非法操作");
+                    } 
+                    //stat1:2，跳转到手机号页面
+                    //stat1:3，跳转到上网码页面
+                    })
+                    .error(function() {
+                    //alert("--3--");
+                    alert("非法操作");
+                    });
+                }
+            }
         })
         .state('login2', {
             url: "/login2",
-            templateUrl: "tpls/login2.htm"
+            templateUrl: "tpls/login2.htm",
+            controller:function($scope,$http){
+                $scope.formData = {};
+                $scope.msg="请输入登陆信息";
+                $scope.register = function(){
+                    // alert($scope.formData.shangwangma);
+                    $http.post("rest/register.php",$scope.formData)
+                    .success(function(response) {
+
+                        window.location.href="#/main";
+                   
+                    })
+                    .error(function() {
+                        $scope.msg="登陆失败，请重新输入上网码";
+                        window.location.href="#/login2";
+                    });
+                    
+                }
+            }
         })
         ;
 });

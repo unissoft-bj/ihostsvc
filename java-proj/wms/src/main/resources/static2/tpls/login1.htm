@@ -8,24 +8,24 @@
 </div>
 </header>
 
-<div class="msg-err" style="opacity: 1;-webkit-animation:shake 0.5s linear 0s;">请输入登陆信息</div>
+<div class="msg-err" style="opacity: 1;-webkit-animation:shake 0.5s linear 0s;">请输入手机号和登陆密码</div>
 <section class="wap_login">
 	
 	
 	<hr>
 	
-  <form action="member.htm" method="post" onSubmit="return checkfrom();">
+  <form ng-submit="login()">
      
     <p>
     
-      <input name="regphone" id="regphone" type="text" class="input-common placeholder" placeholder="请输入手机号" />
-      <div id="regInfo"></div>
+      <input name="phone" id="phone" type="text" class="input-common placeholder" placeholder="请输入手机号" ng-model="formData.phone"/>
+      
     
 
     
     <p>
-      <input name="regmsg" id="regmsg" type="text" class="input-common placeholder" placeholder="输入密码" />
-      <font id="checkMsg"></font>
+      <input name="acount_pwd" id="acount_pwd" type="password" class="input-common placeholder" placeholder="输入密码" ng-model="formData.acount_pwd"/>
+      
     </p>
     
   
