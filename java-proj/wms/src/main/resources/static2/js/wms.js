@@ -1,4 +1,4 @@
-var myUIRoute = angular.module('MyWms', ['ui.router', 'ngAnimate']);
+var myUIRoute = angular.module('MyWms', ['ui.router', 'ngAnimate','ngCookies']);
 myUIRoute.config(function($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise("/index");
     $stateProvider
@@ -6,18 +6,16 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
         .state('test', {
             url: "/test",
             templateUrl: "tpls/test.htm",
-            controller: function($scope,$http) {
+            controller: function($cookieStore,$scope) {
 
-                $scope.userinfo = {"phone":"13333333333","account-pwd":"null","mac-pwd":"null"};
-                $http.post("rest/login.php",$scope.userinfo)
-                .success(function(response) {
-                    //$scope.hello = response;
-                    //todo将ihost信息写入全局变量 
-                })
-                .error(function() {
-                    //alert("--3--");
-                     window.location.href="#/login"; 
+               
+                $cookieStore.put("persion", {
+                        name: "my name",
+                        age: 18
                 });
+                p = "persion";
+                $scope.hello=$cookieStore.get(p);
+               
 
                 
                 
@@ -29,23 +27,19 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
         .state('index', {
             url: "/index",
             templateUrl: "tpls/index.htm",
-            controller: function($scope,$http) {
-
-
+            controller: function($scope,$http,$cookieStore) {
+                
+                $scope.ihost={};
                 $http.get("rest/ihost.json")
                 .success(function(response) {
                     $scope.ihost = response;
+                    console.log($scope.ihost.uuidHex);
                     //todo将ihost信息写入全局变量 
-                })
-                .error(function() {
-                    //alert("--3--");
-                     window.location.href="#/login"; 
-                });
-
-                //todo，根据ihost id，将本地cookie中的 phone、account-pwd、mac-pwd post到/login
-                $scope.userinfo = {"phone":"13333333333","account-pwd":"null","mac-pwd":"null"};
-                $http.post("rest/login.php",$scope.userinfo)
-                .success(function(response) {
+                    //userinfo = $cookieStore.get($scope.ihost.uuidHex);
+                    //todo，根据ihost id，将本地cookie中的 phone、account-pwd、mac-pwd post到/login
+                    $scope.userinfo = $cookieStore.get($scope.ihost.uuidHex);
+                    $http.post("rest/login.php",$scope.userinfo)
+                    .success(function(response) {
                     //$scope.hello = response;
                     //stat1:1，成功，显示用户工作页面
                     if (response==1) {
@@ -64,6 +58,15 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                     //alert("--3--");
                     alert("非法操作");
                 });
+                })
+                .error(function() {
+                    //alert("--3--");
+                     window.location.href="#/login"; 
+                });
+                //console.log($scope.ihost);
+                
+
+                
                 
             }
         })
@@ -72,10 +75,18 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
         .state('main', {
             url: "/main",
             templateUrl: "tpls/main.htm",
-            controller: function($scope,$http) {
+            controller: function($scope,$http,$cookieStore) {
 
                 $http.get("rest/user.json")
-                .success(function(response) {$scope.user = response;})
+                .success(function(response) {
+                    $scope.user = response;
+                    
+                    $http.get("rest/ihost.json")
+                    .success(function(data){
+                        $cookieStore.put(data.uuidHex,$scope.user);
+                    });
+
+                })
                 .error(function() {
                     //alert("--3--");
                      window.location.href="#/login"; 
