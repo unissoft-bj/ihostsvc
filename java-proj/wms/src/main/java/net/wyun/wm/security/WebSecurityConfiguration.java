@@ -14,11 +14,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -39,6 +42,7 @@ import org.springframework.web.util.WebUtils;
 //@EnableWebMvcSecurity  
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+	/*
 	@Autowired
 	private CustomUserDetailsService userDetailsService;
 	
@@ -46,11 +50,27 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		 auth.userDetailsService(userDetailsService);
 	}
+	*/
+	
+	@Autowired
+	@Qualifier("authenticationProvider")
+	AuthenticationProvider authenticationProvider;
+	
+	@Autowired
+	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+		auth.authenticationProvider(authenticationProvider);
+	}
+	
+	@Autowired
+	@Qualifier("authDetailsSource")
+	AuthenticationDetailsSource detailSource;
+	
+	
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.formLogin().and().logout().and().authorizeRequests()
-				.antMatchers("/index.html", "/home.html", "/login.html", "/wms", "/").permitAll().anyRequest()
+				.antMatchers("/index.html", "/home.html", "/login.html", "/wms", "/ihost", "/").permitAll().anyRequest()
 				.authenticated().and().csrf()
 				.csrfTokenRepository(csrfTokenRepository()).and()
 				.addFilterAfter(csrfHeaderFilter(), CsrfFilter.class);
@@ -78,7 +98,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 			}
 		};
 	}
-
+	
 	private CsrfTokenRepository csrfTokenRepository() {
 		HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
 		repository.setHeaderName("X-XSRF-TOKEN");

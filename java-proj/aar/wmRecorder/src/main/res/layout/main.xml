@@ -37,12 +37,6 @@
         android:textSize="22sp"
         android:text="开始录音" />
     <Button
-        android:id="@+id/pauserec"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textSize="22sp"
-        android:text="暂停录音" />
-    <Button
         android:id="@+id/stoprec"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -54,18 +48,7 @@
         android:layout_height="wrap_content"
         android:textSize="22sp"
         android:text="设置" />
-        <Button
-            android:id="@+id/startBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="启动 Service"
-            />
-        <Button
-            android:id="@+id/stopBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="停止 Service"
-            />
+
     </LinearLayout>
 
 </RelativeLayout>

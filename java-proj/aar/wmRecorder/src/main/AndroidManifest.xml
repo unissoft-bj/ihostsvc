@@ -25,11 +25,6 @@
             android:name="net.wyun.wmrecord.UserSettingActivity"
             android:screenOrientation="fullSensor" >
         </activity>
-        <service android:name=".ServiceDemo">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"></action>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </service>
     </application>
+
 </manifest>
