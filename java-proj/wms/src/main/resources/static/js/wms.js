@@ -18,7 +18,7 @@ function($rootScope, $scope, $http, $location, $route) {
 
 	var authenticate = function(callback) {
 
-		$http.get('user').success(function(data) {
+		$http.get('/secure/user').success(function(data) {
 			if (data.name) {
 				$rootScope.authenticated = true;
 			} else {
@@ -36,6 +36,7 @@ function($rootScope, $scope, $http, $location, $route) {
 
 	$scope.credentials = {};
 	$scope.login = function() {
+		console.log($scope.credentials);
 		$http.post('login', $.param($scope.credentials), {
 			headers : {
 				"content-type" : "application/x-www-form-urlencoded"
@@ -73,7 +74,7 @@ function($rootScope, $scope, $http, $location, $route) {
 	}
 
 }).controller('home', function($scope, $http) {
-	$http.get('/resource/').success(function(data) {
+	$http.get('/secure/resource').success(function(data) {
 		$scope.greeting = data;
 	})
 });
