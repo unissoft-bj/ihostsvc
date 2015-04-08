@@ -24,9 +24,21 @@ jar {
 }
 
 repositories {
+    mavenLocal()
 	mavenCentral()
 	maven { url "https://repo.spring.io/libs-milestone" }
 }
+
+
+configurations.all {
+    // check for updates every build
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+dependencies {
+    compile group: "org.springframework.security", name: "spring-security-web", version: "3.2.5.RELEASE", changing: true
+}
+
 
 dependencies {
 	compile("org.springframework.boot:spring-boot-starter-web")
