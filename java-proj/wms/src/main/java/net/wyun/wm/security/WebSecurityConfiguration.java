@@ -19,14 +19,11 @@ import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.security.authentication.AuthenticationDetailsSource;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
@@ -34,12 +31,9 @@ import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.WebUtils;
 
+
 @Configuration
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER) 
-//below tow Enable* annotation will cause 
-//'Refused to execute script from '*' because its MIME type'
-//@EnableWebSecurity
-//@EnableWebMvcSecurity  
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	/*
@@ -50,7 +44,18 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		 auth.userDetailsService(userDetailsService);
 	}
+	
 	*/
+	
+	@Autowired
+	private RESTAuthenticationEntryPoint authenticationEntryPoint;
+	@Autowired
+	private RESTAuthenticationFailureHandler authenticationFailureHandler;
+	@Autowired
+	private RESTAuthenticationSuccessHandler authenticationSuccessHandler;
+	@Autowired
+	private WmsLogoutSuccessHandler wmsLogoutSuccessHandler;
+	
 	
 	@Autowired
 	@Qualifier("authenticationProvider")
@@ -61,19 +66,24 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 		auth.authenticationProvider(authenticationProvider);
 	}
 	
-	@Autowired
-	@Qualifier("authDetailsSource")
-	AuthenticationDetailsSource detailSource;
-	
-	
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.formLogin().and().logout().and().authorizeRequests()
-				.antMatchers("/index.html", "/home.html", "/login.html", "/wms", "/ihost", "/").permitAll().anyRequest()
-				.authenticated().and().csrf()
+		http.formLogin().and().logout();
+		http.authorizeRequests()
+				.antMatchers("/index.html", "/home.html", "/login", "/login.html", "/wms", "/ihost", "/").permitAll().anyRequest().authenticated();
+		http.csrf()
 				.csrfTokenRepository(csrfTokenRepository()).and()
 				.addFilterAfter(csrfHeaderFilter(), CsrfFilter.class);
+		
+		http.authorizeRequests().antMatchers("/secure/**").authenticated();
+		
+		http.formLogin().successHandler(authenticationSuccessHandler);
+		http.formLogin().failureHandler(authenticationFailureHandler);
+		http.logout().logoutSuccessHandler(wmsLogoutSuccessHandler);
+		
+		http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
+		
 	}
 
 	private Filter csrfHeaderFilter() {
@@ -103,6 +113,12 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 		HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
 		repository.setHeaderName("X-XSRF-TOKEN");
 		return repository;
+	}
+	
+	@Bean
+	public AuthenticationEntryPoint unauthorizedEntryPoint() {
+		return (request, response, authException) -> response
+				.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 	}
 
 }
