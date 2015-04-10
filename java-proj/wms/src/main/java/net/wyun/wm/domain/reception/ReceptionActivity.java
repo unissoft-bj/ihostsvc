@@ -1,7 +1,7 @@
 /**
  * 
  */
-package net.wyun.wm.domain;
+package net.wyun.wm.domain.reception;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

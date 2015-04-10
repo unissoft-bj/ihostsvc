@@ -1,13 +1,18 @@
-package net.wyun.wm.domain;
+package net.wyun.wm.domain.reception;
 
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import net.wyun.wm.domain.Gender;
+
 
 /**
  * 
@@ -27,7 +32,7 @@ public class Reception {
 	    }
 	    
 	    private enum Status {
-	    	NEW, UPDATE, DELETE;
+	    	NEW, UPDATE, CLOSE, OPEN;
 	    }
 	
 	    private Long    id; //             smallint unsigned     NOT NULL auto_increment primary key,
@@ -42,6 +47,8 @@ public class Reception {
 		
 	    private String agent_id;   //    varchar(36)           NOT NULL,                             # this is binded with the phone which records the audio, account id
 	    private int    person_cnt;  //     smallint unsigned     NOT NULL default 1,
+	    
+	    @Enumerated(EnumType.STRING)
 	    private Gender gender; //         smallint              NOT NULL default 0,       # for example 3M2F
 	    private String customer_name; //  varchar(30)           NOT NULL default '',
 	    private String phone; //          varchar(20)           NOT NULL default '',
@@ -50,6 +57,8 @@ public class Reception {
 	    private String intention; //      varchar(20)           NOT NULL default '',                 #来店目的：咨询新车/预约提车/其他 ；选择或者新建，可维护
 	    private String visit_index; //    smallint unsigned     NOT NULL default 1,                  #来店频率：初次/再次；选择或者新建，可维护
 	    private String refer_source;   //varchar(20)           NOT NULL default "",                 #客户来源：报纸/杂志/电视/电台/网络/户外广告/车展/朋友介绍/路过；选择或者新建，可维护     
+	    
+	    @Enumerated(EnumType.STRING)
 	    private CarUsageType car_usage; //      enum('private', 'gov', 'all') NOT NULL default 'private',
 	    private String car_style; //      varchar(20)           NOT NULL default '',
 	    private String car_model; //      varchar(20)           NOT NULL default '',
@@ -59,6 +68,8 @@ public class Reception {
 	    private String result; //         varchar(100)          NOT NULL default '',                 #接待结果：信息留存/签单/提车；选择或者新建，可维护
 	    private String comparison; //     varchar(150)          NOT NULL default '',                 #竞品对比：输入内容，可口述录音, path to audio file or text??
 	    private String memo; //           varchar(150)          NOT NULL default '',                 #备注：输入内容，可口述录音 audio or text
+	    
+	    @Enumerated(EnumType.STRING)
 	    private Status status; //         enum('new', 'update', 'delete') NOT NULL default 'new'      # 新建，更新，删除
 	    private int sibling; //        smallint unsigned,    NOT NULL default 0,                  # id of reception which occurs after current reception in time
 	    private Date start_t; //        datetime              NOT NULL,                            #when record button is pressed
