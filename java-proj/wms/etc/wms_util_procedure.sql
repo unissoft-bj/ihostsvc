@@ -4,11 +4,11 @@
 
 delimiter //
 
-drop procedure createPermission;
-drop procedure createRole;
-drop procedure roleHasPermission;
-drop procedure createAccount;
-drop procedure accountHasRole;
+drop procedure if exists createPermission;
+drop procedure  if exists createRole;
+drop procedure  if exists roleHasPermission;
+drop procedure  if exists createAccount;
+drop procedure  if exists accountHasRole;
 
 
 create procedure createPermission($name varchar(50))
