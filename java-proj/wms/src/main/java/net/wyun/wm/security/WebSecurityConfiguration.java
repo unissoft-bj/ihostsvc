@@ -41,17 +41,7 @@ import org.springframework.web.util.WebUtils;
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER) 
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-	/*
-	@Autowired
-	private CustomUserDetailsService userDetailsService;
-	
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		 auth.userDetailsService(userDetailsService);
-	}
-	
-	*/
-	
+		
 	@Autowired
 	private RESTAuthenticationEntryPoint authenticationEntryPoint;
 	@Autowired
