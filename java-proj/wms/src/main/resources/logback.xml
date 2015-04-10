@@ -67,6 +67,8 @@
 	<root level="debug">
 		<appender-ref ref="serverConsole" />
 	</root>
+	
+	<logger name="net.wyun.wm" level="debug" />
 
 
 </configuration>
