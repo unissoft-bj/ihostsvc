@@ -1,13 +1,15 @@
 /**
  * 
  */
-package net.wyun.wm.domain;
+package net.wyun.wm.domain.account;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import net.wyun.wm.domain.Gender;
 
 import org.hibernate.annotations.GenericGenerator;
 

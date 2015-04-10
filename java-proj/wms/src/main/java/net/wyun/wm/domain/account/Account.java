@@ -1,12 +1,14 @@
 /* 
  * Copyright (c) 2013 Matrix wifi
  */
-package net.wyun.wm.domain;
+package net.wyun.wm.domain.account;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,72 +18,177 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import net.wyun.wm.domain.MacAccount;
+import net.wyun.wm.domain.Permission;
+import net.wyun.wm.domain.Role;
+
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Table(name = "account")
-@NamedQuery(
-	name = "account.byUsername",
-	query = "from Account a where a.username = :username")
-@SuppressWarnings("serial")
 public class Account implements UserDetails {
 	public static final Account ACCOUNT = new Account("anonymous");
 	
-	private Long id;
-	private String username;
-	private String firstName;
-	private String lastName;
-	private String email;
-	private String password;
-	private boolean enabled;
-	private Set<Role> roles = new HashSet<Role>();
+    public Account() { }
 	
-	public Account() { }
+	public Account(String phone) { this.phone = phone; }
 	
-	public Account(String username) { this.username = username; }
+	@GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid")
+    @Column(name= "id", columnDefinition = "VARCHAR(36)")
+    @Id
+	private String id;         //      VARCHAR(36)     primary key,                       #   id int unsigned NOT NULL auto_increment primary key, the same user can have differennt account at different ihost
+   
+	private String phone;      //            varchar(30)     DEFAULT NULL,	                    #	常用电话号码 , mobile phone number for receiving sms., one account --> one phone number
+    private String password;  //         varchar(20)     DEFAULT ''                         #   password use for secure login, optional, try mac/password login first. For internal users
+    private String point;  //            int not null    DEFAULT '0',	                    #	userid下的积分 ?? better name
+    private int factor; //           int not null    DEFAULT '1000',	                #	points转integral的因子，1000代表1 // put it together with integral in a separate table
+    private String originator;   //       varchar(36)     DEFAULT ''                         #   id of the agnet who creates this account
+    private String hint;   //             varchar(30)     NOT NULL,                          #   required for recover or change account, for example change phone number
+    
+    @ManyToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name="user_info_id", unique= true, nullable=true, insertable=true, updatable=true)
+    private UserInfo userInfo; //    VARCHAR(36)     NOT NULL DEFAULT '',               #   foreign key to user_info table.
+    
+    private boolean sent_to_server; //   boolean         NOT NULL DEFAULT 0,                #   ?? flag for syn with iserver
+    private boolean enabled; //          boolean         NOT NULL default 0,                #   for Admin usage
+    private Date create_t; //         datetime        DEFAULT NULL,	                    #	记录时间
+    private Date modify_t; //         datetime        DEFAULT NULL,	                    #	记录更新时间
 	
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "id")
-	public Long getId() { return id; }
+    @Transient
+    private Set<Role> roles = new HashSet<Role>();
 	
-	@SuppressWarnings("unused")
-	private void setId(Long id) { this.id = id; }
-	
-	@Column(name = "username")
-	public String getUsername() { return username; }
-	
-	public void setUsername(String username) { this.username = username; }
-	
-	@Column(name = "first_name")
-	public String getFirstName() { return firstName; }
-	
-	public void setFirstName(String firstName) { this.firstName = firstName; }
-	
-	@Column(name = "last_name")
-	public String getLastName() { return lastName; }
-	
-	public void setLastName(String lastName) { this.lastName = lastName; }
-	
-	@Transient
-	public String getFullName() { return firstName + " " + lastName; }
-	
-	@Column(name = "email")
-	public String getEmail() { return email; }
-	
-	public void setEmail(String email) { this.email = email; }
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	@Column(name = "phone")
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
 
 	@Column(name = "password")
-	public String getPassword() { return password; }
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	@Column(name = "point")
+	public String getPoint() {
+		return point;
+	}
+
+	public void setPoint(String point) {
+		this.point = point;
+	}
+
+	@Column(name = "factor")
+	public int getFactor() {
+		return factor;
+	}
+
+	public void setFactor(int factor) {
+		this.factor = factor;
+	}
+
+	@Column(name = "originator")
+	public String getOriginator() {
+		return originator;
+	}
+
+	public void setOriginator(String originator) {
+		this.originator = originator;
+	}
+
+	@Column(name= "hint")
+	public String getHint() {
+		return hint;
+	}
+
+	public void setHint(String hint) {
+		this.hint = hint;
+	}
+
+	public UserInfo getUserInfo() {
+		return userInfo;
+	}
+
+	public void setUserInfo(UserInfo userInfo) {
+		this.userInfo = userInfo;
+	}
+
+	@Column(name="sent_to_server")
+	public boolean isSent_to_server() {
+		return sent_to_server;
+	}
+
+	public void setSent_to_server(boolean sent_to_server) {
+		this.sent_to_server = sent_to_server;
+	}
+
+	@Column(name="create_t")
+	public Date getCreate_t() {
+		return create_t;
+	}
+
+	public void setCreate_t(Date create_t) {
+		this.create_t = create_t;
+	}
+
+	@Column(name="modify_t")
+	public Date getModify_t() {
+		return modify_t;
+	}
+
+	public void setModify_t(Date modify_t) {
+		this.modify_t = modify_t;
+	}
 	
-	public void setPassword(String password) { this.password = password; }
+	public boolean isEnabled() {
+		return enabled;
+	}
 
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
 
+	public static Account getAccount() {
+		return ACCOUNT;
+	}
+	
+	//mac <-- --> account mapping 
+	@Transient
+	private Set<MacAccount> macAccounts = new HashSet<MacAccount>();
+	@OneToMany(mappedBy = "account")
+	public Set<MacAccount> getMacAccounts() {
+		return macAccounts;
+	}
+
+	public void setMacAccounts(Set<MacAccount> macAccounts) {
+		this.macAccounts = macAccounts;
+	}
+
+	
+	//=============  below is for userdetails =======================//
 	@Transient
 	public boolean isAccountNonExpired() { return true; }
 
@@ -92,12 +199,6 @@ public class Account implements UserDetails {
 	@Transient
 	public boolean isCredentialsNonExpired() { return true; }
 
-
-	@Column(name = "enabled")
-	public boolean isEnabled() { return enabled; }
-	
-	public void setEnabled(boolean enabled) { this.enabled = enabled; }
-	
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(
 		name = "account_role",
@@ -125,8 +226,14 @@ public class Account implements UserDetails {
 	
 	/**
 	 * <p>
-	 * Returns the username.
+	 * Returns the phone of the account.
 	 * </p>
 	 */
-	public String toString() { return username; }
+	public String toString() { return phone; }
+
+	@Transient
+	@Override
+	public String getUsername() {
+		return this.phone;
+	}
 }
