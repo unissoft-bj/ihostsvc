@@ -2,23 +2,23 @@
 create database wms;
 use wms;
 
-DROP TABLE IF EXISTS 802_11_packet
-DROP TABLE IF EXISTS account
-DROP TABLE IF EXISTS account_role
-DROP TABLE IF EXISTS device_act_history
-DROP TABLE IF EXISTS device_ipvisit
-DROP TABLE IF EXISTS device_status
-DROP TABLE IF EXISTS first_appearance
-DROP TABLE IF EXISTS ihost           
-DROP TABLE IF EXISTS mac               
-DROP TABLE IF EXISTS mac_account       
-DROP TABLE IF EXISTS permission        
-DROP TABLE IF EXISTS reception         
-DROP TABLE IF EXISTS recpt_activity    
-DROP TABLE IF EXISTS role              
-DROP TABLE IF EXISTS role_permission   
-DROP TABLE IF EXISTS token             
-DROP TABLE IF EXISTS user_info         
+DROP TABLE IF EXISTS 802_11_packet;
+DROP TABLE IF EXISTS account;
+DROP TABLE IF EXISTS account_role;
+DROP TABLE IF EXISTS device_act_history;
+DROP TABLE IF EXISTS device_ipvisit;
+DROP TABLE IF EXISTS device_status;
+DROP TABLE IF EXISTS first_appearance;
+DROP TABLE IF EXISTS ihost;    
+DROP TABLE IF EXISTS mac;               
+DROP TABLE IF EXISTS mac_account;       
+DROP TABLE IF EXISTS permission;        
+DROP TABLE IF EXISTS reception;         
+DROP TABLE IF EXISTS recpt_activity;    
+DROP TABLE IF EXISTS role;              
+DROP TABLE IF EXISTS role_permission;   
+DROP TABLE IF EXISTS token;             
+DROP TABLE IF EXISTS user_info;         
 
 
 ## Tables for user registration
