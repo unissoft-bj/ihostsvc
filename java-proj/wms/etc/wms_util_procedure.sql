@@ -4,6 +4,13 @@
 
 delimiter //
 
+drop procedure createPermission;
+drop procedure createRole;
+drop procedure roleHasPermission;
+drop procedure createAccount;
+drop procedure accountHasRole;
+
+
 create procedure createPermission($name varchar(50))
 begin
     insert into permission (name) values ($name);
@@ -24,7 +31,7 @@ end //
 
 create procedure createAccount($id varchar(36), $phone varchar(30), $hint varchar(30))
 begin
-    insert into account (id, phone, hint, user_info_id, create_t) values ($id, $phone, $hint, '', now());
+    insert into account (id, phone, hint, create_t) values ($id, $phone, $hint, now());
     set $id := last_insert_id();
 end //
 
