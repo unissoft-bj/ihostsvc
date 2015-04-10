@@ -1,7 +1,7 @@
 /**
  * 
  */
-package net.wyun.wm.domain;
+package net.wyun.wm.domain.ihost;
 
 import java.util.Date;
 import java.util.UUID;
@@ -20,6 +20,10 @@ import org.hibernate.validator.constraints.Length;
 
 /**
  * @author Xuecheng
+ * Hibernate generates the table
+ * Hibernate: 
+ * create table ihost (id CHAR(32) not null, brand varchar(255), city varchar(255), 
+ *                     create_t timestamp, modify_t timestamp, name varchar(255), primary key (id))
  *
  */
 @Entity
@@ -27,11 +31,13 @@ import org.hibernate.validator.constraints.Length;
 public class IHost {
 	
 
+	
 	@GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid")
     @Column(name= "id", columnDefinition = "CHAR(32)")
     @Id
     private String uuidHex;
+    
 	
 	public IHost(){ this.create_t = new Date(); }
   

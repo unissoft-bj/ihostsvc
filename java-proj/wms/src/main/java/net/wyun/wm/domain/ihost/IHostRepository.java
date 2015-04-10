@@ -1,9 +1,11 @@
 /**
  * 
  */
-package net.wyun.wm.domain;
+package net.wyun.wm.domain.ihost;
 
 import java.util.UUID;
+
+
 
 
 import org.springframework.data.repository.CrudRepository;
