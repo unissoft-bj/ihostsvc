@@ -41,6 +41,7 @@ public class WmsLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler {
         }
 
         httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+        httpServletResponse.getWriter().flush();
         //redirect to login, no redirect for rest service
         //httpServletResponse.sendRedirect("/login");
     }

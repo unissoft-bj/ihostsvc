@@ -31,6 +31,11 @@ import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.WebUtils;
 
+/**
+ * https://crazygui.wordpress.com/2014/08/29/secure-rest-services-using-spring-security/
+ * @author Xuecheng
+ *
+ */
 
 @Configuration
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER) 

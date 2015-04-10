@@ -17,5 +17,7 @@ public class RESTAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuc
 	                                    Authentication authentication) throws IOException, ServletException {
 
 		clearAuthenticationAttributes(request);
+		//response.getWriter().print("{'login': 'SUCCESS'}");
+	    //response.getWriter().flush();
 	}
 }
