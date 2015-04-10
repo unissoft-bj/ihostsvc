@@ -28,14 +28,14 @@ CREATE TABLE if not exists user_info (
     byear          smallint          DEFAULT NULL,	        #	生日，年 // move to user_info. It can be obtained in different ways.
     bmonth         smallint          DEFAULT NULL,	        #	生日，月
     bday           smallint          DEFAULT NULL,	        #	生日，日
-    gender         smallint          NOT NULL DEFAULT 0,	#	性别  //user info.
+    gender         char(1)           NOT NULL DEFAULT 'M',	#	性别  //user info.
     occupation     varchar(30)       NOT NULL DEFAULT '',	#	职业 // user info
     company        varchar(64)       DEFAULT NULL,	        #	工作单位 //user info
     title          varchar(32)       DEFAULT NULL,	        #	职务 // user info.
     cid            varchar(30)       DEFAULT '000000',	    #	证件号, cid + ctype
     ctype          varchar(10)       DEFAULT NULL,	        #	证件类别 //remove.
     address        varchar(128)      DEFAULT NULL,	        #	地址 // to memo
-    location       varchar(32)       DEFAULT NULL,	        #	所在区域 //to memo
+    location       varchar(32)       DEFAULT NULL	        #	所在区域 //to memo
 )  DEFAULT CHARSET=utf8;
 
 
@@ -49,37 +49,19 @@ CREATE TABLE if not exists user_info (
 CREATE TABLE if not exists account (
     id               VARCHAR(36)     primary key,                       #   id int unsigned NOT NULL auto_increment primary key, the same user can have differennt account at different ihost
     phone            varchar(30)     DEFAULT NULL,	                    #	常用电话号码 , mobile phone number for receiving sms., one account --> one phone number
-    password         varchar(20)     DEFAULT ''                         #   password use for secure login, optional, try mac/password login first. For internal users
-    point            int not null    DEFAULT '0',	                    #	userid下的积分 ?? better name
-    factor           int not null    DEFAULT '1000',	                #	points转integral的因子，1000代表1 // put it together with integral in a separate table
-    originator       varchar(36)     DEFAULT ''                         #   id of the agnet who creates this account
+    password         varchar(20)     DEFAULT '',                         #   password use for secure login, optional, try mac/password login first. For internal users
+    point            int             DEFAULT 0,	                    #	userid下的积分 ?? better name
+    factor           int             DEFAULT 1000,	                #	points转integral的因子，1000代表1 // put it together with integral in a separate table
+    originator       varchar(36)     DEFAULT '',                         #   id of the agnet who creates this account
     hint             varchar(30)     NOT NULL,                          #   required for recover or change account, for example change phone number
     user_info_id     VARCHAR(36)     NOT NULL DEFAULT '',               #   foreign key to user_info table.
     sent_to_server   boolean         NOT NULL DEFAULT 0,                #   ?? flag for syn with iserver
     enabled          boolean         NOT NULL default 0,                #   for Admin usage
     create_t         datetime        DEFAULT NULL,	                    #	记录时间
     modify_t         datetime        DEFAULT NULL,	                    #	记录更新时间
-    unique index account_idx1 (phone)
-    foreign key    (user_info_id)    references user_info (id),
+    unique           index           account_idx1 (phone),
+    foreign key    (user_info_id)    references user_info (id)
 ) DEFAULT CHARSET=utf8;
-
-# one phone number mapping to an account, but it could be mapped to multiple mac
-# pre_register table
-# http://www.onurguzel.com/storing-mac-address-in-a-mysql-database/
-#############################################################
-# mac_account
-#############################################################
-CREATE TABLE if not exists mac_account (
-    id                int unsigned        NOT NULL auto_increment primary key,
-    mac_id            int unsigned        NOT NULL,
-    account_id        char(32)            NOT NULL,
-    create_t          timestamp           NOT NULL,
-    modify_t          timestamp           DEFAULT NULL,
-    foreign key       (account_id)        references account (id),
-    foreign key       (mac_id)            references mac (id),
-    
-)DEFAULT CHARSET=utf8;
-
 
 #############################################################
 # mac
@@ -95,7 +77,21 @@ CREATE TABLE if not exists mac (
     modify_t      datetime           DEFAULT NULL
 )DEFAULT CHARSET=utf8;
 
-
+# one phone number mapping to an account, but it could be mapped to multiple mac
+# pre_register table
+# http://www.onurguzel.com/storing-mac-address-in-a-mysql-database/
+#############################################################
+# mac_account
+#############################################################
+CREATE TABLE if not exists mac_account (
+    id                int unsigned        NOT NULL auto_increment primary key,
+    mac_id            int unsigned        NOT NULL,
+    account_id        char(32)            NOT NULL,
+    create_t          timestamp           NOT NULL,
+    modify_t          timestamp           DEFAULT 0,
+    foreign key       (account_id)        references account (id),
+    foreign key       (mac_id)            references mac (id)
+)DEFAULT CHARSET=utf8;
 
 #############################################################
 # token
@@ -158,7 +154,7 @@ CREATE TABLE if not exists reception (
     id             smallint unsigned     NOT NULL auto_increment primary key,
     agent_id       varchar(36)           NOT NULL,                             # this is binded with the phone which records the audio, account id
     person_cnt     smallint unsigned     NOT NULL default 1,
-    gender         smallint              NOT NULL default 0,                   # for example 3M2F
+    gender         char(1)              NOT NULL default 0,                   # for example 3M2F
     customer_name  varchar(30)           NOT NULL default '',
     phone          varchar(20)           NOT NULL default '',
     location       varchar(30)           NOT NULL default '',
@@ -170,17 +166,17 @@ CREATE TABLE if not exists reception (
     car_style      varchar(20)           NOT NULL default '',
     car_model      varchar(20)           NOT NULL default '',
     car_color      varchar(4)            NOT NULL default '',
-    buy_level      enum('A','B','C','D') NOT NULL default 'A',                #意向级别：A/B/C/D；选择或者新建，可维护
+    buy_level      char(1)               NOT NULL default 'A',                #意向级别：A/B/C/D；选择或者新建，可维护
     description    varchar(200)          NOT NULL default '',                 #接待经过：调查问卷/试乘试驾/报价；选择或者新建，可维护
     result         varchar(100)          NOT NULL default '',                 #接待结果：信息留存/签单/提车；选择或者新建，可维护
     comparison     varchar(150)          NOT NULL default '',                 #竞品对比：输入内容，可口述录音, path to audio file or text??
     memo           varchar(150)          NOT NULL default '',                 #备注：输入内容，可口述录音 audio or text
-    status         enum('new', 'update', 'close', 'open') NOT NULL default 'new'      # 新建，更新，删除
-    sibling        smallint unsigned,    NOT NULL default 0,                  # id of reception which occurs after current reception in time
+    status         varchar(10)           NOT NULL default 'new',               # 新建，更新，删除         enum('new', 'update', 'close', 'open')
+    sibling        smallint unsigned     NOT NULL default 0,                  # id of reception which occurs after current reception in time
     start_t        datetime              NOT NULL,                            #when record button is pressed
-    end_t          datetime              default NULL                         #when reception ends, agent opens the app, press the "stop recording"
-    modify_t       datetime              default NULL
-    foreign key    (agent_id)            references account (id),    
+    end_t          datetime              default NULL,                         #when reception ends, agent opens the app, press the "stop recording"
+    modify_t       datetime              default NULL,
+    foreign key    (agent_id)            references account (id)    
 ) DEFAULT CHARSET=utf8;
 
 #############################################################
@@ -188,10 +184,10 @@ CREATE TABLE if not exists reception (
 #############################################################
 create table if not exists recpt_activity (
      id              smallint unsigned      NOT NULL auto_increment primary key,
-     reception_id    smallint unsigned      NOT NULL auto_increment primary key,
+     reception_id    smallint unsigned      NOT NULL,
      resource_type   varchar(10)            NOT NULL default '',                  #mac address, photo, audio etc.
      resource_info   varchar(25)            NOT NULL default ''                   #possible id, description
-) default CHARSET=utf8
+) default CHARSET=utf8;
 
 
 
@@ -302,12 +298,11 @@ CREATE TABLE if not exists device_status (
 # ihost
 #############################################################
 CREATE TABLE if not exists ihost (
-   id             VARCHAR(36)       primary key NOT NULL,
+   id             VARCHAR(36)       primary key,
    name           varchar(20)       not null DEFAULT '',
    city           varchar(36)       not null DEFAULT '',
    brand          varchar(36)       not null DEFAULT '',
    create_t       datetime          not NULL,
-   modify_t       datetime          DEFAULT NULL,
-   PRIMARY KEY     (`id`),
+   modify_t       datetime          DEFAULT NULL
 ) DEFAULT CHARSET=utf8;
 
