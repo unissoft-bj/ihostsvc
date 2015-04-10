@@ -8,7 +8,7 @@ import java.security.Principal;
 import javax.servlet.http.HttpServletResponse;
 
 import net.wyun.wm.data.User;
-import net.wyun.wm.domain.IHostRepository;
+import net.wyun.wm.domain.ihost.IHostRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ErrorController;

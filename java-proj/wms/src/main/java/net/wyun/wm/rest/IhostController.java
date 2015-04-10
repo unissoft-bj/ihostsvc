@@ -6,8 +6,8 @@ package net.wyun.wm.rest;
 import java.util.Date;
 import java.util.List;
 
-import net.wyun.wm.domain.IHost;
-import net.wyun.wm.domain.IHostRepository;
+import net.wyun.wm.domain.ihost.IHost;
+import net.wyun.wm.domain.ihost.IHostRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
