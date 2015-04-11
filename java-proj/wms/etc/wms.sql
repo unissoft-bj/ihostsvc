@@ -72,7 +72,7 @@ CREATE TABLE if not exists account (
     factor           int             DEFAULT 1000,	                #	points转integral的因子，1000代表1 // put it together with integral in a separate table
     originator       varchar(36)     DEFAULT '',                         #   id of the agnet who creates this account
     hint             varchar(30)     NOT NULL,                          #   required for recover or change account, for example change phone number
-    user_info_id     VARCHAR(36)     NOT NULL DEFAULT '',               #   foreign key to user_info table.
+    user_info_id     VARCHAR(36)     DEFAULT NULL,               #   foreign key to user_info table.
     sent_to_server   boolean         NOT NULL DEFAULT 0,                #   ?? flag for syn with iserver
     enabled          boolean         NOT NULL default 0,                #   for Admin usage
     create_t         datetime        DEFAULT NULL,	                    #	记录时间
