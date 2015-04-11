@@ -9,6 +9,7 @@ drop procedure  if exists createRole;
 drop procedure  if exists roleHasPermission;
 drop procedure  if exists createAccount;
 drop procedure  if exists accountHasRole;
+drop procedure  if exists macHasAccount;
 
 
 create procedure createPermission($name varchar(50))
@@ -38,4 +39,17 @@ end //
 create procedure accountHasRole($account_id varchar(36), $role_id smallint)
 begin
     insert into account_role (account_id, role_id) values ($account_id, $role_id);
+end //
+
+create procedure createMac($mac bigint(20), out $id int)
+begin
+	declare _uuid varchar(36);
+	select uuid() into _uuid;
+    insert into mac (mac, password, create_t) values ($mac, _uuid, now());
+    set $id := last_insert_id();
+end //
+
+create procedure macHasAccount($mac_id int, $account_id varchar(36))
+begin
+    insert into mac_account (mac_id, account_id, create_t) values ($mac_id, $account_id, now());
 end //

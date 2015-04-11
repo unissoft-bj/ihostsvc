@@ -104,7 +104,7 @@ CREATE TABLE if not exists mac (
 CREATE TABLE if not exists mac_account (
     id                int unsigned        NOT NULL auto_increment primary key,
     mac_id            int unsigned        NOT NULL,
-    account_id        char(32)            NOT NULL,
+    account_id        varchar(36)         NOT NULL,
     create_t          timestamp           NOT NULL,
     modify_t          timestamp           DEFAULT 0,
     foreign key       (account_id)        references account (id),

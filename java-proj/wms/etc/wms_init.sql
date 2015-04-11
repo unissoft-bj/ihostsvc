@@ -40,7 +40,11 @@ call roleHasPermission(@role_service, 'PERM_DELETE_RECEPTIONS');
 -- Create accounts
 
 
-call createAccount(SELECT UUID(), '1382188318', 'manager bootstrap');
-call accountHasRole(@paula, @role_user);
+call createAccount('90b1e606-dfd3-11e4-90f4-000c29c5df73', '1382188318', 'manager bootstrap');
+-- manager
+call accountHasRole('90b1e606-dfd3-11e4-90f4-000c29c5df73', 2)
+call createMac(1096068950523);
+
+
 
 
