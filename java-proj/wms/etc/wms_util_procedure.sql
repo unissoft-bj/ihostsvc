@@ -35,7 +35,7 @@ begin
     set $id := last_insert_id();
 end //
 
-create procedure accountHasRole($account_id int, $role_id smallint)
+create procedure accountHasRole($account_id varchar(36), $role_id smallint)
 begin
     insert into account_role (account_id, role_id) values ($account_id, $role_id);
 end //
