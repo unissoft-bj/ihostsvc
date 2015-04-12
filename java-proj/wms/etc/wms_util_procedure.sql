@@ -32,7 +32,7 @@ end //
 
 create procedure createAccount($id varchar(36), $phone varchar(30), $hint varchar(30))
 begin
-    insert into account (id, phone, hint, create_t) values ($id, $phone, $hint, now());
+    insert into account (account_id, phone, hint, enabled, create_t) values ($id, $phone, $hint, 1, now());
     set $id := last_insert_id();
 end //
 

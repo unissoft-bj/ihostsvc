@@ -65,7 +65,7 @@ CREATE TABLE if not exists user_info (
 ##2，基于业务逻辑的上传，集中到iserver（与基于统计分析的上传不同）
 ##3，在另一个ihost上创建account时，可以选择下载，实现同步。如果不选择下载，则不同步（user account不同步不影响数据分析层面的identification）
 CREATE TABLE if not exists account (
-    id               VARCHAR(36)     primary key,                       #   id int unsigned NOT NULL auto_increment primary key, the same user can have differennt account at different ihost
+    account_id               VARCHAR(36)     primary key,                       #   id int unsigned NOT NULL auto_increment primary key, the same user can have differennt account at different ihost
     phone            varchar(30)     DEFAULT NULL,	                    #	常用电话号码 , mobile phone number for receiving sms., one account --> one phone number
     password         varchar(20)     DEFAULT '',                         #   password use for secure login, optional, try mac/password login first. For internal users
     point            int             DEFAULT 0,	                    #	userid下的积分 ?? better name
@@ -85,7 +85,7 @@ CREATE TABLE if not exists account (
 # mac
 #############################################################
 CREATE TABLE if not exists mac (
-    id            int unsigned       NOT NULL auto_increment primary key,
+    mac_id            int unsigned       NOT NULL auto_increment primary key,
     mac           BIGINT UNSIGNED    NOT NULL,
 #    token         int UNSIGNED       NOT NULL,                         #   history. use the latest to verify account, sms 上网码/
     password      VARCHAR(36)        NOT NULL,                          #   password for mac/pw login
@@ -107,8 +107,8 @@ CREATE TABLE if not exists mac_account (
     account_id        varchar(36)         NOT NULL,
     create_t          timestamp           NOT NULL,
     modify_t          timestamp           DEFAULT 0,
-    foreign key       (account_id)        references account (id),
-    foreign key       (mac_id)            references mac (id)
+    foreign key       (account_id)        references account (account_id),
+    foreign key       (mac_id)            references mac (mac_id)
 )DEFAULT CHARSET=utf8;
 
 #############################################################
@@ -147,7 +147,7 @@ CREATE TABLE if not exists account_role (
     id             int unsigned        NOT NULL auto_increment primary key,
     account_id     VARCHAR(36)         NOT NULL,
     role_id        smallint unsigned   NOT NULL,
-    foreign key    (account_id)        references account (id),
+    foreign key    (account_id)        references account (account_id),
     foreign key    (role_id)           references role (id),
     unique index   account_role_idx1   (account_id, role_id)
 ) DEFAULT CHARSET=utf8;
@@ -194,7 +194,7 @@ CREATE TABLE if not exists reception (
     start_t        datetime              NOT NULL,                            #when record button is pressed
     end_t          datetime              default NULL,                         #when reception ends, agent opens the app, press the "stop recording"
     modify_t       datetime              default NULL,
-    foreign key    (agent_id)            references account (id)    
+    foreign key    (agent_id)            references account (account_id)    
 ) DEFAULT CHARSET=utf8;
 
 #############################################################
