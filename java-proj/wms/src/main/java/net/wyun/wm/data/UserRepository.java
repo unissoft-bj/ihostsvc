@@ -18,7 +18,7 @@ package net.wyun.wm.data;
 
 import org.springframework.data.repository.CrudRepository;
 
-
+@Deprecated
 public interface UserRepository extends CrudRepository<User, Long> {
 
     User findByLogin(String login);

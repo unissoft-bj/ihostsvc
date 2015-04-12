@@ -24,6 +24,7 @@ import javax.persistence.Id;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+@Deprecated
 @Entity
 public class User {
 	
