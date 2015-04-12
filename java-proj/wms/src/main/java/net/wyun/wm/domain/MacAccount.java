@@ -15,6 +15,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import net.wyun.wm.domain.account.Account;
 import net.wyun.wm.domain.mac.Mac;
 
@@ -24,20 +26,17 @@ import net.wyun.wm.domain.mac.Mac;
  */
 @Entity
 @Table(name = "mac_account")
+@JsonIgnoreProperties({"id", "mac"})
 public class MacAccount {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id")
 	private Integer id; // int unsigned NOT NULL auto_increment primary key,
-	
-	@Column(name = "mac_id")
-	private Mac mac; //Integer mac_id; // int unsigned NOT NULL,
-	@Column(name = "account_id")
-	private Account account; //String account_id; // char(32) NOT NULL,
-	
+
 	@ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "mac_id")  
+    @JoinColumn(name = "mac_id", referencedColumnName="mac_id")  //id in Mac class
+	private Mac mac; //Integer mac_id; // int unsigned NOT NULL,
 	public Mac getMac() {
 		return mac;
 	}
@@ -47,7 +46,8 @@ public class MacAccount {
 	}
 
 	@ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "account_id") 
+    @JoinColumn(name = "account_id", referencedColumnName="account_id") //id in Account class
+	private Account account; //String account_id; // char(32) NOT NULL,
 	public Account getAccount() {
 		return account;
 	}
@@ -56,7 +56,6 @@ public class MacAccount {
 		this.account = account;
 	}
 
-	
 	
 	//additional fields
 	private Date create_t; // timestamp NOT NULL,

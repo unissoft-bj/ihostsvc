@@ -8,6 +8,7 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -16,10 +17,13 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import net.wyun.wm.domain.MacAccount;
+import net.wyun.wm.domain.Role;
 import net.wyun.wm.domain.account.Account;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * phone to mac is one-to-many relationship ??
@@ -30,8 +34,15 @@ import org.springframework.security.core.userdetails.UserDetails;
  */
 @Entity
 @Table(name = "mac")
+@JsonIgnoreProperties({"id", "smscheck", "enabled", "modify_t"})
 public class Mac implements UserDetails{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2743400966884414348L;
+
+	public Mac(){create_t = new Date();}
 	
 	public Mac(String macStr){
 		create_t = new Date();
@@ -40,7 +51,7 @@ public class Mac implements UserDetails{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "id")
+	@Column(name = "mac_id")
 	private Integer id; // smallint unsigned NOT NULL auto_increment primary
 						// key,
 
@@ -120,9 +131,8 @@ public class Mac implements UserDetails{
 		this.modify_t = modify_t;
 	}
 	
-	@Transient
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "mac")
 	private Set<MacAccount> macAccounts = new HashSet<MacAccount>();
-	@OneToMany(mappedBy = "mac")
 	public Set<MacAccount> getMacAccounts() {
 		return macAccounts;
 	}
@@ -148,6 +158,28 @@ public class Mac implements UserDetails{
 		return oma.get().getAccount();
 	}
 	
+	@Transient
+	public Role getRole(){
+		if(macAccounts.isEmpty()){
+			return null; //anonymous account
+		}
+		
+		Optional<MacAccount> oma = macAccounts.stream()
+		           .reduce((ma1, ma2) -> ma1.getCreate_t().getTime() > ma2.getCreate_t().getTime()? ma1 : ma2);
+		
+		Set<Role> roles = oma.get().getAccount().getRoles();
+		
+		if(roles.isEmpty()) return null;
+		
+		Role r = null;
+		for(Role p:roles){
+			r = p;
+			break;
+		}
+		
+		return r;
+	}
+	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		
@@ -161,17 +193,17 @@ public class Mac implements UserDetails{
 
 	@Override
 	public boolean isAccountNonExpired() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean isAccountNonLocked() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean isCredentialsNonExpired() {
-		return false;
+		return true;
 	}
 
 }

@@ -32,8 +32,11 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name = "account")
+@JsonIgnoreProperties({"id", "password", "factor", "sent_to_server", "enabled", "macAccounts"})
 public class Account implements UserDetails {
 	public static final Account ACCOUNT = new Account("anonymous");
 	
@@ -43,13 +46,13 @@ public class Account implements UserDetails {
 	
 	@GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid")
-    @Column(name= "id", columnDefinition = "VARCHAR(36)")
+    @Column(name= "account_id", columnDefinition = "VARCHAR(36)")
     @Id
 	private String id;         //      VARCHAR(36)     primary key,                       #   id int unsigned NOT NULL auto_increment primary key, the same user can have differennt account at different ihost
    
 	private String phone;      //            varchar(30)     DEFAULT NULL,	                    #	常用电话号码 , mobile phone number for receiving sms., one account --> one phone number
     private String password;  //         varchar(20)     DEFAULT ''                         #   password use for secure login, optional, try mac/password login first. For internal users
-    private String point;  //            int not null    DEFAULT '0',	                    #	userid下的积分 ?? better name
+    private int point;  //            int not null    DEFAULT '0',	                    #	userid下的积分 ?? better name
     private int factor; //           int not null    DEFAULT '1000',	                #	points转integral的因子，1000代表1 // put it together with integral in a separate table
     private String originator;   //       varchar(36)     DEFAULT ''                         #   id of the agnet who creates this account
     private String hint;   //             varchar(30)     NOT NULL,                          #   required for recover or change account, for example change phone number
@@ -63,9 +66,7 @@ public class Account implements UserDetails {
     private Date create_t; //         datetime        DEFAULT NULL,	                    #	记录时间
     private Date modify_t; //         datetime        DEFAULT NULL,	                    #	记录更新时间
 	
-    @Transient
-    private Set<Role> roles = new HashSet<Role>();
-	
+   
 	public String getId() {
 		return id;
 	}
@@ -93,11 +94,11 @@ public class Account implements UserDetails {
 	}
 
 	@Column(name = "point")
-	public String getPoint() {
+	public int getPoint() {
 		return point;
 	}
 
-	public void setPoint(String point) {
+	public void setPoint(int point) {
 		this.point = point;
 	}
 
@@ -176,9 +177,9 @@ public class Account implements UserDetails {
 	}
 	
 	//mac <-- --> account mapping 
-	@Transient
-	private Set<MacAccount> macAccounts = new HashSet<MacAccount>();
 	@OneToMany(mappedBy = "account")
+	private Set<MacAccount> macAccounts = new HashSet<MacAccount>();
+	
 	public Set<MacAccount> getMacAccounts() {
 		return macAccounts;
 	}
@@ -204,6 +205,7 @@ public class Account implements UserDetails {
 		name = "account_role",
 		joinColumns = { @JoinColumn(name = "account_id") },
 		inverseJoinColumns = { @JoinColumn(name = "role_id") })
+	private Set<Role> roles = new HashSet<Role>();
 	public Set<Role> getRoles() { return roles; }
 	
 	public void setRoles(Set<Role> roles) { this.roles = roles; }
