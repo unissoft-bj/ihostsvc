@@ -35,7 +35,7 @@ import com.google.common.base.Optional;
 public class WmsAuthenticationProvider extends DaoAuthenticationProvider {
 	
 	private static final String PARA_PHONE = "phone";
-	private static final String PARA_PHONE_PWD = "phone_pwd";
+	private static final String PARA_PHONE_PWD = "phone_pass";
 	
 	private String phone = "";
 	private String phone_pwd = "";
@@ -62,13 +62,13 @@ public class WmsAuthenticationProvider extends DaoAuthenticationProvider {
         
         HttpAuthenticationToken token = (HttpAuthenticationToken) authentication;
         
-        Optional<String> phone = Optional.fromNullable( token.getReqParmsMap().get(PARA_PHONE));
-        Optional<String> phone_pass = Optional.fromNullable( token.getReqParmsMap().get(PARA_PHONE_PWD));
+        Optional<String> o_phone = Optional.fromNullable( token.getReqParmsMap().get(PARA_PHONE));
+      //  Optional<String> phone_pass = Optional.fromNullable( token.getReqParmsMap().get(PARA_PHONE_PWD));
         
         Joiner.MapJoiner mapJoiner = Joiner.on(',').withKeyValueSeparator("=");
         System.out.println(mapJoiner.join(token.getReqParmsMap()));
         
-        if(phone.isPresent()){
+        if(o_phone.isPresent()){
         	//go with phone/pwd
         	logger.debug("authenticate user: {} by phone", username);
         	
@@ -87,14 +87,16 @@ public class WmsAuthenticationProvider extends DaoAuthenticationProvider {
                 messages.getMessage("AbstractUserDetailsAuthenticationProvider.onlySupports",
                     "Only UsernamePasswordAuthenticationToken is supported"));
     	
+    	logger.info("authenticate by phone. starts ...");
     	   HttpAuthenticationToken token = (HttpAuthenticationToken) authentication;
     	   Optional<String> o_phone = Optional.fromNullable( token.getReqParmsMap().get(PARA_PHONE));
            Optional<String> o_phone_pwd = Optional.fromNullable( token.getReqParmsMap().get(PARA_PHONE_PWD));
            
+           logger.debug("phone password: {}", o_phone_pwd.get());
            //check input phone/pwd
            if(!o_phone.isPresent() || !o_phone_pwd.isPresent() ){
        		  throw new BadCredentialsException(messages.getMessage(
-                       "AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
+                       "AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials--invalid input"));
            }
 
        		this.phone = o_phone.get();
@@ -102,6 +104,8 @@ public class WmsAuthenticationProvider extends DaoAuthenticationProvider {
        		
             // Determine username (here still the mac)
             String username = (authentication.getPrincipal() == null) ? "NONE_PROVIDED" : authentication.getName();
+            
+            logger.debug("authenticate by phone. mac {}", username);;
 
             boolean cacheWasUsed = true;
             UserDetails user = this.userCache.getUserFromCache(username);
@@ -167,6 +171,7 @@ public class WmsAuthenticationProvider extends DaoAuthenticationProvider {
 	private void checkByPhone(UserDetails userDetails,
 			UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
 
+        logger.debug("authenticate by phone, compare phone/phone-pwd. user input: {}/{}", phone, phone_pwd);
 		Mac mac = (Mac) userDetails;
 		Account account = mac.getAccount();
 		if(account == null){
@@ -174,7 +179,8 @@ public class WmsAuthenticationProvider extends DaoAuthenticationProvider {
                     "AbstractUserDetailsAuthenticationProvider.badCredentials", "no account for this mac"));
 		}
 		
-		if(account.getMacAccounts().size() > 1) 
+		
+		if(mac.getMacAccounts().size() > 1) 
 			logger.info("This mac : {} has more than one account, current validation uses phone {}", mac.getMacInString(), account.getPhone());
 		
 		if(!account.getPhone().equals(phone) || !account.getPassword().equals(phone_pwd)){
