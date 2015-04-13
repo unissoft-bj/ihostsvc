@@ -116,7 +116,7 @@ CREATE TABLE if not exists mac_account (
 #############################################################
 create TABLE if not exists token (
     id            int unsigned       NOT NULL auto_increment primary key,
-    phone         varchar(30)        NOT NULL,
+    phone         varchar(30)        NOT NULL default '',                           # user phone to receive code?
     token         int UNSIGNED       NOT NULL,                          
     agent_id      varchar(36)        NOT NULL,
     create_t      datetime           NOT NULL,
