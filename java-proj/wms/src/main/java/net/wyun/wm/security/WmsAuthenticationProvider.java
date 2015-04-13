@@ -61,19 +61,19 @@ public class WmsAuthenticationProvider extends DaoAuthenticationProvider {
         logger.debug("authenticate user: {}", username);
         
         HttpAuthenticationToken token = (HttpAuthenticationToken) authentication;
-        
-        Optional<String> o_phone = Optional.fromNullable( token.getReqParmsMap().get(PARA_PHONE));
-      //  Optional<String> phone_pass = Optional.fromNullable( token.getReqParmsMap().get(PARA_PHONE_PWD));
-        
         Joiner.MapJoiner mapJoiner = Joiner.on(',').withKeyValueSeparator("=");
-        System.out.println(mapJoiner.join(token.getReqParmsMap()));
+        logger.debug("http req params: {}", mapJoiner.join(token.getReqParmsMap()));
         
-        if(o_phone.isPresent()){
+      //need to check if password is set (if the account has phone password set, cannot let user log in with mac
+    	UserDetails user = retrieveUser(username, (UsernamePasswordAuthenticationToken) authentication);
+    	Mac mac_ud = (Mac) user;
+        
+        if(mac_ud.isPhonePasswordPresent()){
         	//go with phone/pwd
         	logger.debug("authenticate user: {} by phone", username);
-        	
         	return authenticateByPhone(authentication);
         }else{
+        	
         	//try mac/pwd
         	logger.debug("authenticate user: {} by mac", username);
         	return authenticateByMAC(authentication);
@@ -81,91 +81,109 @@ public class WmsAuthenticationProvider extends DaoAuthenticationProvider {
         
     }
     
+    
+    
     private Authentication authenticateByPhone(Authentication authentication) {
 
-    	Assert.isInstanceOf(UsernamePasswordAuthenticationToken.class, authentication,
-                messages.getMessage("AbstractUserDetailsAuthenticationProvider.onlySupports",
-                    "Only UsernamePasswordAuthenticationToken is supported"));
-    	
-    	logger.info("authenticate by phone. starts ...");
-    	   HttpAuthenticationToken token = (HttpAuthenticationToken) authentication;
-    	   Optional<String> o_phone = Optional.fromNullable( token.getReqParmsMap().get(PARA_PHONE));
-           Optional<String> o_phone_pwd = Optional.fromNullable( token.getReqParmsMap().get(PARA_PHONE_PWD));
-           
-           logger.debug("phone password: {}", o_phone_pwd.get());
-           //check input phone/pwd
-           if(!o_phone.isPresent() || !o_phone_pwd.isPresent() ){
-       		  throw new BadCredentialsException(messages.getMessage(
-                       "AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials--invalid input"));
-           }
+		Assert.isInstanceOf(
+				UsernamePasswordAuthenticationToken.class,
+				authentication,
+				messages.getMessage(
+						"AbstractUserDetailsAuthenticationProvider.onlySupports",
+						"Only UsernamePasswordAuthenticationToken is supported"));
 
-       		this.phone = o_phone.get();
-       		this.phone_pwd = o_phone_pwd.get();
-       		
-            // Determine username (here still the mac)
-            String username = (authentication.getPrincipal() == null) ? "NONE_PROVIDED" : authentication.getName();
-            
-            logger.debug("authenticate by phone. mac {}", username);;
+		logger.info("authenticate by phone. starts ...");
+		HttpAuthenticationToken token = (HttpAuthenticationToken) authentication;
+		Optional<String> o_phone = Optional.fromNullable(token.getReqParmsMap()
+				.get(PARA_PHONE));
+		Optional<String> o_phone_pwd = Optional.fromNullable(token
+				.getReqParmsMap().get(PARA_PHONE_PWD));
 
-            boolean cacheWasUsed = true;
-            UserDetails user = this.userCache.getUserFromCache(username);
+		// check input phone/pwd
+		if (!o_phone.isPresent() || !o_phone_pwd.isPresent()) {
+			throw new BadCredentialsException(messages.getMessage(
+					"AbstractUserDetailsAuthenticationProvider.badCredentials",
+					"Bad credentials--invalid input"));
+		}
+		
+		logger.debug("phone password: {}", o_phone_pwd.get());
 
-            if (user == null) {
-                cacheWasUsed = false;
+		this.phone = o_phone.get();
+		this.phone_pwd = o_phone_pwd.get();
 
-                try {
-                    user = retrieveUser(username, (UsernamePasswordAuthenticationToken) authentication);
-                } catch (UsernameNotFoundException notFound) {
-                    logger.debug("User '" + username + "' not found");
+		// Determine username (here still the mac)
+		String username = (authentication.getPrincipal() == null) ? "NONE_PROVIDED"
+				: authentication.getName();
 
-                    if (hideUserNotFoundExceptions) {
-                        throw new BadCredentialsException(messages.getMessage(
-                                "AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
-                    } else {
-                        throw notFound;
-                    }
-                }
+		logger.debug("authenticate by phone. mac {}", username);
 
-                Assert.notNull(user, "retrieveUser returned null - a violation of the interface contract");
-            }
-            
-            //here is the real business to check phone/pw, need convert user to an Account object 
-            //override additionalAuthenticationChecks()
+		boolean cacheWasUsed = true;
+		UserDetails user = this.userCache.getUserFromCache(username);
 
-            try {
-                //preAuthenticationChecks.check(user);
-            	
-            	checkByPhone(user, (UsernamePasswordAuthenticationToken) authentication);
-            	
-            } catch (AuthenticationException exception) {
-                if (cacheWasUsed) {
-                    // There was a problem, so try again after checking
-                    // we're using latest data (i.e. not from the cache)
-                    cacheWasUsed = false;
-                    user = retrieveUser(username, (UsernamePasswordAuthenticationToken) authentication);
-                    //preAuthenticationChecks.check(user);
-                    checkByPhone(user, (UsernamePasswordAuthenticationToken) authentication);
-                } else {
-                    throw exception;
-                }
-            }
+		if (user == null) {
+			cacheWasUsed = false;
 
-            //postAuthenticationChecks.check(user);
+			try {
+				user = retrieveUser(username,
+						(UsernamePasswordAuthenticationToken) authentication);
+			} catch (UsernameNotFoundException notFound) {
+				logger.debug("User '" + username + "' not found");
 
-            if (!cacheWasUsed) {
-                this.userCache.putUserInCache(user);
-            }
+				if (hideUserNotFoundExceptions) {
+					throw new BadCredentialsException(
+							messages.getMessage(
+									"AbstractUserDetailsAuthenticationProvider.badCredentials",
+									"Bad credentials"));
+				} else {
+					throw notFound;
+				}
+			}
 
-            Object principalToReturn = user;
+			Assert.notNull(user,
+					"retrieveUser returned null - a violation of the interface contract");
+		}
 
-            /*
-            if (forcePrincipalAsString) {
-                principalToReturn = user.getUsername();
-            }
-            */
+		// here is the real business to check phone/pw, need convert user to an
+		// Account object
+		// override additionalAuthenticationChecks()
 
-            return createSuccessAuthentication(principalToReturn, authentication, user);
-        
+		try {
+			// preAuthenticationChecks.check(user);
+
+			checkByPhone(user,
+					(UsernamePasswordAuthenticationToken) authentication);
+
+		} catch (AuthenticationException exception) {
+			if (cacheWasUsed) {
+				// There was a problem, so try again after checking
+				// we're using latest data (i.e. not from the cache)
+				cacheWasUsed = false;
+				user = retrieveUser(username,
+						(UsernamePasswordAuthenticationToken) authentication);
+				// preAuthenticationChecks.check(user);
+				checkByPhone(user,
+						(UsernamePasswordAuthenticationToken) authentication);
+			} else {
+				throw exception;
+			}
+		}
+
+		// postAuthenticationChecks.check(user);
+
+		if (!cacheWasUsed) {
+			this.userCache.putUserInCache(user);
+		}
+
+		Object principalToReturn = user;
+
+		/*
+		 * if (forcePrincipalAsString) { principalToReturn = user.getUsername();
+		 * }
+		 */
+
+		return createSuccessAuthentication(principalToReturn, authentication,
+				user);
+
 	}
            
 	private void checkByPhone(UserDetails userDetails,
