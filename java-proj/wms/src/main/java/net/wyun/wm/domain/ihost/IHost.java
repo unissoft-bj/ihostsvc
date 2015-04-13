@@ -50,9 +50,9 @@ public class IHost {
 		this.uuidHex = uuidHex;
 	}
 
-	String name;
-    String city;
-    String brand;
+	String name = "";
+    String city = "";
+    String brand = "";
     
     @Temporal(TemporalType.TIMESTAMP)
     Date create_t;
