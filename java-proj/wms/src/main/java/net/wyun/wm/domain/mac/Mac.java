@@ -158,6 +158,10 @@ public class Mac implements UserDetails{
 		return oma.get().getAccount();
 	}
 	
+	public boolean isPhonePasswordPresent(){
+    	return getAccount() != null && !getAccount().getPassword().isEmpty();
+    }
+	
 	@Transient
 	public Role getRole(){
 		if(macAccounts.isEmpty()){
