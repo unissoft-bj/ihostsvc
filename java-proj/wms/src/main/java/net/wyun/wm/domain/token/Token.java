@@ -12,6 +12,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import net.wyun.wm.domain.token.TokenRequest.UserRole;
+
 /**
  * @author Xuecheng
  *
@@ -19,7 +21,14 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "token")
 public class Token {
+	public Token(){}
 	
+	public Token(String phone, int token) {
+		this.phone = phone;
+		this.token = token;
+		this.create_t = new Date();
+	}
+
 	private Long id; //            smallint unsigned  NOT NULL auto_increment primary key,
 
 	@Id
@@ -38,7 +47,18 @@ public class Token {
     private int token;         //int UNSIGNED       NOT NULL,                          
     private String agent_id; //      varchar(36)        NOT NULL,
     private Date create_t; //      datetime           NOT NULL,
-    private boolean used; //          boolean            NOT NULL default 0
+    private boolean used = false; //          boolean            NOT NULL default 0
+    private String mac = "";          //mac of the device which uses this token to register, this should be updated if someone uses this token
+    
+    private UserRole user_role;
+
+	public String getMac() {
+		return mac;
+	}
+
+	public void setMac(String mac) {
+		this.mac = mac;
+	}
 
 	public String getPhone() {
 		return phone;
