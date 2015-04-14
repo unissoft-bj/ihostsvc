@@ -60,4 +60,34 @@ public class MacAddressUtil {
 		//we still need to do the padding
 		return Strings.padStart(ms, 12, '0');
 	}
+	
+	/**
+	 *  for ex., 0123456789AB ==> 01-23-45-67-89-AB
+	 * @param mac_in_long
+	 * @return 
+	 */
+	
+	public static String toStandardMacString(Long mac_in_long){
+		String ms = Long.toString(mac_in_long, BASE16).toUpperCase();
+		
+		//we still need to do the padding
+		return formatMac(Strings.padStart(ms, 12, '0'));
+	}
+	
+	/**
+	 *  format a mac address with '-' for every 2 chars
+	 *  for ex., 0123456789AB ==> 01-23-45-67-89-AB
+	 * @param inMac
+	 * @return
+	 */
+
+	static String formatMac(String inMac) {
+		final StringBuilder b = new StringBuilder(18);
+		for (int i = 0; i < inMac.length(); i++) {
+			b.append(inMac.charAt(i));
+			if (i % 2 == 1 && i != inMac.length() - 1)
+				b.append('-');
+		}
+		return b.toString();
+	}
 }

@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -47,6 +48,7 @@ public class Mac implements UserDetails{
 	public Mac(String macStr){
 		create_t = new Date();
 		this.mac = MacAddressUtil.toLong(macStr);
+		this.password = UUID.randomUUID().toString();
 	}
 	
 	@Id
@@ -87,7 +89,7 @@ public class Mac implements UserDetails{
 	
 	@Transient
 	public String getMacInString(){
-		return MacAddressUtil.toMacString(mac);
+		return MacAddressUtil.toStandardMacString(mac);
 	}
 	
 
@@ -167,7 +169,6 @@ public class Mac implements UserDetails{
 		if(macAccounts.isEmpty()){
 			return null; //anonymous account
 		}
-		
 		Optional<MacAccount> oma = macAccounts.stream()
 		           .reduce((ma1, ma2) -> ma1.getCreate_t().getTime() > ma2.getCreate_t().getTime()? ma1 : ma2);
 		
@@ -184,10 +185,26 @@ public class Mac implements UserDetails{
 		return r;
 	}
 	
+	@Transient
+	public boolean contains(String phone){
+		if(macAccounts.isEmpty()) return false;
+		
+		for(MacAccount ma:macAccounts){
+			Account a = ma.getAccount();
+			if(a.getPhone().equals(phone)) return true;
+		}
+		
+		return false;
+	}
+	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		
-		return getAccount().getAuthorities();
+		//if there is no account binded, considering the basic permissions here or just a empty collection
+		Account a = getAccount();
+		Collection<GrantedAuthority> permissions = new HashSet<GrantedAuthority>();
+		
+		return null != a ? a.getAuthorities() : permissions;
 	}
 
 	@Override
