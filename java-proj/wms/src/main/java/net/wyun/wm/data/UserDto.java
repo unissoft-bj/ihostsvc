@@ -13,6 +13,7 @@ import net.wyun.wm.domain.mac.Mac;
  */
 public class UserDto{
 
+	public UserDto() {}
 	public UserDto(Mac mac) {
 		this.mac = mac.getMacInString();
 		this.name = mac.getMacInString();
