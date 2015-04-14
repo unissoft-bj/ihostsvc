@@ -28,3 +28,4 @@ dependency-reduced-pom.xml
 *.iws
 *.idea
 /logs/
+/450hz.wav
