@@ -42,7 +42,10 @@ public class Account implements UserDetails {
 	
     public Account() { }
 	
-	public Account(String phone) { this.phone = phone; }
+	public Account(String phone) { 
+		this.phone = phone; 
+		this.create_t = new Date();
+	}
 	
 	@GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid")
@@ -51,18 +54,18 @@ public class Account implements UserDetails {
 	private String id;         //      VARCHAR(36)     primary key,                       #   id int unsigned NOT NULL auto_increment primary key, the same user can have differennt account at different ihost
    
 	private String phone;      //            varchar(30)     DEFAULT NULL,	                    #	常用电话号码 , mobile phone number for receiving sms., one account --> one phone number
-    private String password;  //         varchar(20)     DEFAULT ''                         #   password use for secure login, optional, try mac/password login first. For internal users
-    private int point;  //            int not null    DEFAULT '0',	                    #	userid下的积分 ?? better name
-    private int factor; //           int not null    DEFAULT '1000',	                #	points转integral的因子，1000代表1 // put it together with integral in a separate table
+    private String password = "";  //         varchar(20)     DEFAULT ''                         #   password use for secure login, optional, try mac/password login first. For internal users
+    private int point = 0;  //            int not null    DEFAULT '0',	                    #	userid下的积分 ?? better name
+    private int factor = 1000; //           int not null    DEFAULT '1000',	                #	points转integral的因子，1000代表1 // put it together with integral in a separate table
     private String originator;   //       varchar(36)     DEFAULT ''                         #   id of the agnet who creates this account
-    private String hint;   //             varchar(30)     NOT NULL,                          #   required for recover or change account, for example change phone number
+    private String hint = "";   //             varchar(30)     NOT NULL,                          #   required for recover or change account, for example change phone number
     
     @ManyToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="user_info_id", unique= true, nullable=true, insertable=true, updatable=true)
     private UserInfo userInfo; //    VARCHAR(36)     NOT NULL DEFAULT '',               #   foreign key to user_info table.
     
-    private boolean sent_to_server; //   boolean         NOT NULL DEFAULT 0,                #   ?? flag for syn with iserver
-    private boolean enabled; //          boolean         NOT NULL default 0,                #   for Admin usage
+    private boolean sent_to_server = false; //   boolean         NOT NULL DEFAULT 0,                #   ?? flag for syn with iserver
+    private boolean enabled = true; //          boolean         NOT NULL default 0,                #   for Admin usage
     private Date create_t; //         datetime        DEFAULT NULL,	                    #	记录时间
     private Date modify_t; //         datetime        DEFAULT NULL,	                    #	记录更新时间
 	
