@@ -47,5 +47,11 @@ public class MacAddrTest {
 		
 	}
 	
+	@Test
+	public void testRandomMacAddrGenerator(){
+		String ranMac = MacAddressUtil.randomMacAddr();
+		System.out.println("Mac address: " + ranMac);
+	}
+	
 
 }
