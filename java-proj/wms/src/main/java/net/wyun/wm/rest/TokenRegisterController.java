@@ -5,7 +5,9 @@ package net.wyun.wm.rest;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.wyun.wm.data.RegisterRequest;
@@ -14,13 +16,14 @@ import net.wyun.wm.domain.MacAccount;
 import net.wyun.wm.domain.MacAccountRepository;
 import net.wyun.wm.domain.account.Account;
 import net.wyun.wm.domain.account.AccountRepository;
-import net.wyun.wm.domain.ihost.IHost;
-import net.wyun.wm.domain.ihost.IHostRepository;
 import net.wyun.wm.domain.mac.Mac;
 import net.wyun.wm.domain.mac.MacRepository;
+import net.wyun.wm.domain.role.Role;
+import net.wyun.wm.domain.role.RoleRepository;
 import net.wyun.wm.domain.token.Token;
 import net.wyun.wm.domain.token.TokenRepository;
-import net.wyun.wm.security.WmsAuthenticationProvider;
+import net.wyun.wm.domain.token.TokenRequest.UserRole;
+import net.wyun.wm.service.InternetGuard;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +35,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.google.common.collect.Lists;
 
 /**
  * @author Xuecheng
@@ -61,12 +63,19 @@ public class TokenRegisterController {
 	AccountRepository accountRepo;
 	
 	@Autowired
+	RoleRepository roleRepo;
+	
+	@Autowired
 	@Qualifier("wmsUserDetailsService")
 	UserDetailsService userDetailsService;
 	
+	@Autowired
+	@Qualifier("internetGuardImpl")
+	InternetGuard internetGuard;
+	
 	
 	@RequestMapping(value="/register", method=RequestMethod.POST)
-	public UserDto register(@RequestBody RegisterRequest req, HttpServletResponse response) {
+	public UserDto register(@RequestBody RegisterRequest req, HttpServletRequest request, HttpServletResponse response) {
 		UserDto ud = null;
 		String macStr = req.getMac();
 		String tokenStr = req.getToken();
@@ -96,8 +105,19 @@ public class TokenRegisterController {
 		token.setUsed(true);
 		tokenRepo.save(token);
 		
-		Mac mac = null;
+		//open internet access
+		this.internetGuard.authorize(request.getRemoteAddr());
 		
+		String t_phone = token.getPhone().trim();
+		if(t_phone.isEmpty()) {
+			UserDto au = new UserDto();
+			au.setName("anonymous");
+			return au;
+		}
+		
+		//t_phone is not 
+		
+		Mac mac = null;
 		try{
 			mac = (Mac) userDetailsService.loadUserByUsername(macStr);
 		}catch(Exception e){
@@ -110,38 +130,45 @@ public class TokenRegisterController {
 			mac.setEnabled(true);
 		}
 		
-		String t_phone = token.getPhone();
+		// has a phone num, role info. 
+		UserRole ur = token.getUser_role();
+		Role role = roleRepo.findByName(ur.toString());
 		
-		if(t_phone.isEmpty()){
-            
-			ud = new UserDto(mac); //for now
+		if (mac.contains(t_phone)) {
+			mac.getAccount().addRole(role);
+			mac = this.macRepo.save(mac);
+			ud = new UserDto(mac);
+		} else {
+			// create new m_a association
+			MacAccount mac_account = new MacAccount();
+			mac_account.setMac(mac);
+
+			Account accountFromPhone = accountRepo.findByPhone(t_phone);
+			if (accountFromPhone != null) {
+				mac_account.setAccount(accountFromPhone);
+				accountFromPhone.addRole(role);
+				//mac = this.macRepo.save(mac);
+				
+			} else {
+				// create new account with the phone
+				Account newAcct = new Account(t_phone);
+				newAcct.setOriginator(token.getAgent_id());
+				newAcct.addRole(role);
+				mac_account.setAccount(newAcct);
+			}
 			
-		}else{ //has a phone num
-		   
-		   if(mac.contains(t_phone)){
-			   ud = new UserDto(mac);
-		   }else{
-			   //create association
-			   MacAccount mac_account = new MacAccount();
-			   mac_account.setMac(mac);
-			   
-			   Account accountFromPhone = accountRepo.findByPhone(t_phone);
-			   if(accountFromPhone != null){
-				   mac_account.setAccount(accountFromPhone);
-			   }else{
-				   //create new account with the phone
-				   Account newAcct = new Account(t_phone);
-				   newAcct.setOriginator(token.getAgent_id());
-				   mac_account.setAccount(newAcct);
-			   }
-			   MacAccount updatedMA = macAccountRepo.save(mac_account);
-			   Mac reloadedMac = (Mac) userDetailsService.loadUserByUsername(macStr); //did not get the newest account??
-			  // Mac reloadedMac = updatedMA.getMac();
-			   ud = new UserDto(reloadedMac);
-			   
-		   }
-			   
+			MacAccount updatedMA = macAccountRepo.save(mac_account);
+			//Mac reloadedMac = (Mac) userDetailsService.loadUserByUsername(macStr); // did not get the newest
+													// account??
+			//or still use mac
+			Set<MacAccount> maset = mac.getMacAccounts();
+			maset.add(updatedMA);
+			// Mac reloadedMac = updatedMA.getMac();
+			ud = new UserDto(mac);
+
 		}
+			   
+		
 		
 		return ud;
 	}
