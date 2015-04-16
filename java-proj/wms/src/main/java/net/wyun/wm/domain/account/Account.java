@@ -26,7 +26,7 @@ import javax.persistence.Transient;
 
 import net.wyun.wm.domain.MacAccount;
 import net.wyun.wm.domain.Permission;
-import net.wyun.wm.domain.Role;
+import net.wyun.wm.domain.role.Role;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
@@ -212,6 +212,12 @@ public class Account implements UserDetails {
 	public Set<Role> getRoles() { return roles; }
 	
 	public void setRoles(Set<Role> roles) { this.roles = roles; }
+	
+	@Transient
+	public void addRole(Role r){
+		roles.add(r);
+	}
+	
 	
 	@Transient
 	public Set<Permission> getPermissions() {

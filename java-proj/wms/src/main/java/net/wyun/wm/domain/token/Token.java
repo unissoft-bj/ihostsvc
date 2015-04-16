@@ -7,6 +7,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -50,7 +52,16 @@ public class Token {
     private boolean used = false; //          boolean            NOT NULL default 0
     private String mac = "";          //mac of the device which uses this token to register, this should be updated if someone uses this token
     
-    private UserRole user_role;
+    private UserRole user_role;       //role of the this token's consumer
+
+    @Enumerated(EnumType.STRING)
+	public UserRole getUser_role() {
+		return user_role;
+	}
+
+	public void setUser_role(UserRole user_role) {
+		this.user_role = user_role;
+	}
 
 	public String getMac() {
 		return mac;

@@ -27,7 +27,7 @@ public class MacAddressLookupServiceImpl implements MacAddressLookupService{
 		// TODO: map ip to mac address in Chilli
 		List<String> lstr = new LinkedList<String>();
 		try {
-			lstr = getHandler().executionResults;
+			lstr = queryChilli().executionResults;
 			logger.info("chilli_query list results: " + lstr);
 		} catch (IOException | InterruptedException | ExecutionException
 				| TimeoutException e) {
@@ -58,7 +58,7 @@ public class MacAddressLookupServiceImpl implements MacAddressLookupService{
 		
 	}
 	
-	private ChilliQueryProcessExecutorHandler getHandler() throws IOException, InterruptedException, ExecutionException, TimeoutException{
+	private ChilliQueryProcessExecutorHandler queryChilli() throws IOException, InterruptedException, ExecutionException, TimeoutException{
 		ChilliQueryProcessExecutorHandler chHandler = new ChilliQueryProcessExecutorHandler();
 		Future<Long> future =	ProcessExecutor.runProcess(CommandLine.parse("chilli_query list"), chHandler, 1500);
 		Long ret = future.get(1, TimeUnit.SECONDS);
