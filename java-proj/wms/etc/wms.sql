@@ -120,6 +120,7 @@ create TABLE if not exists token (
     token         int UNSIGNED       NOT NULL,                          
     agent_id      varchar(36)        NOT NULL,
     mac           varchar(36)         NOT NULL default '',                           #mac of the device which uses this token to register, this should be updated if someone uses this token
+    user_role     varchar(15)        NOT NULL default 'ROLE_USER',
     create_t      datetime           NOT NULL,
     used          boolean            NOT NULL default 0
 ) DEFAULT CHARSET=utf8;
