@@ -66,7 +66,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.formLogin().and().logout();
 		http.authorizeRequests()
-				.antMatchers("/index.html", "/home.html", "/login", "/login.html", "/wms", "/ihost", "/mymac", "/").permitAll().anyRequest().authenticated();
+				.antMatchers("/index.html", "/home.html", "/login", "/login.html", 
+						     "/index-wms.html", "/ihost", "/mymac", "/wms", "/tpls/**", "/").permitAll().anyRequest().authenticated();
 		
 		http.csrf().disable();
 		//http.csrf().csrfTokenRepository(csrfTokenRepository()).and().addFilterAfter(csrfHeaderFilter(), CsrfFilter.class);
