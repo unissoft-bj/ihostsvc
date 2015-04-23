@@ -4,7 +4,9 @@
     You need check out the 3.2.5 release version to build. Steps:
     a. git clone https://github.com/michaelyin/spring-security.git
     b. cd spring-security
-    c. git checkout 3.2.5.RELEASE 
+    c. git fetch
+    d. git branch -a
+    e. git checkout rb3.2.5.RELEASE 
     d. gradlew install   (need set up JAVA_HOME to java 7)
 
 1. go to the wms root directory. wms/
