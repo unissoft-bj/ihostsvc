@@ -171,10 +171,10 @@ CREATE TABLE if not exists role_permission (
 # reception
 #############################################################
 CREATE TABLE if not exists reception (
-    id             smallint unsigned     NOT NULL auto_increment primary key,
+    id             int unsigned     NOT NULL auto_increment primary key,
     agent_id       varchar(36)           NOT NULL,                             # this is binded with the phone which records the audio, account id
     person_cnt     smallint unsigned     NOT NULL default 1,
-    gender         char(1)              NOT NULL default 0,                   # for example 3M2F
+    gender         varchar(6)            NOT NULL default 0,                   # for example 3M2F
     customer_name  varchar(30)           NOT NULL default '',
     phone          varchar(20)           NOT NULL default '',
     location       varchar(30)           NOT NULL default '',
@@ -182,7 +182,7 @@ CREATE TABLE if not exists reception (
     intention      varchar(20)           NOT NULL default '',                 #来店目的：咨询新车/预约提车/其他 ；选择或者新建，可维护
     visit_index    smallint unsigned     NOT NULL default 1,                  #来店频率：初次/再次；选择或者新建，可维护
     refer_source   varchar(20)           NOT NULL default "",                 #客户来源：报纸/杂志/电视/电台/网络/户外广告/车展/朋友介绍/路过；选择或者新建，可维护     
-    car_usage      enum('private', 'gov', 'all') NOT NULL default 'private',
+    car_usage      varchar(15)           NOT NULL default 'private',          #enum('private', 'gov', 'all') NOT NULL default 'private',
     car_style      varchar(20)           NOT NULL default '',
     car_model      varchar(20)           NOT NULL default '',
     car_color      varchar(4)            NOT NULL default '',
@@ -192,7 +192,7 @@ CREATE TABLE if not exists reception (
     comparison     varchar(150)          NOT NULL default '',                 #竞品对比：输入内容，可口述录音, path to audio file or text??
     memo           varchar(150)          NOT NULL default '',                 #备注：输入内容，可口述录音 audio or text
     status         varchar(10)           NOT NULL default 'new',               # 新建，更新，删除         enum('new', 'update', 'close', 'open')
-    sibling        smallint unsigned     NOT NULL default 0,                  # id of reception which occurs after current reception in time
+    sibling_id     int unsigned          default NULL,                  # id of reception which occurs after current reception in time
     start_t        datetime              NOT NULL,                            #when record button is pressed
     end_t          datetime              default NULL,                         #when reception ends, agent opens the app, press the "stop recording"
     modify_t       datetime              default NULL,
