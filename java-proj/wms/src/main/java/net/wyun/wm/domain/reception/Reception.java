@@ -43,38 +43,52 @@ public class Reception {
 		public Long getId() { return id; }
 		
 		@SuppressWarnings("unused")
-		private void setId(Long id) { this.id = id; }
+		public void setId(Long id) { this.id = id; }
 		
 	    private String agent_id;   //    varchar(36)           NOT NULL,                             # this is binded with the phone which records the audio, account id
 	    private int    person_cnt;  //     smallint unsigned     NOT NULL default 1,
 	    
-	    @Enumerated(EnumType.STRING)
 	    private Gender gender; //         smallint              NOT NULL default 0,       # for example 3M2F
-	    private String customer_name; //  varchar(30)           NOT NULL default '',
-	    private String phone; //          varchar(20)           NOT NULL default '',
-	    private String location; //       varchar(30)           NOT NULL default '',
-	    private String transport; //      varchar(20)           NOT NULL default '',                 #到店方式: closed sets?
-	    private String intention; //      varchar(20)           NOT NULL default '',                 #来店目的：咨询新车/预约提车/其他 ；选择或者新建，可维护
-	    private String visit_index; //    smallint unsigned     NOT NULL default 1,                  #来店频率：初次/再次；选择或者新建，可维护
-	    private String refer_source;   //varchar(20)           NOT NULL default "",                 #客户来源：报纸/杂志/电视/电台/网络/户外广告/车展/朋友介绍/路过；选择或者新建，可维护     
+	    private String customer_name = ""; //  varchar(30)           NOT NULL default '',
+	    private String phone = ""; //          varchar(20)           NOT NULL default '',
+	    private String location = ""; //       varchar(30)           NOT NULL default '',
+	    private String transport = ""; //      varchar(20)           NOT NULL default '',                 #到店方式: closed sets?
+	    private String intention = ""; //      varchar(20)           NOT NULL default '',                 #来店目的：咨询新车/预约提车/其他 ；选择或者新建，可维护
+	    private int visit_index = 1; //    smallint unsigned     NOT NULL default 1,                  #来店频率：初次/再次；选择或者新建，可维护
+	    private String refer_source = "";   //varchar(20)           NOT NULL default "",                 #客户来源：报纸/杂志/电视/电台/网络/户外广告/车展/朋友介绍/路过；选择或者新建，可维护     
 	    
-	    @Enumerated(EnumType.STRING)
-	    private CarUsageType car_usage; //      enum('private', 'gov', 'all') NOT NULL default 'private',
-	    private String car_style; //      varchar(20)           NOT NULL default '',
-	    private String car_model; //      varchar(20)           NOT NULL default '',
-	    private String car_color; //    varchar(4)            NOT NULL default '',
-	    private BuyLevel buy_level; //      enum('A','B','C','D') NOT NULL default 'A',                #意向级别：A/B/C/D；选择或者新建，可维护
-	    private String description; //    varchar(200)          NOT NULL default '',                 #接待经过：调查问卷/试乘试驾/报价；选择或者新建，可维护
-	    private String result; //         varchar(100)          NOT NULL default '',                 #接待结果：信息留存/签单/提车；选择或者新建，可维护
-	    private String comparison; //     varchar(150)          NOT NULL default '',                 #竞品对比：输入内容，可口述录音, path to audio file or text??
-	    private String memo; //           varchar(150)          NOT NULL default '',                 #备注：输入内容，可口述录音 audio or text
+	    private CarUsageType car_usage = CarUsageType.PRIVATE; //      enum('private', 'gov', 'all') NOT NULL default 'private',
+	    private String car_style = ""; //      varchar(20)           NOT NULL default '',
+	    private String car_model = ""; //      varchar(20)           NOT NULL default '',
+	    private String car_color = ""; //    varchar(4)            NOT NULL default '',
+	    private BuyLevel buy_level = BuyLevel.A; //      enum('A','B','C','D') NOT NULL default 'A',                #意向级别：A/B/C/D；选择或者新建，可维护
+	    private String description = ""; //    varchar(200)          NOT NULL default '',                 #接待经过：调查问卷/试乘试驾/报价；选择或者新建，可维护
+	    private String result = ""; //         varchar(100)          NOT NULL default '',                 #接待结果：信息留存/签单/提车；选择或者新建，可维护
+	    private String comparison = ""; //     varchar(150)          NOT NULL default '',                 #竞品对比：输入内容，可口述录音, path to audio file or text??
+	    private String memo = ""; //           varchar(150)          NOT NULL default '',                 #备注：输入内容，可口述录音 audio or text
 	    
-	    @Enumerated(EnumType.STRING)
-	    private Status status; //         enum('new', 'update', 'delete') NOT NULL default 'new'      # 新建，更新，删除
-	    private int sibling; //        smallint unsigned,    NOT NULL default 0,                  # id of reception which occurs after current reception in time
-	    private Date start_t; //        datetime              NOT NULL,                            #when record button is pressed
+	    private Status status = Status.NEW; //         enum('new', 'update', 'delete') NOT NULL default 'new'      # 新建，更新，删除
+	    private int sibling_id; //        smallint unsigned,    NOT NULL default 0,                  # id of reception which occurs after current reception in time
+		private Date start_t; //        datetime              NOT NULL,                            #when record button is pressed
 	    private Date end_t; //          datetime              default NULL                         #when reception ends, agent opens the app, press the "stop recording"
+        private Date modify_t;
+	    
+	    public Date getModify_t() {
+			return modify_t;
+		}
 
+		public void setModify_t(Date modify_t) {
+			this.modify_t = modify_t;
+		}
+
+		public int getSibling_id() {
+			return sibling_id;
+		}
+
+		public void setSibling_id(int sibling_id) {
+			this.sibling_id = sibling_id;
+		}
+		
 		public String getAgent_id() {
 			return agent_id;
 		}
@@ -91,6 +105,7 @@ public class Reception {
 			this.person_cnt = person_cnt;
 		}
 
+		@Enumerated(EnumType.STRING)
 		public Gender getGender() {
 			return gender;
 		}
@@ -139,11 +154,11 @@ public class Reception {
 			this.intention = intention;
 		}
 
-		public String getVisit_index() {
+		public int getVisit_index() {
 			return visit_index;
 		}
 
-		public void setVisit_index(String visit_index) {
+		public void setVisit_index(int visit_index) {
 			this.visit_index = visit_index;
 		}
 
@@ -155,6 +170,7 @@ public class Reception {
 			this.refer_source = refer_source;
 		}
 
+		@Enumerated(EnumType.STRING)
 		public CarUsageType getCar_usage() {
 			return car_usage;
 		}
@@ -187,6 +203,7 @@ public class Reception {
 			this.car_color = car_color;
 		}
 
+		@Enumerated(EnumType.STRING)
 		public BuyLevel getBuy_level() {
 			return buy_level;
 		}
@@ -227,20 +244,13 @@ public class Reception {
 			this.memo = memo;
 		}
 
+		@Enumerated(EnumType.STRING)
 		public Status getStatus() {
 			return status;
 		}
 
 		public void setStatus(Status status) {
 			this.status = status;
-		}
-
-		public int getSibling() {
-			return sibling;
-		}
-
-		public void setSibling(int sibling) {
-			this.sibling = sibling;
 		}
 
 		public Date getStart_t() {
