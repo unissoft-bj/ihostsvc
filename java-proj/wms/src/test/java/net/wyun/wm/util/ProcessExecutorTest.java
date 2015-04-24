@@ -46,8 +46,8 @@ public class ProcessExecutorTest {
 	public void testWithChilliHandler() throws IOException, InterruptedException, ExecutionException, TimeoutException {
 	
 		ChilliQueryProcessExecutorHandler chHandler = new ChilliQueryProcessExecutorHandler();
-		Future<Long> future =	ProcessExecutor.runProcess(CommandLine.parse("git --version"), chHandler, 1000);
-		Long ret = future.get(1, TimeUnit.SECONDS);
+		Future<Long> future =	ProcessExecutor.runProcess(CommandLine.parse("git --version"), chHandler, 1600);
+		Long ret = future.get(2, TimeUnit.SECONDS);
 		System.out.println("git --version command status: \n" + ret + ", \nmessage: \n" + chHandler.executionResults);
 	}
 
