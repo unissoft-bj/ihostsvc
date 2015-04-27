@@ -1,7 +1,7 @@
 /* 
  * Copyright (c) 2013 Matrix Wifi
  */
-package net.wyun.wm.domain;
+package net.wyun.wm.domain.role;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -17,6 +17,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import net.wyun.wm.domain.Permission;
 
 import org.springframework.security.core.GrantedAuthority;
 

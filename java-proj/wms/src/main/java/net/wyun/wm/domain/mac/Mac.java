@@ -18,8 +18,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import net.wyun.wm.domain.MacAccount;
-import net.wyun.wm.domain.Role;
 import net.wyun.wm.domain.account.Account;
+import net.wyun.wm.domain.role.Role;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

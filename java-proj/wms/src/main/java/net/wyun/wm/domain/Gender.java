@@ -10,5 +10,5 @@ package net.wyun.wm.domain;
  *
  */
 public enum Gender {
-     MALE, FEMAL;
+     MALE, FEMALE;
 }

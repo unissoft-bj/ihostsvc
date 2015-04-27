@@ -54,6 +54,8 @@ public class TokenController {
 		Token tk = new Token(phone, r_n);
 		tk.setAgent_id(mac.getAccount().getId());
 		
+		tk.setUser_role(tr.getUserRole());
+		
 		this.tokenRepo.save(tk);
 		
 		return tk;
