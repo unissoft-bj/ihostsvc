@@ -171,8 +171,10 @@ CREATE TABLE if not exists role_permission (
 # reception
 #############################################################
 CREATE TABLE if not exists reception (
-    id             int unsigned     NOT NULL auto_increment primary key,
+    id             int unsigned          NOT NULL auto_increment primary key,
     agent_id       varchar(36)           NOT NULL,                             # this is binded with the phone which records the audio, account id
+    agent_phone    varchar(20)           NOT NULL default '',
+    agent_mac      varchar(20)           NOT NULL default '',
     person_cnt     smallint unsigned     NOT NULL default 1,
     gender         varchar(6)            NOT NULL default 0,                   # for example 3M2F
     customer_name  varchar(30)           NOT NULL default '',
@@ -191,7 +193,7 @@ CREATE TABLE if not exists reception (
     result         varchar(100)          NOT NULL default '',                 #接待结果：信息留存/签单/提车；选择或者新建，可维护
     comparison     varchar(150)          NOT NULL default '',                 #竞品对比：输入内容，可口述录音, path to audio file or text??
     memo           varchar(150)          NOT NULL default '',                 #备注：输入内容，可口述录音 audio or text
-    status         varchar(10)           NOT NULL default 'new',               # 新建，更新，删除         enum('new', 'update', 'close', 'open')
+    status         varchar(10)           NOT NULL default 'new',               # 新建，更新，删除         enum('new', 'update', 'closed', 'open')
     sibling_id     int unsigned          default NULL,                  # id of reception which occurs after current reception in time
     start_t        datetime              NOT NULL,                            #when record button is pressed
     end_t          datetime              default NULL,                         #when reception ends, agent opens the app, press the "stop recording"
