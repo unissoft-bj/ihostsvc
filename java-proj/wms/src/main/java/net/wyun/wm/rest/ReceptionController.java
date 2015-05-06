@@ -12,7 +12,6 @@ import net.wyun.wm.domain.account.Account;
 import net.wyun.wm.domain.mac.Mac;
 import net.wyun.wm.domain.reception.Reception;
 import net.wyun.wm.domain.reception.ReceptionRepository;
-import net.wyun.wm.security.CustomUserDetailsService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
