@@ -23,7 +23,11 @@ import net.wyun.wm.domain.Gender;
 @Table(name = "reception")
 public class Reception {
 	
-	    private enum CarUsageType {
+	
+	
+	    public Reception() {this.start_t = new Date(); }
+
+		private enum CarUsageType {
 	    	PRIVATE, GOV, ALL;
 	    }
 	    
@@ -32,7 +36,7 @@ public class Reception {
 	    }
 	    
 	    private enum Status {
-	    	NEW, UPDATE, CLOSE, OPEN;
+	    	NEW, UPDATE, CLOSED, OPEN;
 	    }
 	
 	    private Long    id; //             smallint unsigned     NOT NULL auto_increment primary key,
@@ -46,9 +50,12 @@ public class Reception {
 		public void setId(Long id) { this.id = id; }
 		
 	    private String agent_id;   //    varchar(36)           NOT NULL,                             # this is binded with the phone which records the audio, account id
-	    private int    person_cnt;  //     smallint unsigned     NOT NULL default 1,
+	    private String agent_phone = "";   //optional, in case agent has multiple phone being used in the system
+	    private String agent_mac = "";     //optional, the mac of the agent's phone
+
+		private int    person_cnt;  //     smallint unsigned     NOT NULL default 1,
 	    
-	    private Gender gender; //         smallint              NOT NULL default 0,       # for example 3M2F
+	    private Gender gender = Gender.MALE; //         smallint              NOT NULL default 0,       # for example 3M2F
 	    private String customer_name = ""; //  varchar(30)           NOT NULL default '',
 	    private String phone = ""; //          varchar(20)           NOT NULL default '',
 	    private String location = ""; //       varchar(30)           NOT NULL default '',
@@ -97,6 +104,23 @@ public class Reception {
 			this.agent_id = agent_id;
 		}
 
+		public String getAgent_phone() {
+			return agent_phone;
+		}
+	
+		public void setAgent_phone(String agent_phone) {
+			this.agent_phone = agent_phone;
+		}
+		
+
+	    public String getAgent_mac() {
+			return agent_mac;
+		}
+
+		public void setAgent_mac(String agent_mac) {
+			this.agent_mac = agent_mac;
+		}
+		
 		public int getPerson_cnt() {
 			return person_cnt;
 		}
