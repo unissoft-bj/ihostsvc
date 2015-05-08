@@ -15,8 +15,9 @@ public class AudioGeneratorTest {
 	public void GenerateAudioTest() throws IOException {
 		
 		String fileName = "450hz.wav";
-		byte[] audio = AudioGenerator.generateAudio(20, 450); //20 seconds, 450HZ
+		byte[] audio = AudioGenerator.generateAudio(4, 450); //20 seconds, 450HZ
 		AudioUtil.toWAVFile(fileName, audio);
+		AudioUtil.toSpeaker(audio);
 		
 	}
 
