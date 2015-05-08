@@ -22,11 +22,11 @@
 
     <p>
     
-      <select name="userrole" id="userrole" ng-model="formData.userrole" class="input-common placeholder" >
-      		<option value="1" >普通顾客</option>
-      		<option value="2" selected="selected">销售顾问</option>
-      		<option value="3">客服</option>
-      		<option value="4">销售经理</option>
+      <select name="userRole" id="userRole" ng-model="formData.userRole" class="input-common placeholder" >
+      		<option value="ROLE_USER" >普通顾客</option>
+      		<option value="ROLE_MANAGER" selected="selected">销售经理</option>
+      		<option value="ROLE_SALES">销售顾问</option>
+      		<option value="ROLE_SERVICE">客服</option>
       </select>
       
       
