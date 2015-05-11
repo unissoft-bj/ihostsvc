@@ -66,7 +66,7 @@ public class AudioServer {
 		
 	}
 	
-	private static int frameSize = 8192; //4096;
+	private static int frameSize = AudioAgent.frameSize; //8192; //4096;
 	
 	public void readStream() throws IOException{
 

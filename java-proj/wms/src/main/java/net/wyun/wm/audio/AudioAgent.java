@@ -33,7 +33,7 @@ public class AudioAgent {
 	private String agentName;
 	
 	byte[] audioBytes; 
-	private static int frameSize = 8192; //4096;
+	public static int frameSize = 1280; //8192; //4096;
 	private static int frameNum = 200; // = 50;
 	
 	private int frameIndex = 0;
