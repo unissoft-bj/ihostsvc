@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Xuecheng
  *
  */
-@RequestMapping("/secure")
+//@RequestMapping("/secure")
 @RestController
 public class ReceptionController {
 	
