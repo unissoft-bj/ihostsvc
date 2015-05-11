@@ -67,7 +67,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 		http.formLogin().and().logout();
 		http.authorizeRequests()
 				.antMatchers("/index.html", "/home.html", "/login", "/login.html", 
-						     "/index-wms.html", "/ihost", "/mymac", "/wms", "/tpls/**", "/").permitAll().anyRequest().authenticated();
+						     "/index-wms.html", "/ihost", "/mymac", "/wms", "/tpls/**",
+						     "/", "/reception", "/register").permitAll()
+						                       .anyRequest().authenticated();
 		
 		http.csrf().disable();
 		//http.csrf().csrfTokenRepository(csrfTokenRepository()).and().addFilterAfter(csrfHeaderFilter(), CsrfFilter.class);
