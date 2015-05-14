@@ -9,7 +9,11 @@ import java.io.OutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
+import java.nio.channels.SocketChannel;
+import java.util.concurrent.TimeUnit;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -168,6 +172,8 @@ public class AudioRecordActivity extends Activity {
                         startRecord();
                     } catch (UnknownHostException e) {
                         e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
                 }
 				
@@ -204,7 +210,26 @@ public class AudioRecordActivity extends Activity {
         startActivityForResult(i, RESULT_SETTINGS);
     }
 
-	private void startRecord() throws UnknownHostException {
+    private SocketChannel client;
+    private void connectAudioServer() throws IOException, InterruptedException {
+
+        client = SocketChannel.open();
+        client.configureBlocking(false);
+        InetSocketAddress isa = new InetSocketAddress(serverAddr, 8001);
+        client.connect(isa);
+
+        while(! client.finishConnect() ){
+            TimeUnit.SECONDS.sleep(1);
+        }  //wait, or do something else...
+        Log.i(this.LOG_TAG, "connected to server.");
+    }
+
+    private void closeConnection() throws IOException {
+        client.close();
+    }
+
+    ByteBuffer  writeBBuf = ByteBuffer.allocate(8192);
+	private void startRecord() throws UnknownHostException, InterruptedException {
         this.updateServerIP();
         final InetAddress destination = InetAddress.getByName(serverAddr);
         Log.d(this.LOG_TAG, "Address retrieved: " + serverAddr);
@@ -214,6 +239,8 @@ public class AudioRecordActivity extends Activity {
 
         AudioRecord audioRecord = null;
 		try {
+
+            connectAudioServer();
 
 			int minBufferSize = AudioRecord.getMinBufferSize(sampleFreq, 
 					AudioFormat.CHANNEL_CONFIGURATION_MONO, 
@@ -236,25 +263,37 @@ public class AudioRecordActivity extends Activity {
 				int numberOfShort = audioRecord.read(audioData, 0, minBufferSize);
 
                 //putting buffer in the packet
-                DatagramPacket packet = new DatagramPacket(audioData, audioData.length, destination, port);
+              // DatagramPacket packet = new DatagramPacket(audioData, audioData.length, destination, port);
 
-                socket.send(packet);
-                Log.d(this.LOG_TAG, "send pkt to server.");
+               write2Channel(audioData);
 
 			}
 			socket = null;
 			audioRecord.stop();
-
-		} catch (IOException e) {
+  		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
             //release resource
             Log.d(this.LOG_TAG, "remember release resource here");
            if(audioRecord != null) audioRecord.release();
+           if(client != null) try {
+               closeConnection();
+           } catch (IOException e) { }
 
         }
 
 	}
+
+    private void write2Channel(byte[] audio) throws IOException {
+        writeBBuf= ByteBuffer.wrap(audio);
+        while(writeBBuf.hasRemaining()){
+            int nBytes = client.write(writeBBuf);
+            Log.d(this.LOG_TAG, "send pkt to server, bytes: " + nBytes);
+        }
+
+        writeBBuf.rewind();
+
+    }
 
 	
 }
