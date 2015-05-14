@@ -25,6 +25,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -204,6 +205,10 @@ public class MainActivity extends ActionBarActivity {
 
             Log.d(this.LOG_TAG, "min buffer size for audio recording: " + minBufferSize);
             if(minBufferSize < 8192) minBufferSize = 8192;  //to get better recording, 8192
+
+            //to work with chilli, use smaller udp packet
+            minBufferSize = 8960;  //1280 * 7
+
             byte[] audioData = new byte[minBufferSize];
 
             audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC,
@@ -221,11 +226,13 @@ public class MainActivity extends ActionBarActivity {
                 int numberOfShort = audioRecord.read(audioData, 0, minBufferSize);
 
                 //putting buffer in the packet
-                DatagramPacket packet = new DatagramPacket(audioData, audioData.length, destination, port);
 
-                socket.send(packet);
-                Log.d(this.LOG_TAG, "send pkt to server.");
-
+                for(int bInd = 0; bInd < 7; bInd++){
+                    byte[] slice = Arrays.copyOfRange(audioData, bInd*1280, (bInd + 1)*1280);
+                    DatagramPacket packet = new DatagramPacket(slice, slice.length, destination, port);
+                    socket.send(packet);
+                    Log.d(this.LOG_TAG, "send pkt to server.");
+                }
                 pktCount +=1;
                 if(pktCount == 15000){
                     long [] pattern = {100,400,100,400};   // Í£Ö¹ ¿ªÆô Í£Ö¹ ¿ªÆô
