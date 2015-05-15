@@ -86,9 +86,9 @@ CREATE TABLE if not exists account (
 # mac
 #############################################################
 CREATE TABLE if not exists mac (
-    mac_id            int unsigned       NOT NULL auto_increment primary key,
+    mac_id        int unsigned       NOT NULL auto_increment primary key,
     mac           BIGINT UNSIGNED    NOT NULL,
-#    token         int UNSIGNED       NOT NULL,                         #   history. use the latest to verify account, sms 上网码/
+#    token        int UNSIGNED       NOT NULL,                         #   history. use the latest to verify account, sms 上网码/
     password      VARCHAR(36)        NOT NULL,                          #   password for mac/pw login
     smscheck      boolean            NOT NULL default 0,                #   if the user needs to be verified by sms
     enabled       boolean            NOT NULL default 0,                #   if false, disable the account login with mac/password, user login with phone/pw
@@ -342,20 +342,36 @@ CREATE TABLE if not exists surveyee (
    has_car        boolean           not null DEFAULT 0,
    create_t       datetime          not NULL,
    modify_t       datetime          DEFAULT NULL,
-   unique           index           surveyee_idx1 (phone)
+   show_location  VARCHAR(36)       NOT NULL DEFAULT '',
+   unique         index             surveyee_idx1 (phone)
 ) DEFAULT CHARSET=utf8;
 
 #############################################################
-# auto_question_2015
+# auto_q
 #############################################################
-CREATE TABLE if not exists auto_question_2015 (
+CREATE TABLE if not exists auto_q (
    id               int               NOT NULL AUTO_INCREMENT,
    content          varchar(350)      not nulll DEFAULT '',
+   available_option varchar(350)      not null DEFAULT '',   ## json string  {"1", 
+   manual_input     varchar(350)      not null DEFAULT '',   ## json string
+   year             smallint          not null default 2015,
+   create_t         datetime          not NULL,
+   modify_t         datetime          DEFAULT NULL,
+   PRIMARY KEY     (id)
+) DEFAULT CHARSET=utf8;
+
+#############################################################
+# auto_q_ans
+#############################################################
+CREATE TABLE if not exists auto_q_ans (
+   id               int               NOT NULL AUTO_INCREMENT,
+   surveyee_id      VARCHAR(36)       NOT NULL,
+   q_id             int               NOT NULL,
    available_option varchar(350)      not null DEFAULT '',   ## json string
    manual_input     varchar(350)      not null DEFAULT '',   ## json string
    create_t         datetime          not NULL,
-   modify_t         datetime          DEFAULT NULL,
-   PRIMARY KEY     (`id`)
+   PRIMARY KEY     (id),
+   unique index    surveyee_q_idx1  (surveyee_id, q_id)
 ) DEFAULT CHARSET=utf8;
 
 #############################################################
@@ -368,7 +384,7 @@ CREATE TABLE if not exists lottery_pool (
    selected         boolean           not null default 0,
    used             boolean           not null default 0,
    create_t         datetime          not NULL,
-   PRIMARY KEY     (`id`)
+   PRIMARY KEY     (id)
 ) DEFAULT CHARSET=utf8;
 
 
