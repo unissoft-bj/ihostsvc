@@ -46,6 +46,7 @@ CREATE TABLE if not exists user_info (
     byear          smallint          DEFAULT NULL,	        #	生日，年 // move to user_info. It can be obtained in different ways.
     bmonth         smallint          DEFAULT NULL,	        #	生日，月
     bday           smallint          DEFAULT NULL,	        #	生日，日
+    age            smallint          DEFAULT 0,
     gender         char(1)           NOT NULL DEFAULT 'M',	#	性别  //user info.
     occupation     varchar(30)       NOT NULL DEFAULT '',	#	职业 // user info
     company        varchar(64)       DEFAULT NULL,	        #	工作单位 //user info
@@ -327,4 +328,48 @@ CREATE TABLE if not exists ihost (
    create_t       datetime          not NULL,
    modify_t       datetime          DEFAULT NULL
 ) DEFAULT CHARSET=utf8;
+
+#############################################################
+# surveyee
+#############################################################
+CREATE TABLE if not exists surveyee (
+   id             VARCHAR(36)       primary key,
+   name           varchar(20)       not null DEFAULT '',
+   age            smallint          not null DEFAULT 0,
+   gender         varchar(6)        not null DEFAULT 'MALE',
+   city           varchar(36)       not null DEFAULT '',
+   phone          varchar(10)       not null DEFAULT '',
+   has_car        boolean           not null DEFAULT 0,
+   create_t       datetime          not NULL,
+   modify_t       datetime          DEFAULT NULL,
+   unique           index           surveyee_idx1 (phone)
+) DEFAULT CHARSET=utf8;
+
+#############################################################
+# auto_question_2015
+#############################################################
+CREATE TABLE if not exists auto_question_2015 (
+   id               int               NOT NULL AUTO_INCREMENT,
+   content          varchar(350)      not nulll DEFAULT '',
+   available_option varchar(350)      not null DEFAULT '',   ## json string
+   manual_input     varchar(350)      not null DEFAULT '',   ## json string
+   create_t         datetime          not NULL,
+   modify_t         datetime          DEFAULT NULL,
+   PRIMARY KEY     (`id`)
+) DEFAULT CHARSET=utf8;
+
+#############################################################
+# lottery_pool
+#############################################################
+CREATE TABLE if not exists lottery_pool (
+   id               int               NOT NULL AUTO_INCREMENT,
+   surveyee_id      int               NOT NULL,         
+   disabled         boolean           NOT NULL default 0,
+   selected         boolean           not null default 0,
+   used             boolean           not null default 0,
+   create_t         datetime          not NULL,
+   PRIMARY KEY     (`id`)
+) DEFAULT CHARSET=utf8;
+
+
 
