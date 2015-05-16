@@ -351,12 +351,11 @@ CREATE TABLE if not exists surveyee (
 #############################################################
 CREATE TABLE if not exists auto_q (
    id               int               NOT NULL AUTO_INCREMENT,
-   content          varchar(350)      not nulll DEFAULT '',
+   content          varchar(350)      not null DEFAULT '',
    available_option varchar(350)      not null DEFAULT '',   ## json string  {"1", 
-   manual_input     varchar(350)      not null DEFAULT '',   ## json string
    year             smallint          not null default 2015,
-   create_t         datetime          not NULL,
-   modify_t         datetime          DEFAULT NULL,
+   create_t         timestamp         not NULL default CURRENT_TIMESTAMP,
+   modify_t         timestamp         DEFAULT 0,
    PRIMARY KEY     (id)
 ) DEFAULT CHARSET=utf8;
 
@@ -368,7 +367,6 @@ CREATE TABLE if not exists auto_q_ans (
    surveyee_id      VARCHAR(36)       NOT NULL,
    q_id             int               NOT NULL,
    available_option varchar(350)      not null DEFAULT '',   ## json string
-   manual_input     varchar(350)      not null DEFAULT '',   ## json string
    create_t         datetime          not NULL,
    PRIMARY KEY     (id),
    unique index    surveyee_q_idx1  (surveyee_id, q_id)
@@ -379,7 +377,8 @@ CREATE TABLE if not exists auto_q_ans (
 #############################################################
 CREATE TABLE if not exists lottery_pool (
    id               int               NOT NULL AUTO_INCREMENT,
-   surveyee_id      int               NOT NULL,         
+   surveyee_id      int               NOT NULL default '',               ## without surveyee_id, then the phone number is added in gui
+   phone            varchar(10)       NOT NULL,
    disabled         boolean           NOT NULL default 0,
    selected         boolean           not null default 0,
    used             boolean           not null default 0,
