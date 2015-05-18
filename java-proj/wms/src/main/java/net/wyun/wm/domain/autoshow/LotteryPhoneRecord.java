@@ -18,8 +18,10 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "lottery_pool")
-public class AutoLotteryPool {
+public class LotteryPhoneRecord {
 	
+	public LotteryPhoneRecord() { this.create_t = new Date();	}
+
 	private Long    id; //             smallint unsigned     NOT NULL auto_increment primary key,
     
     @Id
@@ -31,13 +33,14 @@ public class AutoLotteryPool {
 	public void setId(Long id) { this.id = id; }
 	
 	//   id               int               NOT NULL AUTO_INCREMENT,
-	private String   surveyee_id; //      varchar(36)       NOT NULL default '',               ## without surveyee_id, then the phone number is added in gui
+	private String   surveyee_id = ""; //      varchar(36)       NOT NULL default '',               ## without surveyee_id, then the phone number is added in gui
 	private String   phone; //            varchar(10)       NOT NULL,
-	private boolean  disabled;  //       boolean           NOT NULL default 0,
-	private boolean  selected; //         boolean           not null default 0,
-	private boolean  used; //             boolean           not null default 0,
+	private boolean  disabled = false;  //       boolean           NOT NULL default 0,
+	private boolean  selected = false; //         boolean           not null default 0,
+	private boolean  used = false; //             boolean           not null default 0,
 	private Date     create_t;  //         datetime          not NULL,
-	private String   show_location;      //city name where show is performed
+	private String   show_location = "";      //city name where show is performed
+
 
 	public String getSurveyee_id() {
 		return surveyee_id;
@@ -87,6 +90,12 @@ public class AutoLotteryPool {
 		this.create_t = create_t;
 	}
 	
-	
+	public String getShow_location() {
+		return show_location;
+	}
 
+	public void setShow_location(String show_location) {
+		this.show_location = show_location;
+	}
+	
 }
