@@ -65,7 +65,7 @@ CREATE TABLE if not exists user_info (
 ##2，基于业务逻辑的上传，集中到iserver（与基于统计分析的上传不同）
 ##3，在另一个ihost上创建account时，可以选择下载，实现同步。如果不选择下载，则不同步（user account不同步不影响数据分析层面的identification）
 CREATE TABLE if not exists account (
-    account_id               VARCHAR(36)     primary key,                       #   id int unsigned NOT NULL auto_increment primary key, the same user can have differennt account at different ihost
+    account_id       VARCHAR(36)     primary key,                       #   id int unsigned NOT NULL auto_increment primary key, the same user can have differennt account at different ihost
     phone            varchar(30)     DEFAULT NULL,	                    #	常用电话号码 , mobile phone number for receiving sms., one account --> one phone number
     password         varchar(20)     DEFAULT '',                         #   password use for secure login, optional, try mac/password login first. For internal users
     point            int             DEFAULT 0,	                    #	userid下的积分 ?? better name
@@ -92,7 +92,8 @@ CREATE TABLE if not exists mac (
     smscheck      boolean            NOT NULL default 0,                #   if the user needs to be verified by sms
     enabled       boolean            NOT NULL default 0,                #   if false, disable the account login with mac/password, user login with phone/pw
     create_t      datetime           NOT NULL,
-    modify_t      datetime           DEFAULT NULL
+    modify_t      datetime           DEFAULT NULL,
+    unique        index              mac_idx1 (mac)
 )DEFAULT CHARSET=utf8;
 
 # one phone number mapping to an account, but it could be mapped to multiple mac
@@ -337,7 +338,7 @@ CREATE TABLE if not exists surveyee (
    age            smallint          not null DEFAULT 0,
    gender         varchar(6)        not null DEFAULT 'MALE',
    city           varchar(36)       not null DEFAULT '',
-   phone          varchar(10)       not null DEFAULT '',
+   phone          varchar(20)       not null DEFAULT '',
    has_car        boolean           not null DEFAULT 0,
    create_t       datetime          not NULL,
    modify_t       datetime          DEFAULT NULL,
@@ -377,7 +378,7 @@ CREATE TABLE if not exists auto_q_ans (
 CREATE TABLE if not exists lottery_pool (
    id               int               NOT NULL AUTO_INCREMENT,
    surveyee_id      varchar(36)       NOT NULL default '',               ## without surveyee_id, then the phone number is added in gui
-   phone            varchar(10)       NOT NULL,
+   phone            varchar(20)       NOT NULL,
    disabled         boolean           NOT NULL default 0,
    selected         boolean           not null default 0,
    used             boolean           not null default 0,
