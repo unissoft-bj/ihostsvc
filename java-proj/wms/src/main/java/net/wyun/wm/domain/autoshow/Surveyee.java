@@ -28,7 +28,7 @@ public class Surveyee {
 	
 	@GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid")
-    @Column(name= "account_id", columnDefinition = "VARCHAR(36)")
+    @Column(name= "id", columnDefinition = "VARCHAR(36)")
     @Id
 	private String  id;      //	   id             VARCHAR(36)       primary key,
 	
