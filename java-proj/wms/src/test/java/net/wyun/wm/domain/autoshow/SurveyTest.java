@@ -1,9 +1,5 @@
 package net.wyun.wm.domain.autoshow;
 
-import static org.junit.Assert.*;
-
-import java.util.Date;
-
 import net.wyun.wm.data.Survey;
 import net.wyun.wm.domain.Gender;
 
@@ -20,6 +16,7 @@ public class SurveyTest {
 		
 		survey.setAnswers(generateAnswers());
 		survey.setSurveyee(generateSurveyee());
+		survey.setMac("60-36-DD-FF-FF-BB");
 		
 		ObjectMapper mapper = new ObjectMapper();
 		String r_str = mapper.writeValueAsString(survey);
