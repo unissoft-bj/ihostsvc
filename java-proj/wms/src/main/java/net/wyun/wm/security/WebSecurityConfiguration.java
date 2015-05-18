@@ -67,7 +67,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 		http.formLogin().and().logout();
 		http.authorizeRequests()
 				.antMatchers("/index.html", "/home.html", "/login", "/login.html", 
-						     "/index-wms.html", "/ihost", "/mymac", "/wms", "/tpls/**",
+						     "/index-wms.html", "/ihost", "/mymac", "/wms", "/tpls/**", "/survey",
 						     "/", "/reception", "/register").permitAll()
 						                       .anyRequest().authenticated();
 		
