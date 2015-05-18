@@ -17,6 +17,8 @@ import net.wyun.wm.domain.account.Account;
 import net.wyun.wm.domain.account.AccountRepository;
 import net.wyun.wm.domain.autoshow.Answer;
 import net.wyun.wm.domain.autoshow.AnswerRepository;
+import net.wyun.wm.domain.autoshow.LotteryPhoneRecord;
+import net.wyun.wm.domain.autoshow.LotteryPhoneRecordRepository;
 import net.wyun.wm.domain.autoshow.Surveyee;
 import net.wyun.wm.domain.autoshow.SurveyeeRepository;
 import net.wyun.wm.domain.mac.Mac;
@@ -44,6 +46,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 
  * when the client call this service, it means the user don't have a valid:
  * 1. collect surveyee info., and save question answers.
+ * front end needs validate user data
  * 2. send back mac/mac-pass
  *
  */
@@ -159,6 +162,9 @@ public class SurveyController {
 	@Autowired
 	AnswerRepository answerRepo;
 	
+	@Autowired
+	LotteryPhoneRecordRepository lotteryPhoneRecordRepo;
+	
 	@Transactional
 	private void saveSurvey(Survey survey){
 		Answer[] ans = survey.getAnswers();
@@ -174,6 +180,11 @@ public class SurveyController {
 			answerRepo.save(an);
 		}
 		
+		//@Autowired
+		LotteryPhoneRecord lpr = new LotteryPhoneRecord();
+		lpr.setPhone(ss.getPhone());
+		lpr.setSurveyee_id(ss.getId());
+		lotteryPhoneRecordRepo.save(lpr);
 	}
 	
 }
