@@ -10,8 +10,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 
-@ComponentScan("net.wyun")
+@ComponentScan(basePackages = {"net.wyun.wm"},
+                  excludeFilters = @ComponentScan.Filter(type = FilterType.ASPECTJ, pattern = "net.wyun.wm.audio.*"))
 @EnableAutoConfiguration
 public class Application {
 	
