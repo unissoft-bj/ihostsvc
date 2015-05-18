@@ -27,8 +27,7 @@ public class UserInfo {
 	@Id
 	private String id; // VARCHAR(36) primary key NOT NULL,
 
-	private String first_name; // varchar(20) DEFAULT NULL, # 名字
-	private String last_name; // varchar(20) DEFAULT NULL, # 姓
+	private String name;
 	private String email; // varchar(64) NOT NULL DEFAULT '',
 	private int byear; // smallint DEFAULT NULL, # 生日，年 // move to user_info. It
 						// can be obtained in different ways.
@@ -52,20 +51,12 @@ public class UserInfo {
 		this.id = id;
 	}
 
-	public String getFirst_name() {
-		return first_name;
+	public String getName() {
+		return name;
 	}
 
-	public void setFirst_name(String first_name) {
-		this.first_name = first_name;
-	}
-
-	public String getLast_name() {
-		return last_name;
-	}
-
-	public void setLast_name(String last_name) {
-		this.last_name = last_name;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getEmail() {
