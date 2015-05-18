@@ -40,20 +40,19 @@ DROP TABLE IF EXISTS user_info;
 ###############################################################
 CREATE TABLE if not exists user_info (
     id             VARCHAR(36)       primary key NOT NULL,
-    first_name     varchar(20)       DEFAULT NULL,	        #	名字 
-    last_name      varchar(20)       DEFAULT NULL,	        #	姓   
+    name           varchar(40)       DEFAULT NULL,	        #	姓   
     email          varchar(64)       NOT NULL DEFAULT '',
     byear          smallint          DEFAULT NULL,	        #	生日，年 // move to user_info. It can be obtained in different ways.
     bmonth         smallint          DEFAULT NULL,	        #	生日，月
     bday           smallint          DEFAULT NULL,	        #	生日，日
     age            smallint          DEFAULT 0,
-    gender         char(1)           NOT NULL DEFAULT 'M',	#	性别  //user info.
+    gender         varchar(6)        NOT NULL DEFAULT 'MALE',	#	性别  //user info.
     occupation     varchar(30)       NOT NULL DEFAULT '',	#	职业 // user info
-    company        varchar(64)       DEFAULT NULL,	        #	工作单位 //user info
-    title          varchar(32)       DEFAULT NULL,	        #	职务 // user info.
+    company        varchar(64)       NOT NULL DEFAULT '',	        #	工作单位 //user info
+    title          varchar(32)       NOT NULL DEFAULT '',	        #	职务 // user info.
     cid            varchar(30)       DEFAULT '000000',	    #	证件号, cid + ctype
     ctype          varchar(10)       DEFAULT NULL,	        #	证件类别 //remove.
-    address        varchar(128)      DEFAULT NULL,	        #	地址 // to memo
+    address        varchar(128)      NOT NULL DEFAULT '',	        #	地址 // to memo
     location       varchar(32)       DEFAULT NULL	        #	所在区域 //to memo
 )  DEFAULT CHARSET=utf8;
 
@@ -377,12 +376,13 @@ CREATE TABLE if not exists auto_q_ans (
 #############################################################
 CREATE TABLE if not exists lottery_pool (
    id               int               NOT NULL AUTO_INCREMENT,
-   surveyee_id      int               NOT NULL default '',               ## without surveyee_id, then the phone number is added in gui
+   surveyee_id      varchar(36)       NOT NULL default '',               ## without surveyee_id, then the phone number is added in gui
    phone            varchar(10)       NOT NULL,
    disabled         boolean           NOT NULL default 0,
    selected         boolean           not null default 0,
    used             boolean           not null default 0,
    create_t         datetime          not NULL,
+   show_location    varchar(36)       not null default '',
    PRIMARY KEY     (id)
 ) DEFAULT CHARSET=utf8;
 
