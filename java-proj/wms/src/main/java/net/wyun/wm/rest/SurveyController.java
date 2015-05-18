@@ -20,6 +20,7 @@ import net.wyun.wm.domain.autoshow.AnswerRepository;
 import net.wyun.wm.domain.autoshow.Surveyee;
 import net.wyun.wm.domain.autoshow.SurveyeeRepository;
 import net.wyun.wm.domain.mac.Mac;
+import net.wyun.wm.domain.mac.MacAddressUtil;
 import net.wyun.wm.domain.mac.MacRepository;
 import net.wyun.wm.domain.role.Role;
 import net.wyun.wm.domain.role.RoleRepository;
@@ -31,7 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -69,10 +69,6 @@ public class SurveyController {
 	RoleRepository roleRepo;
 	
 	@Autowired
-	@Qualifier("wmsUserDetailsService")
-	UserDetailsService userDetailsService;
-	
-	@Autowired
 	@Qualifier("internetGuardImpl")
 	InternetGuard internetGuard;
 	
@@ -96,7 +92,9 @@ public class SurveyController {
 		//
 		Mac mac = null;
 		try{
-			mac = (Mac) userDetailsService.loadUserByUsername(macStr);
+			Long macAddress = MacAddressUtil.toLong(macStr);
+	        mac = macRepo.findByMac(macAddress);
+			//mac = (Mac) userDetailsService.loadUserByUsername(macStr);
 		}catch(Exception e){
 			e.printStackTrace();
 			mac = null;
@@ -134,21 +132,21 @@ public class SurveyController {
 				Account newAcct = new Account(t_phone);
 				newAcct.setOriginator("SURVEY");
 				newAcct.addRole(role);
-				Account savedNewAcct = accountRepo.save(newAcct);
-				mac_account.setAccount(savedNewAcct);
+				//Account savedNewAcct = accountRepo.save(newAcct);
+				mac_account.setAccount(newAcct);
 			}
 			
 			MacAccount updatedMA = macAccountRepo.save(mac_account);
 			//Mac reloadedMac = (Mac) userDetailsService.loadUserByUsername(macStr); // did not get the newest
 													// account?? it is likely cached
-			Mac reloadedMac = macRepo.findOne(mac.getId());
+			//Mac reloadedMac = macRepo.findOne(mac.getId());
 			//or still use mac
-			//Set<MacAccount> maset = mac.getMacAccounts();
-			//maset.add(updatedMA);
-			//Mac uMac = macRepo.save(mac);
+			Set<MacAccount> maset = mac.getMacAccounts();
+			maset.add(updatedMA);
+			Mac uMac = macRepo.save(mac);
 			
 			// Mac reloadedMac = updatedMA.getMac();
-			ud = new UserDto(reloadedMac);
+			ud = new UserDto(uMac);
 
 		}
 			   
