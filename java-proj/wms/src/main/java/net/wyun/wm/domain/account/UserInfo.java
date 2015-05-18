@@ -41,6 +41,15 @@ public class UserInfo {
 	private String cid; // varchar(30) DEFAULT '000000', # 证件号, cid + ctype
 	private String ctype; // varchar(10) DEFAULT NULL, # 证件类别 //remove.
 	private String address; // varchar(128) DEFAULT NULL, # 地址 // to memo
+	private String location;
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
 
 	public String getId() {
 		return id;
