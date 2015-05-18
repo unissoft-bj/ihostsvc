@@ -28,6 +28,8 @@ import net.wyun.wm.domain.mac.Mac;
 @Table(name = "mac_account")
 @JsonIgnoreProperties({"id", "mac"})
 public class MacAccount {
+	
+	public MacAccount(){ this.create_t = new Date();}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
