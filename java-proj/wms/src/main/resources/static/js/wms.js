@@ -31,11 +31,11 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                 
                 $http.get("mymac").success(function(data){
                     //alert(data);
-                    $cookieStore.put("mymac",data);
-                    //$cookieStore.put("mymac","60-36-DD-FF-FF-BB");
+                    //$cookieStore.put("mymac",data);
+                    $cookieStore.put("mymac","60-36-DD-FF-FF-BB");
                 }).error(function(){
-                    alert("得不到mac地址");
-                    //$cookieStore.put("mymac","60-36-DD-FF-FF-BB");
+                    //alert("得不到mac地址");
+                    $cookieStore.put("mymac","60-36-DD-FF-FF-BB");
                 }); 
 
                 //自动登陆
@@ -112,7 +112,7 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
             templateUrl: "tpls/login1.htm",
             controller:function($scope,$http){
                 $scope.formData = {};
-                $scope.formData.username="60-36-DD-FF-FF-BB";
+                //$scope.formData.username="60-36-DD-FF-FF-BB";
                 
                 $scope.login = function(){
                      //alert($scope.formData.phone_pass);
@@ -140,7 +140,7 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
             url: "/login2",
             templateUrl: "tpls/login2.htm",
             controller:function($scope,$http){
-                $scope.formData = {"mac":"C1-C2-C3-C4-C5-C6"};
+                $scope.formData = {"mac":"C3-A1-C3-C4-C5-C6"};
                 $scope.msg="请输入上网码";
                 $scope.register = function(){
                     // alert($scope.formData.shangwangma);
@@ -215,6 +215,84 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
             }
         })
 
+        //答题页面
+        .state('diaocha1', {
+            url: "/diaocha1",
+            templateUrl: "tpls/diaocha1.htm",
+            controller:function($scope,$http){
+                $scope.formData = {};            
+                $scope.login = function(){
+                     //alert($scope.formData.phone_pass);
+                    window.location.href="#/diaocha2";
+                    
+                }
+            }
+        })
+
+        .state('diaocha2', {
+            url: "/diaocha2",
+            templateUrl: "tpls/diaocha2.htm",
+            controller:function($scope,$http){
+                $scope.formData = {};            
+                $scope.login = function(){
+                     //alert($scope.formData.phone_pass);
+                    window.location.href="#/diaocha3";
+                    
+                }
+            }
+        })
+
+        .state('diaocha3', {
+            url: "/diaocha3",
+            templateUrl: "tpls/diaocha3.htm",
+            controller:function($scope,$http){
+                $scope.formData = {};            
+                $scope.login = function(){
+                     //alert($scope.formData.phone_pass);
+                    window.location.href="#/diaocha4";
+                    
+                }
+            }
+        })
+
+        .state('diaocha4', {
+            url: "/diaocha4",
+            templateUrl: "tpls/diaocha4.htm",
+            controller:function($scope,$http){
+                $scope.formData = {};            
+                $scope.login = function(){
+                     //alert($scope.formData.phone_pass);
+                    window.location.href="#/diaocha5";
+                    
+                }
+            }
+        })
+
+        .state('diaocha5', {
+            url: "/diaocha5",
+            templateUrl: "tpls/diaocha5.htm",
+            controller:function($scope,$http){
+                $scope.formData = {};            
+                $scope.login = function(){
+                     //alert($scope.formData.phone_pass);
+                    window.location.href="#/diaocha6";
+                    
+                }
+            }
+        })
+
+        .state('diaocha6', {
+            url: "/diaocha6",
+            templateUrl: "tpls/diaocha6.htm",
+            controller:function($scope,$http){
+                $scope.formData = {};            
+                $scope.login = function(){
+                     //alert($scope.formData.phone_pass);
+                    window.location.href="#/diaocha6";
+                    
+                }
+            }
+        })
         
         ;
 });
