@@ -4,13 +4,11 @@
 package net.wyun.wm.rest;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.wyun.wm.data.RegisterRequest;
 import net.wyun.wm.data.Survey;
 import net.wyun.wm.data.UserDto;
 import net.wyun.wm.domain.MacAccount;
@@ -25,7 +23,6 @@ import net.wyun.wm.domain.mac.Mac;
 import net.wyun.wm.domain.mac.MacRepository;
 import net.wyun.wm.domain.role.Role;
 import net.wyun.wm.domain.role.RoleRepository;
-import net.wyun.wm.domain.token.Token;
 import net.wyun.wm.domain.token.TokenRepository;
 import net.wyun.wm.domain.token.TokenRequest.UserRole;
 import net.wyun.wm.service.InternetGuard;
@@ -53,7 +50,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class SurveyController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(TokenRegisterController.class);
+	private static final Logger logger = LoggerFactory.getLogger(SurveyController.class);
 	String id;
 	
 	@Autowired
@@ -108,6 +105,8 @@ public class SurveyController {
 		if(null == mac){
 			mac = new Mac(macStr);
 			mac.setEnabled(true);
+		}else{
+			logger.info("existing mac user: " + macStr);
 		}
 		
 		// always ROLE_USER
@@ -115,6 +114,7 @@ public class SurveyController {
 		Role role = roleRepo.findByName(ur.toString());
 		
 		if (mac.contains(t_phone)) {
+			logger.info("existing account with mac " + t_phone + ", " + macStr);
 			mac.getAccount().addRole(role);
 			mac = this.macRepo.save(mac);
 			ud = new UserDto(mac);
@@ -134,17 +134,21 @@ public class SurveyController {
 				Account newAcct = new Account(t_phone);
 				newAcct.setOriginator("SURVEY");
 				newAcct.addRole(role);
-				mac_account.setAccount(newAcct);
+				Account savedNewAcct = accountRepo.save(newAcct);
+				mac_account.setAccount(savedNewAcct);
 			}
 			
 			MacAccount updatedMA = macAccountRepo.save(mac_account);
 			//Mac reloadedMac = (Mac) userDetailsService.loadUserByUsername(macStr); // did not get the newest
-													// account??
+													// account?? it is likely cached
+			Mac reloadedMac = macRepo.findOne(mac.getId());
 			//or still use mac
-			Set<MacAccount> maset = mac.getMacAccounts();
-			maset.add(updatedMA);
+			//Set<MacAccount> maset = mac.getMacAccounts();
+			//maset.add(updatedMA);
+			//Mac uMac = macRepo.save(mac);
+			
 			// Mac reloadedMac = updatedMA.getMac();
-			ud = new UserDto(mac);
+			ud = new UserDto(reloadedMac);
 
 		}
 			   
