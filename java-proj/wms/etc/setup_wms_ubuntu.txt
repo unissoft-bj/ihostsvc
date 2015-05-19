@@ -3,11 +3,21 @@
 1)  run 'adduser --system --no-create-home --disabled-password --disabled-login --group sboot' to add an user for wms.  user sboot, and group sboot
 
 2)  run 'cd /opt'.
-9)  run 'chown -R sboot:sboot wlsp/'.
-4)  in /opt/wlsp, configure wyun_svc.sh to set the APP_HOME to /opt/wlsp
-11)  run 'chmod +x /opt/wlsp/wyun_svc.sh' to have it executable.
+9)  run 'chown -R sboot:sboot wms/'.
+4)  in /opt/wms, configure wyun_svc.sh to set the APP_HOME to /opt/wms
+11)  run 'chmod +x /opt/wms/wyun_svc.sh' to have it executable.
 12)  run 'update-rc.d sboot defaults' for wyun_svc run-level settings.
 
 13)  sudo usermod -a -G chilli sboot
 14)  sudo chown root:chilli chilli_query
      sudo chmod u+s chilli_query
+     
+# set up database
+1. run  mysql -uwms -pwms wms < wms.sql
+2. run  mysql -uwms -pwms wms < wms_util_procedure.sql
+3. run mysql -uwms -pwms wms < wms_init.sql
+4. run mysql -uwms -pwms wms < auto_q_2015.sql
+
+#first time use
+manager shangwangma: 2015168
+
