@@ -68,13 +68,16 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests()
 				.antMatchers("/index.html", "/home.html", "/login", "/login.html", 
 						     "/index-wms.html", "/ihost", "/mymac", "/wms", "/tpls/**", "/survey",
-						     "/", "/reception", "/register").permitAll()
-						                       .anyRequest().authenticated();
+						     "/", "/reception", "/register")
+						     .permitAll()
+						     .antMatchers("/secure/lottery/**").hasAuthority("PERM_CREATE_LOTTERY")
+						     .antMatchers("/secure//shangwangma").hasAuthority("PERM_CREATE_TOKEN")
+						     .anyRequest().authenticated();
 		
 		http.csrf().disable();
 		//http.csrf().csrfTokenRepository(csrfTokenRepository()).and().addFilterAfter(csrfHeaderFilter(), CsrfFilter.class);
 		
-		http.authorizeRequests().antMatchers("/secure/**").authenticated();
+		//http.authorizeRequests().antMatchers("/secure/lottery/**").hasAuthority("PERM_CREATE_LOTTERY");
 		
 		http.formLogin().successHandler(authenticationSuccessHandler);
 		http.formLogin().failureHandler(authenticationFailureHandler);
