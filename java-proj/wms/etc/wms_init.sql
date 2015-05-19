@@ -11,6 +11,7 @@ call createPermission('PERM_DELETE_RECEPTIONS');
 call createPermission('PERM_ADMIN_RECEPTIONS');
 
 call createPermission('PERM_CREATE_TOKEN');
+call createPermission('PERM_CREATE_LOTTERY');
 
 -- Create roles
 
@@ -23,6 +24,7 @@ call roleHasPermission(@role_manager, 'PERM_READ_ACCOUNTS');
 call roleHasPermission(@role_manager, 'PERM_UPDATE_ACCOUNTS');
 call roleHasPermission(@role_manager, 'PERM_DELETE_ACCOUNTS');
 call roleHasPermission(@role_manager, 'PERM_CREATE_TOKEN');
+call roleHasPermission(@role_manager, 'PERM_CREATE_LOTTERY');
 
 call createRole('ROLE_SALES', @role_sales);
 call roleHasPermission(@role_sales, 'PERM_CREATE_RECEPTIONS');

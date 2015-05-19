@@ -17,10 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Xuecheng
+ * for method access control, refer to:
+ * @link http://kielczewski.eu/2014/12/spring-boot-security-application/
  *
  */
 
-@PreAuthorize("hasRole('ROLE_MANAGER')")
 @RequestMapping("/secure")
 @RestController
 public class AutoLotteryPoolController {
@@ -28,13 +29,11 @@ public class AutoLotteryPoolController {
 	@Autowired
 	AutoLotteryService autoLotteryService;
 	
-	//@PreAuthorize("hasRole('ROLE_ADMIN')")
-	// get a set of phones
-	//
 	@RequestMapping(value="/lottery/time", method = {RequestMethod.POST})
 	public void setLotteryTimeLimit(@RequestBody LotteryTime lotteryTime){
 		autoLotteryService.setLotteryTime(lotteryTime);
 	}
+	
 	
 	@RequestMapping(value="/lottery", method = {RequestMethod.GET})
 	public List<String> getPhoneList(){

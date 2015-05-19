@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Xuecheng
  *
  */
-@PreAuthorize("hasRole('ROLE_MANAGER')")
+@PreAuthorize("hasRole('ROLE_MANAGER')") //not working, need configuration
 @RequestMapping("/secure")
 @RestController
 public class TokenController {
