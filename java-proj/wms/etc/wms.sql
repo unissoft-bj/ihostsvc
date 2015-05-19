@@ -18,7 +18,12 @@ DROP TABLE IF EXISTS recpt_activity;
 DROP TABLE IF EXISTS role;              
 DROP TABLE IF EXISTS role_permission;   
 DROP TABLE IF EXISTS token;             
-DROP TABLE IF EXISTS user_info;         
+DROP TABLE IF EXISTS user_info;       
+DROP TABLE IF EXISTS eth_packet;
+DROP TABLE IF EXISTS lottery_pool;
+DROP TABLE IF EXISTS auto_q;
+DROP TABLE IF EXISTS auto_q_ans;
+DROP TABLE IF EXISTS surveyee;
 
 
 ## Tables for user registration
@@ -277,25 +282,18 @@ CREATE TABLE IF not EXISTS device_act_history (
 #############################################################
 # 802_11_packet
 #############################################################
-CREATE TABLE if not exists `802_11_packet` (
-  `id`           int            NOT NULL AUTO_INCREMENT primary key,
-  `mac`          BIGINT UNSIGNED    DEFAULT NULL,
-  `ssid`         varchar(36)    DEFAULT NULL,
-  `rssi`         smallint       DEFAULT NULL,
-  `stat`         tinyint        DEFAULT NULL,
-  `type`         varchar(36)    DEFAULT NULL,
-  `subtype`      varchar(36)    DEFAULT NULL,
-  `pmac`         BIGINT UNSIGNED    DEFAULT NULL,
-  `bssid`        varchar(36)    DEFAULT NULL,
-  `pkttime`      datetime       DEFAULT NULL,
-  `timefrac`     float          DEFAULT NULL,
-  `frameproto`   varchar(36)    DEFAULT NULL,
-  `chan`         varchar(36)    DEFAULT NULL,
-  `create_t`     datetime       DEFAULT NULL,
-  `src_ip_mac`   BIGINT UNSIGNED    DEFAULT NULL,
-  KEY `packettime` (`pkttime`),
-  KEY `mac` (`mac`)
-)  DEFAULT CHARSET=utf8;
+CREATE TABLE 802_11_packet (
+  id              int(11) NOT      NULL AUTO_INCREMENT,
+  mac             varchar(17)      DEFAULT NULL,
+  pkttime         varchar(10)      DEFAULT NULL,
+  pktsignal       varchar(2048)    DEFAULT NULL,
+  create_t        datetime         DEFAULT NULL,
+  src_ip_mac      varchar(17)      DEFAULT NULL,
+  PRIMARY KEY (id),
+  KEY packettime (pkttime),
+  KEY mac (mac)
+) DEFAULT CHARSET=utf8;
+
 
 
 ## ----------------------------
@@ -386,6 +384,24 @@ CREATE TABLE if not exists lottery_pool (
    show_location    varchar(36)       not null default '',
    PRIMARY KEY     (id)
 ) DEFAULT CHARSET=utf8;
+
+#############################################################
+# eth_packet
+#############################################################
+CREATE TABLE eth_packet (
+  id               int(11)            NOT NULL AUTO_INCREMENT,
+  mac              varchar(17)        DEFAULT NULL,
+  pkttime          varchar(10)        DEFAULT NULL,
+  srcip            varchar(16)        DEFAULT NULL,
+  destip           varchar(16)        DEFAULT NULL,
+  uri              varchar(4096)      DEFAULT NULL,
+  create_t         datetime           DEFAULT NULL,
+  src_ip_mac       varchar(17)        DEFAULT NULL,
+  PRIMARY KEY (id),
+  KEY packettime (pkttime),
+  KEY mac (mac)
+) DEFAULT CHARSET=utf8;
+
 
 
 
