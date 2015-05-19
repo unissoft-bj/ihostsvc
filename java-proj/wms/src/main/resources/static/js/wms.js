@@ -173,26 +173,32 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
             url: "/login2",
             templateUrl: "tpls/login2.htm",
             controller:function($scope,$http,$cookieStore){
-                var autouser = $cookieStore.get("user");
-                    //%7B%22name%22%3A%2260-36-DD-FF-FF-BB%22%2C%22mac%22%3A%2260-36-DD-FF-FF-BB%22%2C%22mac_pwd%22%3A%222227b540-9079-4141-9f79-ea811bba85ab%22%2C%22role%22%3A%22UNKNOWN%22%2C%22phone%22%3A%222006548878%22%7D
-                    var loginData = "username="+autouser.mac+"&password="+autouser.mac_pwd;
                     
-                    $http.post("login",loginData,{
-                        headers : {
-                        "content-type" : "application/x-www-form-urlencoded"
-                        }
-                    }).success(function(response) {
-                        if(autouser.role=="ROLE_MANAGER"){
-                            window.location.href="#/main"; 
-                        }                    
-                                           
-                    }).error(function(response) {
-                        alert("请输入上网码");
+                function autoLogin(){
+                    var autouser = $cookieStore.get("user");
+                    //%7B%22name%22%3A%2260-36-DD-FF-FF-BB%22%2C%22mac%22%3A%2260-36-DD-FF-FF-BB%22%2C%22mac_pwd%22%3A%222227b540-9079-4141-9f79-ea811bba85ab%22%2C%22role%22%3A%22UNKNOWN%22%2C%22phone%22%3A%222006548878%22%7D
+                    if(autouser!=null){
+                        var loginData = "username="+autouser.mac+"&password="+autouser.mac_pwd;
                         
-                        
-                    });
+                        $http.post("login",loginData,{
+                            headers : {
+                            "content-type" : "application/x-www-form-urlencoded"
+                            }
+                        }).success(function(response) {
+                            if(autouser.role=="ROLE_MANAGER"){
+                                window.location.href="#/main"; 
+                            }                    
+                                               
+                        }).error(function(response) {
+                            alert("请输入上网码");
+                            
+                            
+                        });
 
 
+                    }
+                }    
+                autoLogin();
                 $http.get("mymac").success(function(data){
                     //alert(data);
                     $cookieStore.put("mymac",data);
@@ -210,7 +216,8 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                     .success(function(response) {
                         console.log(response);
                         $cookieStore.put("user",response);
-                        window.location.href="#/main";
+                        autoLogin();
+                        //window.location.href="#/login2";
                    
                     })
                     .error(function() {
