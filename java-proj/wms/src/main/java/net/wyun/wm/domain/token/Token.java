@@ -47,7 +47,7 @@ public class Token {
 	
     private String phone; //         varchar(30)        NOT NULL,
     private int token;         //int UNSIGNED       NOT NULL,                          
-    private String agent_id; //      varchar(36)        NOT NULL,
+    private String agent_id = ""; //      varchar(36)        NOT NULL,
     private Date create_t; //      datetime           NOT NULL,
     private boolean used = false; //          boolean            NOT NULL default 0
     private String mac = "";          //mac of the device which uses this token to register, this should be updated if someone uses this token
