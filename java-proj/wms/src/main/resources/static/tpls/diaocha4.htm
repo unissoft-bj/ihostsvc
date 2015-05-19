@@ -19,31 +19,31 @@
 					<li id="li_8" class="multiple_choice highlighted" style="">
 		<label class="description">您如果购买了汽车，平时上下班每天需要行驶多少里程（来回）？预计多长时间？ </label>
 		<div>
-			<span><input id="element_8_4" name="element_8" class="element radio" type="radio" value="4">
+			<span><input id="element_8_4" name="element_8" class="element radio" type="radio" ng-model="formData.available_option.a1" ng-value="1">
 <label class="choice" for="element_8_4">0~10km</label>
 </span>
-<span><input id="element_8_5" name="element_8" class="element radio" type="radio" value="5">
+<span><input id="element_8_5" name="element_8" class="element radio" type="radio" ng-model="formData.available_option.a1" ng-value="2">
 <label class="choice" for="element_8_5">10~20km</label>
 </span>
-<span><input id="element_8_6" name="element_8" class="element radio" type="radio" value="6">
+<span><input id="element_8_6" name="element_8" class="element radio" type="radio" ng-model="formData.available_option.a1" ng-value="3">
 <label class="choice" for="element_8_6">20~30km</label>
 </span>
-<span><input id="element_8_7" name="element_8" class="element radio" type="radio" value="7">
+<span><input id="element_8_7" name="element_8" class="element radio" type="radio" ng-model="formData.available_option.a1" ng-value="4">
 <label class="choice" for="element_8_7">30~40km</label>
 </span>
-<span><input id="element_8_8" name="element_8" class="element radio" type="radio" value="8">
+<span><input id="element_8_8" name="element_8" class="element radio" type="radio" ng-model="formData.available_option.a1" ng-value="5">
 <label class="choice" for="element_8_8">40~50km</label>
 </span>
-<span><input id="element_8_9" name="element_8" class="element radio" type="radio" value="9">
+<span><input id="element_8_9" name="element_8" class="element radio" type="radio" ng-model="formData.available_option.a1" ng-value="6">
 <label class="choice" for="element_8_9">50~60km</label>
 </span>
-<span><input id="element_8_10" name="element_8" class="element radio" type="radio" value="10">
+<span><input id="element_8_10" name="element_8" class="element radio" type="radio" ng-model="formData.available_option.a1" ng-value="7">
 <label class="choice" for="element_8_10">60~80km</label>
 </span>
-<span><input id="element_8_11" name="element_8" class="element radio" type="radio" value="11">
+<span><input id="element_8_11" name="element_8" class="element radio" type="radio" ng-model="formData.available_option.a1" ng-value="8">
 <label class="choice" for="element_8_11">80~100km</label>
 </span>
-<span><input id="element_8_12" name="element_8" class="element radio" type="radio" value="12">
+<span><input id="element_8_12" name="element_8" class="element radio" type="radio" ng-model="formData.available_option.a1" ng-value="9">
 <label class="choice" for="element_8_12">100km以上</label>
 </span>
 
@@ -51,7 +51,7 @@
 		</li>		<li id="li_10">
 		<label class="description" for="element_10">根据目前本市的交通情况，预计平时单程上下班的时间为__________分钟 <span id="required_10" class="required">*</span></label>
 		<div>
-			<input id="element_10" name="element_10" class="element text small" type="text" value="请输入分钟数"> 
+			<input id="element_10" name="element_10" class="element text small" type="text" ng-value="12" ng-model="formData.available_option.a2"> 
 			
 		</div> 
 		</li>
@@ -59,12 +59,8 @@
 			
 			
 						<li id="li_buttons" class="buttons">
-				    <input type="hidden" name="form_id" value="12465">
 				    
-				    <input type="hidden" name="submit_form" value="1">
-				    <input type="hidden" name="page_number" value="4">
 					<input class="button_text btn_primary" type="submit" id="submit_primary" name="submit_primary" value="下一题">
-					<input class="button_text btn_secondary" type="submit" id="submit_secondary" name="submit_secondary" value="上一题">
 			</li>
 			</ul>
 		</form>	

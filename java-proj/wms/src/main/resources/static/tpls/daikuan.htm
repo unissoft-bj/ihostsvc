@@ -3,24 +3,27 @@
 <header class="header">
 <div class="header_cont">
  <div class="left-box"> <a class="hd-lbtn" href="javascript:history.back()"><span>返回</span></a></div>
-<div class="header_name">登录</div>
+<div class="header_name">查询磁盘空间</div>
 <div class="header_user"><a href="/index/"></a></div>
 </div>
 </header>
 
-<div class="msg-err" style="opacity: 1;-webkit-animation:shake 0.5s linear 0s;">{{msg}}</div>
+<div class="msg-err" style="opacity: 1;-webkit-animation:shake 0.5s linear 0s;"></div>
 <section class="wap_login">
+	
+	
 	<hr>
 	
-  <form ng-submit="register()">
+  <form ng-submit="setDaikuan()">
      
     <p>
     
-      <input name="token" id="token" type="text" class="input-common placeholder" placeholder="请输入上网码" ng-model="formData.token"/>
+      <input name="days" id="days" type="number" class="input-common placeholder" placeholder="限制上行" ng-model="formData.shangxing"/>
       
-    <input type="submit" name="submit" value="登陆" class="btn-large" />
+       <input name="days" id="days" type="number" class="input-common placeholder" placeholder="限制下行	" ng-model="formData.xiaxing"/>
+    <input type="submit" name="submit" value="确定" class="btn-large" />
   </form>
-  <p><a ui-sref="login1" class="btn-large" >切换到密码登陆</a></p>
+  
   
  
 </section>

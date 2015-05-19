@@ -1,91 +1,91 @@
 <div ng-include="'tpls/diaocha_header.htm'"></div>
 <div id="form_container" class="WarpShadow WLarge WNormal">		
-		<form id="form_12465" class="appnitro top_label" method="post" data-highlightcolor="#FFF7C0" ng-submit="login()">
-					<div class="form_description">
+	<form id="form_12465" class="appnitro top_label" method="post" data-highlightcolor="#FFF7C0" ng-submit="login()">
+		<div class="form_description">
 			
 			<p>2015年（第八届）中国汽车安全主题巡展调查问卷</p>
 		</div>						
-			<ul>
+		<ul>
 			
-						<li id="pagination_header" class="li_pagination" title="Click to edit">
-			    <h3 id="page_title_6">当前页 6 总页 6 - Untitled Page</h3>
+			<li id="pagination_header" class="li_pagination" title="Click to edit">
+				<h3 id="page_title_6">当前页 6 总页 6 - Untitled Page</h3>
 				<div class="mf_progress_container">          
-			    	<div id="mf_progress_percentage" class="mf_progress_value" style="width: 99%"><span>99%</span></div>
+					<div id="mf_progress_percentage" class="mf_progress_value" style="width: 99%"><span>99%</span></div>
 				</div>
 			</li>			
 			
-					<li id="li_19" class="section_break">
-			<h3>请输入您的个人信息</h3>
-			<p>您的手机号将是您领取奖品的唯一有效凭证，请仔细填写</p>
-		</li>		<li id="li_20">
-		<label class="description" for="element_20">姓名 <span id="required_20" class="required">*</span></label>
-		<div>
-			<input id="element_20" name="element_20" class="element text small" type="text" value="">
-			 
-		</div> 
+			<li id="li_19" class="section_break">
+				<h3>请输入您的个人信息</h3>
+				<p>您的手机号将是您领取奖品的唯一有效凭证，请仔细填写</p>
+			</li>		<li id="li_20">
+			<label class="description" for="element_20">姓名 <span id="required_20" class="required">*</span></label>
+			<div>
+				<input id="element_20" name="element_20" class="element text small" type="text" ng-model="formData.name">
+
+			</div> 
 		</li>		<li id="li_21">
 		<label class="description" for="element_21">年龄 <span id="required_21" class="required">*</span></label>
 		<div>
-			<input id="element_21" name="element_21" class="element text small" type="text" value=""> 
+			<input id="element_21" name="element_21" class="element text small" type="text" ng-model="formData.age"> 
 			
 		</div> 
-		</li>		<li id="li_22" class="multiple_choice inline_columns">
-		<label class="description">性别 <span id="required_22" class="required">*</span></label>
-		<div>
-			<span><input id="element_22_1" name="element_22" class="element radio" type="radio" value="1">
-<label class="choice" for="element_22_1">男</label>
-</span>
-<span><input id="element_22_2" name="element_22" class="element radio" type="radio" value="2">
-<label class="choice" for="element_22_2">女</label>
-</span>
+	</li>		<li id="li_22" class="multiple_choice inline_columns">
+	<label class="description">性别 <span id="required_22" class="required">*</span></label>
+	<div>
+		<span>
 
-		</div> 
-		</li>		<li id="li_23">
-		<label class="description" for="element_23">所在城市 <span id="required_23" class="required">*</span></label>
-		<div>
-			<input id="element_23" name="element_23" class="element text medium" type="text" value="">
-			 
-		</div> 
-		</li>		<li id="li_24">
-		<label class="description" for="element_24">手机 <span id="required_24" class="required">*</span></label>
-		<div>
-			<input id="element_24" name="element_24" class="element text medium" type="text" value=""> 
-			
-		</div> 
-		</li>		<li id="li_25">
-		<label class="description" for="element_25">QQ </label>
-		<div>
-			<input id="element_25" name="element_25" class="element text medium" type="text" value="">
-			 
-		</div> 
-		</li>		<li id="li_26" class="multiple_choice inline_columns">
-		<label class="description">是否有私家车 <span id="required_26" class="required">*</span></label>
-		<div>
-			<span><input id="element_26_1" name="element_26" class="element radio" type="radio" value="1">
-<label class="choice" for="element_26_1">有</label>
-</span>
-<span><input id="element_26_2" name="element_26" class="element radio" type="radio" value="2">
-<label class="choice" for="element_26_2">没有</label>
-</span>
+			<input id="element_22_1" name="element_22" class="element radio" type="radio" ng-model="formData.gender" ng-value="0">
+			<label class="choice" for="element_22_1">男</label>
+		</span>
+		<span>
+			<input id="element_22_2" name="element_22" class="element radio" type="radio" ng-model="formData.gender" ng-value="1">
+			<label class="choice" for="element_22_2">女</label>
+		</span>
 
-		</div> 
-		</li>
-			
-			
-			
-						<li id="li_buttons" class="buttons">
-				    <input type="hidden" name="form_id" value="12465">
-				    
-				    <input type="hidden" name="submit_form" value="1">
-				    <input type="hidden" name="page_number" value="6">
-					<input class="button_text btn_primary" type="submit" id="submit_primary" name="submit_primary" value="Submit">
-					<input class="button_text btn_secondary" type="submit" id="submit_secondary" name="submit_secondary" value="Previous">
-			</li>
-			</ul>
-		</form>	
-		<div id="footer">
-			
-		</div>
-	</div>
+	</div> 
+</li>		<li id="li_23">
+<label class="description" for="element_23">所在城市 <span id="required_23" class="required">*</span></label>
+<div>
+	<input id="element_23" name="element_23" class="element text medium" type="text" ng-model="formData.city">
+
+</div> 
+</li>		<li id="li_24">
+<label class="description" for="element_24">手机 <span id="required_24" class="required">*</span></label>
+<div>
+	<input id="element_24" name="element_24" class="element text medium" type="text" ng-model="formData.phone"> 
+
+</div> 
+</li>		<li id="li_25">
+<label class="description" for="element_25">QQ </label>
+<div>
+	<input id="element_25" name="element_25" class="element text medium" type="text" ng-model="formData.QQ">
+
+</div> 
+</li>		<li id="li_26" class="multiple_choice inline_columns">
+<label class="description">是否有私家车 <span id="required_26" class="required">*</span></label>
+<div>
+	<span><input id="element_26_1" name="element_26" class="element radio" type="radio" ng-model="formData.has_car" ng-value="true">
+		<label class="choice" for="element_26_1">有</label>
+	</span>
+	<span><input id="element_26_2" name="element_26" class="element radio" type="radio" ng-model="formData.has_car" ng-value="false">
+		<label class="choice" for="element_26_2">没有</label>
+	</span>
+
+</div> 
+</li>
+
+
+
+<li id="li_buttons" class="buttons">
+
+	<input class="button_text btn_primary" type="submit" id="submit_primary" name="submit_primary" value="提交问卷">
+
+</li>
+</ul>
+</form>	
+<div id="footer">
+
+</div>
+</div>
 <div ng-include="'tpls/footer.htm'"></div>
 
