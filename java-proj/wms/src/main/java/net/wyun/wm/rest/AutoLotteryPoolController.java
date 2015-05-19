@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  */
 
+@PreAuthorize("hasRole('ROLE_MANAGER')")
 @RequestMapping("/secure")
 @RestController
 public class AutoLotteryPoolController {
@@ -40,9 +41,19 @@ public class AutoLotteryPoolController {
 		return autoLotteryService.getPhoneList();
 	}
 	
+	@RequestMapping(value="/lottery/all", method = {RequestMethod.GET})
+	public List<String> getPhoneAll(){
+		return autoLotteryService.getPhoneAll();
+	}
+	
 	@RequestMapping(value="/lottery", method = {RequestMethod.POST})
 	public void addPhoneList(@RequestBody List<String> phones){
 		autoLotteryService.addPhoneList(phones);
+	}
+	
+	@RequestMapping(value="/lottery/draw", method = {RequestMethod.GET})
+	public String getLotteryNum(){
+		return autoLotteryService.pickUpLottery();
 	}
 	
 	
