@@ -118,7 +118,7 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                     //alert($cookieStore.get("user").name);
                 })
                 .error(function() {
-                     alert("非法登陆");
+                     alert("非法登录");
                      window.location.href="#/login2"; 
                 });
 
@@ -221,7 +221,7 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                    
                     })
                     .error(function() {
-                        $scope.msg="登陆失败，请重新输入上网码";
+                        $scope.msg="登录失败，请重新输入上网码";
                         window.location.href="#/login2";
                     });
                     
