@@ -136,8 +136,8 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                 };
 
                 $scope.downFile = function(){
-                    
-                    $http.get("/survey/file")
+
+                    $http.get("/secure/survey/file")
                     .success(function(response){
                         //alert("退出成功");
                         //...删除本地cookie
