@@ -68,7 +68,7 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                     //$cookieStore.put("mymac","AA-36-DD-FF-FF-BB");
                 }).error(function(){
                     alert("得不到mac地址");
-                    //$cookieStore.put("mymac","AA-36-DD-FF-FF-BB");
+                    $cookieStore.put("mymac","AA-36-DD-FF-FF-BB");
                 }); 
 
                 //自动登陆
@@ -214,12 +214,12 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                 }    
                 autoLogin();
                 $http.get("mymac").success(function(data){
-                    //alert(data);
+                    
                     $cookieStore.put("mymac",data);
                     //$cookieStore.put("mymac","AA-BB-DD-FF-FF-BB");
                 }).error(function(){
                     alert("得不到mac地址");
-                    //$cookieStore.put("mymac","AA-BB-DD-FF-FF-BB");
+                    $cookieStore.put("mymac","AA-BB-DD-FF-FF-BB");
                 });
                 $scope.formData = {};
                 $scope.formData.mac = $cookieStore.get("mymac");
