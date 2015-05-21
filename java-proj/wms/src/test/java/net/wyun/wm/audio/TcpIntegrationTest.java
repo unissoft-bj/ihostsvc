@@ -40,7 +40,7 @@ public class TcpIntegrationTest {
 		
 	}
 	
-	@Test  //for unit testing a server
+	//@Test  //for unit testing a server
 	public void startServer() throws IOException{
 		 TcpAudioServer server = new TcpAudioServer();
 		 server.start();
@@ -58,7 +58,7 @@ public class TcpIntegrationTest {
 		
 	}
 	
-	@Test
+	//@Test
 	public void sendBytesTest() throws IOException, InterruptedException{
 		// start client
 		TcpAudioClient client = new TcpAudioClient("localhost");
