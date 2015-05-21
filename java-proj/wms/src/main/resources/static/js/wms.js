@@ -30,6 +30,30 @@ function CurentTime()
         return(clock+":00"); 
     } 
 
+function getCookie(c_name)
+{
+if (document.cookie.length>0)
+  {
+  c_start=document.cookie.indexOf(c_name + "=")
+  if (c_start!=-1)
+    { 
+    c_start=c_start + c_name.length+1 
+    c_end=document.cookie.indexOf(";",c_start)
+    if (c_end==-1) c_end=document.cookie.length
+    return unescape(document.cookie.substring(c_start,c_end))
+    } 
+  }
+return ""
+}
+
+function setCookie(c_name,value,expiredays)
+{
+var exdate=new Date()
+exdate.setDate(exdate.getDate()+expiredays)
+document.cookie=c_name+ "=" +escape(value)+
+((expiredays==null) ? "" : ";expires="+exdate.toGMTString())
+}    
+
 var answers = new Array();
 var myUIRoute = angular.module('MyWms', ['ui.router', 'ngAnimate','ngCookies']);
 myUIRoute.config(function($stateProvider, $urlRouterProvider) {
@@ -58,17 +82,22 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                 //alert($cookieStore.get("ihost"));  
                 $http.get("ihost").success(function(data){
                     //alert(data.uuidHex);
+                    
                     $cookieStore.put("ihost",data); 
-
+                    //console.log(getCookie("ihost"));
+                    setCookie("ihost",getCookie("ihost"),365);
                 });                       
                 
                 $http.get("mymac").success(function(data){
                     //alert(data);
                     $cookieStore.put("mymac",data);
+                    setCookie("mymac",getCookie("mymac"),365);
                     //$cookieStore.put("mymac","AA-36-DD-FF-FF-BB");
                 }).error(function(){
                     alert("得不到mac地址");
+                    
                     $cookieStore.put("mymac","AA-36-DD-FF-FF-BB");
+                    setCookie("mymac",getCookie("mymac"),365);
                 }); 
 
                 //自动登陆
@@ -114,7 +143,8 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                     //alert(response.name);
                     $scope.user = response;                    
                     //将用户信息放到cookie中
-                    $cookieStore.put("user",response);                   
+                    $cookieStore.put("user",response);
+                    setCookie("user",getCookie("user"),365);                   
                     //alert($cookieStore.get("user").name);
                 })
                 .error(function() {
@@ -216,10 +246,12 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                 $http.get("mymac").success(function(data){
                     
                     $cookieStore.put("mymac",data);
+                    setCookie("mymac",getCookie("mymac"),365);
                     //$cookieStore.put("mymac","AA-BB-DD-FF-FF-BB");
                 }).error(function(){
                     alert("得不到mac地址");
                     $cookieStore.put("mymac","AA-BB-DD-FF-FF-BB");
+                    setCookie("mymac",getCookie("mymac"),365);
                 });
                 $scope.formData = {};
                 $scope.formData.mac = $cookieStore.get("mymac");
@@ -230,6 +262,7 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                     .success(function(response) {
                         console.log(response);
                         $cookieStore.put("user",response);
+                        setCookie("user",getCookie("user"),365);
                         autoLogin();
                         //window.location.href="#/login2";
                    
@@ -454,6 +487,7 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
 
                         console.log(response);
                         $cookieStore.put("user",response);
+                        setCookie("user",getCookie("user"),365);
                         window.location.href="#/index";
                    
                     })
@@ -509,7 +543,9 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                 $scope.msg="请按照指定格式输入起止时间";
                 $scope.setTime = function(){
                     $cookieStore.put("start_t",$scope.formData.start_t);
+                    setCookie("start_t",getCookie("start_t"),365);
                     $cookieStore.put("end_t",$scope.formData.end_t);
+                    setCookie("end_t",getCookie("end_t"),365);
                     
                     $http.post("secure/lottery/time",$scope.formData)
                     .success(function(response) {
