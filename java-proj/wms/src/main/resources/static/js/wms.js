@@ -135,6 +135,20 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
 
                 };
 
+                $scope.downFile = function(){
+                    
+                    $http.get("/survey/file")
+                    .success(function(response){
+                        //alert("退出成功");
+                        //...删除本地cookie
+                        //window.location.href="#/login1";
+                    })
+                    .error(function(){
+                        alert("未知错误");
+                    });
+
+                };
+
             }
         })
 
