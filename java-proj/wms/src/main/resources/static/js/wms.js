@@ -954,5 +954,24 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                 
             }
         })
+
+        //组网模式
+        .state('manage_netMode', {
+            url: "/manage/netMode",
+            templateUrl: "tpls/manage/netMode.htm",
+            controller: function($scope,$http) {
+                $scope.login = function(){
+                    postData = "ihostmod.sh ";
+                    
+                    postData+=$scope.formData.para1+" ";
+                    postData+=$scope.formData.para2+" ";
+                    postData+=$scope.formData.para3+" ";
+                    postData+=$scope.formData.para4+" ";
+                    
+                    alert(postData);
+                }
+                
+            }
+        })
         ;
 });
