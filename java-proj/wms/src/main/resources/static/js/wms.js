@@ -854,7 +854,11 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                         
                     }
                 ];
-
+                $scope.formData={};
+                $scope.formData.para1="";
+                $scope.formData.para2="";
+                $scope.formData.para3="";
+                $scope.formData.para4="";
                 $scope.login = function(){
                     postData = "ihostset.sh ";
                     postData+=$scope.selectedOrg.values+" ";
@@ -1001,9 +1005,6 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                     },
                     
                 ];
-
-                
-
                 $scope.cang = [
                     {
                         id: 0,
@@ -1019,14 +1020,46 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                     },
                     
                 ];
-
-                
-
+                $scope.formData={ssid:'',channel:'',psk:''};
                 $scope.login = function(){
                     postData = "apmod.sh ";
                     postData+=$scope.formData.ssid+" ";
                     postData+=$scope.formData.channel+" " ;
                     postData+=$scope.issee.values+" ";
+                    postData+=$scope.isopen.values+" ";
+                    postData+=$scope.formData.psk ;
+                    
+                    alert(postData);
+                }
+                
+            }
+        })
+
+        //无线上联参数
+        .state('manage_wuxianshanglian', {
+            url: "/manage/wuxianshanglian",
+            templateUrl: "tpls/manage/wuxianshanglian.htm",
+            controller: function($scope,$http) {
+                 
+                  $scope.cang = [
+                    {
+                        id: 0,
+                        Organization: '开放',
+                        values:'open',
+                        
+                    },
+                    {
+                        id: 1,
+                        Organization: '加密',
+                        values:'secu',
+                        
+                    },
+                    
+                ];                
+                $scope.formData={ssid:'',psk:''};
+                $scope.login = function(){
+                    postData = "stamod.sh ";
+                    postData+=$scope.formData.ssid+" ";
                     postData+=$scope.isopen.values+" ";
                     postData+=$scope.formData.psk ;
                     
