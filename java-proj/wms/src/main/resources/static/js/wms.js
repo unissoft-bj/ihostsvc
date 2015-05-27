@@ -137,11 +137,15 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
             url: "/main",
             templateUrl: "tpls/main.htm",
             controller: function($scope,$http,$cookieStore) {
-
+                $scope.isshow=false;
                 $http.get("secure/user")
                 .success(function(response) {
                     //alert(response.name);
-                    $scope.user = response;                    
+                    $scope.user = response; 
+                    
+                    if($scope.user.role=="ROLE_MANAGER"){
+                        $scope.isshow=true;
+                    }                  
                     //将用户信息放到cookie中
                     $cookieStore.put("user",response);
                     setCookie("user",getCookie("user"),365);                   
@@ -151,6 +155,7 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                      alert("非法登录");
                      window.location.href="#/login2"; 
                 });
+
 
                 $scope.logout = function(){
                     $http.get("/logout")
@@ -607,6 +612,260 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
             }
             
         })
+
+
+        //管理员界面
+        .state('manage', {
+            url: "/manage",
+            templateUrl: "tpls/manage.htm",
+            
+            controller:function($scope,$http,$cookieStore){
+                
+                    
+            }
+        })
+
+        //ihost登陆iserver
+        .state('manage_login', {
+            url: "/manage/login",
+            templateUrl: "tpls/manage/login.htm",
+            controller: function($scope,$http) {
+                $scope.login = function(){
+                     //alert($scope.formData.phone_pass);
+                    var loginData = "username="+$scope.formData.username+"&iserver="+$scope.formData.iserver+"&pwd="+$scope.formData.pwd;
+                    $http.post("/manage/login",loginData,{
+                        headers : {
+                        "content-type" : "application/x-www-form-urlencoded"
+                        }
+                    }).success(function(response) {                    
+                        window.location.href="#/manage/register";                    
+                    }).error(function(response) {
+                        window.location.href="#/manage/register";
+                        alert("非法操作");
+                        //alert(response);
+                        if (response.code=="phone_login") {
+                            alert("phone_login");
+                        } else{
+                            alert("非法操作");
+                        };
+                        
+                    });
+                }
+            }
+        })
         
+        //ihost注册活动
+        .state('manage_regiser', {
+            url: "/manage/register",
+            templateUrl: "tpls/manage/register.htm",
+            controller: function($scope,$http) {
+                $scope.people = [
+                    {
+                        id: 0,
+                        Organization: '组织1',
+                        project: [
+                            {
+                                id:0,
+                                projectName:"项目1",
+                                Activity:["活动11","活动12","活动13"]
+                            },
+                            {
+                                id:1,
+                                projectName:"项目2",
+                                Activity:["活动21","活动22","活动23"]
+                            },
+                            {
+                                id:2,
+                                projectName:"项目3",
+                                Activity:["活动31","活动32","活动33"]
+                            },
+                            {
+                                id:3,
+                                projectName:"项目4",
+                                Activity:["活动41","活动42","活动43"]
+                            }
+                        ]
+                    },
+                    {
+                        id: 1,
+                        Organization: '组织2',
+                        project: [
+                            {
+                                id:0,
+                                projectName:"项目1",
+                                Activity:["活动11","活动12","活动13"]
+                            },
+                            {
+                                id:1,
+                                projectName:"项目2",
+                                Activity:["活动21","活动22","活动23"]
+                            },
+                            {
+                                id:2,
+                                projectName:"项目3",
+                                Activity:["活动31","活动32","活动33"]
+                            },
+                            {
+                                id:3,
+                                projectName:"项目4",
+                                Activity:["活动41","活动42","活动43"]
+                            }
+                        ]
+                    },
+                    {
+                        id: 2,
+                        Organization: '组织3',
+                        project: [
+                            {
+                                id:0,
+                                projectName:"项目1",
+                                Activity:["活动11","活动12","活动13"]
+                            },
+                            {
+                                id:1,
+                                projectName:"项目2",
+                                Activity:["活动21","活动22","活动23"]
+                            },
+                            {
+                                id:2,
+                                projectName:"项目3",
+                                Activity:["活动31","活动32","活动33"]
+                            },
+                            {
+                                id:3,
+                                projectName:"项目4",
+                                Activity:["活动41","活动42","活动43"]
+                            }
+                        ]
+                    }
+                ];
+                $scope.login = function(){
+                     //alert($scope.formData.phone_pass);
+                    var loginData = "username="+$scope.formData.username+"&iserver="+$scope.formData.iserver+"&pwd="+$scope.formData.pwd;
+                    $http.post("/manage/regiser",loginData,{
+                        headers : {
+                        "content-type" : "application/x-www-form-urlencoded"
+                        }
+                    }).success(function(response) {                    
+                        window.location.href="#/manage/register";                    
+                    }).error(function(response) {
+                        window.location.href="#/manage/register";
+                        alert("注册成功");
+                        //alert(response);
+                        if (response.code=="phone_login") {
+                            alert("phone_login");
+                        } else{
+                            alert("非法操作");
+                        };
+                        
+                    });
+                }
+            }
+        })
+        
+        //提交位置信息
+        .state('manage_location', {
+            url: "/manage/location",
+            templateUrl: "tpls/manage/location.htm",
+
+            controller: function($scope,$http) {
+                $scope.formdata={};
+                function getLocation()
+                  {
+                  if (navigator.geolocation)
+                    {
+                    navigator.geolocation.getCurrentPosition(showPosition);
+                    }
+                  else{x.innerHTML="Geolocation is not supported by this browser.";}
+                  };
+                function showPosition(position)
+                  {
+                    latitude = position.coords.latitude;
+                    longitude = position.coords.longitude;
+                    alert(latitude); 
+                    alert(longitude);
+                    $scope.formdata.location0=latitude+"|"+longitude;
+                    
+                  };
+                
+                $scope.setLocation = function(){                 
+                    if (navigator.geolocation) {
+                        console.log("浏览器支持!");
+                        getLocation();                        
+                     }
+                    else {
+                         console.log("浏览器不支持!");
+                         alert("您的浏览器不支持位置信息");
+                     }
+                   
+                }
+
+                $scope.sendLocation = function(){
+                     //alert($scope.formData.phone_pass);
+                    
+                    $http.post("/manage/location",$scope.formdata)
+                    .success(function(response) {                    
+                        alert($scope.formdata.location0);           
+                    }).error(function(response) {
+                        
+                        alert($scope.formdata.location0);
+                        
+                        
+                    });
+                }
+            }
+        })
+        
+        //无线接入参数
+        .state('manage_wirelessCfg', {
+            url: "/manage/wirelessCfg",
+            templateUrl: "tpls/manage/wirelessCfg.htm",
+            controller: function($scope,$http) {
+            
+                $scope.people = [
+                    {
+                        id: 0,
+                        Organization: '带宽',
+                        values:'bandwidth',
+                        
+                    },
+                    {
+                        id: 1,
+                        Organization: '时长',
+                        values:'session',
+                        
+                    },
+                    {
+                        id: 2,
+                        Organization: '宽限期',
+                        values:'idle',
+                        
+                    },
+                    {
+                        id: 3,
+                        Organization: '下发DNS',
+                        values:'clientdns',
+                        
+                    },
+                    {
+                        id: 4,
+                        Organization: '默许网站',
+                        values:'garden',
+                        
+                    }
+                ];
+
+                $scope.login = function(){
+                    postData = "ihostset.sh ";
+                    postData+=$scope.selectedOrg.values+" ";
+                    postData+=$scope.formData.para1+" ";
+                    postData+=$scope.formData.para2+" ";
+                    postData+=$scope.formData.para3+" ";
+                    postData+=$scope.formData.para4+" ";
+                    alert(postData);
+                }
+                
+            }
+        })
         ;
 });
