@@ -1104,5 +1104,24 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                 
             }
         })
+        
+        //清理测试数据
+        .state('manage_cleanTestData', {
+            url: "/manage/cleanTestData",
+            templateUrl: "tpls/manage/cleanTestData.htm",
+            controller: function($scope,$http) {
+                        
+                $scope.formData={timeLength:'5'};
+                
+                $scope.login = function(){
+                    postData = "";
+                    postData+=$scope.formData.timeLength;
+                    alert(postData);
+                }
+                
+                
+            }
+        })
+        
         ;
 });
