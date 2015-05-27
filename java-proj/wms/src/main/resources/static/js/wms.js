@@ -624,7 +624,10 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
             templateUrl: "tpls/manage.htm",
             
             controller:function($scope,$http,$cookieStore){
-                
+                $scope.ihostReset=function($scope,$http){
+                    var postData="ihostset.sh reboot";
+                    alert(postData);
+                }
                     
             }
         })
@@ -1111,6 +1114,30 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
             templateUrl: "tpls/manage/cleanTestData.htm",
             controller: function($scope,$http) {
                         
+                $scope.formData={timeLength:'5'};
+                
+                $scope.login = function(){
+                    postData = "";
+                    postData+=$scope.formData.timeLength;
+                    alert(postData);
+                }
+                
+                
+            }
+        })
+
+        //系统升级
+        .state('manage_sysUpgrade', {
+            url: "/manage/sysUpgrade",
+            templateUrl: "tpls/manage/sysUpgrade.htm",
+            controller: function($scope,$http) {
+                $http.get("/version"). 
+                success(function(response) {                    
+                       $scope.version = response;
+                       $scope.msg="ihost版本为"+$scope.version;                   
+                    }).error(function(response) {
+                        $scope.msg="获取ihost版本信息失败";
+                    });
                 $scope.formData={timeLength:'5'};
                 
                 $scope.login = function(){
