@@ -867,5 +867,58 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                 
             }
         })
+        
+        //网络环境数据
+        .state('manage_networkEnv', {
+            url: "/manage/networkEnv",
+            templateUrl: "tpls/manage/networkEnv.htm",
+            controller: function($scope,$http) {
+            
+                $scope.project = [
+                    {
+                        id: 0,
+                        Organization: '终端发现',
+                        values:'wlansniff',
+                        
+                    },
+                    {
+                        id: 1,
+                        Organization: '网址记录',
+                        values:'lansniff',
+                        
+                    },
+                    
+                ];
+
+                
+
+                $scope.state = [
+                    {
+                        id: 0,
+                        Organization: 'on',
+                        values:'on',
+                        
+                    },
+                    {
+                        id: 1,
+                        Organization: 'off',
+                        values:'off',
+                        
+                    },
+                    
+                ];
+
+                
+
+                $scope.login = function(){
+                    postData = "ihostset.sh ";
+                    postData+=$scope.selectedOrg.values+" ";
+                    postData+=$scope.selectedState.values+" ";
+                    
+                    alert(postData);
+                }
+                
+            }
+        })
         ;
 });
