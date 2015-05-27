@@ -942,7 +942,9 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                     },
                     
                 ];
-
+                $scope.formData={};
+                $scope.formData.para1="";
+                $scope.formData.para2="";
                 $scope.login = function(){
                     postData = "ihostset.sh ";
                     postData+=$scope.selectedOrg.values+" ";
@@ -960,6 +962,11 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
             url: "/manage/netMode",
             templateUrl: "tpls/manage/netMode.htm",
             controller: function($scope,$http) {
+                $scope.formData={};
+                $scope.formData.para1="";
+                $scope.formData.para2="";
+                $scope.formData.para3="";
+                $scope.formData.para4="";
                 $scope.login = function(){
                     postData = "ihostmod.sh ";
                     
@@ -967,6 +974,61 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                     postData+=$scope.formData.para2+" ";
                     postData+=$scope.formData.para3+" ";
                     postData+=$scope.formData.para4+" ";
+                    
+                    alert(postData);
+                }
+                
+            }
+        })
+
+        //接入点参数
+        .state('manage_APCfg', {
+            url: "/manage/APCfg",
+            templateUrl: "tpls/manage/APCfg.htm",
+            controller: function($scope,$http) {
+                 $scope.jian = [
+                    {
+                        id: 0,
+                        Organization: '可见',
+                        values:'vis',
+                        
+                    },
+                    {
+                        id: 1,
+                        Organization: '隐藏',
+                        values:'hid',
+                        
+                    },
+                    
+                ];
+
+                
+
+                $scope.cang = [
+                    {
+                        id: 0,
+                        Organization: '开放',
+                        values:'open',
+                        
+                    },
+                    {
+                        id: 1,
+                        Organization: '加密',
+                        values:'secu',
+                        
+                    },
+                    
+                ];
+
+                
+
+                $scope.login = function(){
+                    postData = "apmod.sh ";
+                    postData+=$scope.formData.ssid+" ";
+                    postData+=$scope.formData.channel+" " ;
+                    postData+=$scope.issee.values+" ";
+                    postData+=$scope.isopen.values+" ";
+                    postData+=$scope.formData.psk ;
                     
                     alert(postData);
                 }
