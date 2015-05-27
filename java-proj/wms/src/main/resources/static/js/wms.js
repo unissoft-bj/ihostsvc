@@ -7,7 +7,8 @@ function CurentTime()
         var day = now.getDate();            //日
        
         var hh = now.getHours();            //时
-        var mm = now.getMinutes();          //分
+        var mm = now.getMinutes(); 
+        var ss = now.getSeconds();         //分
        
         var clock = year + "-";
        
@@ -26,8 +27,11 @@ function CurentTime()
            
         clock += hh + ":";
         if (mm < 10) clock += '0'; 
-        clock += mm; 
-        return(clock+":00"); 
+        clock += mm + ":";
+
+        if(ss <10 ) clock +='0';
+        clock+=ss; 
+        return(clock); 
     } 
 
 function getCookie(c_name)
@@ -1062,6 +1066,38 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                     postData+=$scope.formData.ssid+" ";
                     postData+=$scope.isopen.values+" ";
                     postData+=$scope.formData.psk ;
+                    
+                    alert(postData);
+                }
+                
+            }
+        })
+
+        //系统时间
+        .state('manage_sysTime', {
+            url: "/manage/sysTime",
+            templateUrl: "tpls/manage/sysTime.htm",
+            controller: function($scope,$http) {
+                $scope.ihostTime ="";
+                $http.get("/sysTime"). 
+                success(function(response) {                    
+                       $scope.ihostTime = response;
+                       $scope.msg="ihost时间为"+$scope.ihostTime;                   
+                    }).error(function(response) {
+                        $scope.msg="获取ihost时间失败";
+                    });
+                                
+                $scope.formData={localTime:'',ntp:'202.120.2.101'};
+                $scope.formData.localTime=CurentTime();
+                $scope.localSet = function(){
+                    postData = "ihostset.sh systime local ";
+                    postData+=$scope.formData.localTime;
+                    alert(postData);
+                }
+                $scope.ntpSet = function(){
+                    postData = "ihostset.sh systime ntp ";
+                    
+                    postData+=$scope.formData.ntp ;
                     
                     alert(postData);
                 }
