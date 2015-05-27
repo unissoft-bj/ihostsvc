@@ -920,5 +920,39 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                 
             }
         })
+
+        //DNS参数
+        .state('manage_DNSCfg', {
+            url: "/manage/DNSCfg",
+            templateUrl: "tpls/manage/DNSCfg.htm",
+            controller: function($scope,$http) {
+            
+                $scope.project = [
+                    {
+                        id: 0,
+                        Organization: 'DNS强制',
+                        values:'dnsspoof',
+                        
+                    },
+                    {
+                        id: 1,
+                        Organization: '上位DNS',
+                        values:'upstreamdns',
+                        
+                    },
+                    
+                ];
+
+                $scope.login = function(){
+                    postData = "ihostset.sh ";
+                    postData+=$scope.selectedOrg.values+" ";
+                    postData+=$scope.formData.para1+" ";
+                    postData+=$scope.formData.para2+" ";
+                    
+                    alert(postData);
+                }
+                
+            }
+        })
         ;
 });
