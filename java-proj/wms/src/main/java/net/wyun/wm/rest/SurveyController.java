@@ -169,8 +169,8 @@ public class SurveyController {
 	private void saveSurvey(Survey survey){
 		Answer[] ans = survey.getAnswers();
 		Surveyee surveyee = survey.getSurveyee();
-		if(surveyee.getCreate_t() == null){
-			surveyee.setCreate_t(new Date());
+		if(surveyee.getCreatet() == null){
+			surveyee.setCreatet(new Date());
 		}
 		
 		//save surveyee
