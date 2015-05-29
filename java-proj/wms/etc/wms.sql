@@ -90,7 +90,7 @@ CREATE TABLE if not exists account (
 # mac
 #############################################################
 CREATE TABLE if not exists mac (
-    mac_id        int unsigned       NOT NULL auto_increment primary key,
+    mac_id        VARCHAR(36)        primary key,
     mac           BIGINT UNSIGNED    NOT NULL,
 #    token        int UNSIGNED       NOT NULL,                         #   history. use the latest to verify account, sms 上网码/
     password      VARCHAR(36)        NOT NULL,                          #   password for mac/pw login
@@ -108,8 +108,8 @@ CREATE TABLE if not exists mac (
 # mac_account
 #############################################################
 CREATE TABLE if not exists mac_account (
-    id                int unsigned        NOT NULL auto_increment primary key,
-    mac_id            int unsigned        NOT NULL,
+    id                varchar(36)         primary key,
+    mac_id            varchar(36)         NOT NULL,
     account_id        varchar(36)         NOT NULL,
     create_t          timestamp           NOT NULL,
     modify_t          timestamp           DEFAULT 0,
@@ -250,7 +250,7 @@ CREATE TABLE if not exists device_ipvisit (
    id int             UNSIGNED              NOT NULL AUTO_INCREMENT,
    pkt_time           datetime              NOT NULL,
    pkt_time_ms        SMALLINT UNSIGNED     DEFAULT NULL,
-   pkt_src_mac        BIGINT UNSIGNED           DEFAULT NULL,
+   pkt_src_mac        BIGINT UNSIGNED       DEFAULT NULL,
    pkt_src_ip         varchar(64)           DEFAULT NULL,
    pkt_target_ip      varchar(64)           DEFAULT NULL,
    url                varchar(1024)         DEFAULT NULL,
