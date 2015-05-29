@@ -44,7 +44,7 @@ public class Account implements UserDetails {
 	
 	public Account(String phone) { 
 		this.phone = phone; 
-		this.create_t = new Date();
+		this.createt = new Date();
 	}
 	
 	@GeneratedValue(generator = "uuid")
@@ -66,7 +66,9 @@ public class Account implements UserDetails {
     
     private boolean sent_to_server = false; //   boolean         NOT NULL DEFAULT 0,                #   ?? flag for syn with iserver
     private boolean enabled = true; //          boolean         NOT NULL default 0,                #   for Admin usage
-    private Date create_t; //         datetime        DEFAULT NULL,	                    #	记录时间
+    
+    @Column(name = "create_t", nullable = false)
+    private Date createt; //         datetime        DEFAULT NULL,	                    #	记录时间
     private Date modify_t; //         datetime        DEFAULT NULL,	                    #	记录更新时间
 	
    
@@ -151,11 +153,11 @@ public class Account implements UserDetails {
 
 	@Column(name="create_t")
 	public Date getCreate_t() {
-		return create_t;
+		return createt;
 	}
 
 	public void setCreate_t(Date create_t) {
-		this.create_t = create_t;
+		this.createt = create_t;
 	}
 
 	@Column(name="modify_t")

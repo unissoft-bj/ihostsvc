@@ -21,6 +21,7 @@ import net.wyun.wm.domain.MacAccount;
 import net.wyun.wm.domain.account.Account;
 import net.wyun.wm.domain.role.Role;
 
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -43,18 +44,19 @@ public class Mac implements UserDetails{
 	 */
 	private static final long serialVersionUID = 2743400966884414348L;
 
-	public Mac(){create_t = new Date();}
+	public Mac(){createt = new Date();}
 	
 	public Mac(String macStr){
-		create_t = new Date();
+		createt = new Date();
 		this.mac = MacAddressUtil.toLong(macStr);
 		this.password = UUID.randomUUID().toString();
 	}
 	
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "mac_id")
-	private Integer id; // smallint unsigned NOT NULL auto_increment primary
+	@GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid")
+    @Column(name= "mac_id", columnDefinition = "VARCHAR(36)")
+    @Id
+	private String id; // smallint unsigned NOT NULL auto_increment primary
 						// key,
 
 	//private String phone; // varchar(30) NOT NULL,
@@ -67,15 +69,17 @@ public class Mac implements UserDetails{
 								// to be verified by sms
 	private boolean enabled; // boolean NOT NULL default 0, # if false, disable
 								// the account login with mac/password, user
-								// login with phone/pw
-	private Date create_t; // datetime NOT NULL,
+	
+	// login with phone/pw
+	@Column(name = "create_t", nullable = false)
+	private Date createt; // datetime NOT NULL,
 	private Date modify_t; // datetime DEFAULT NULL
 
-	public Integer getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -118,11 +122,11 @@ public class Mac implements UserDetails{
 	}
 
 	public Date getCreate_t() {
-		return create_t;
+		return createt;
 	}
 
 	public void setCreate_t(Date create_t) {
-		this.create_t = create_t;
+		this.createt = create_t;
 	}
 
 	public Date getModify_t() {
