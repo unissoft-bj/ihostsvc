@@ -19,7 +19,7 @@ import javax.persistence.Table;
 @Table(name = "auto_q_ans")
 public class Answer {
 	
-	public Answer() {this.create_t = new Date(); }
+	public Answer() {this.createt = new Date(); }
 
 	
 	private Integer    id; //             smallint unsigned     NOT NULL auto_increment primary key,
@@ -35,7 +35,16 @@ public class Answer {
 	String surveyee_id = "";
 	Integer q_id;               //  int               NOT NULL,
 	String  available_option;   // varchar(350)      not null DEFAULT '',   ## json string
-	Date    create_t;          //         datetime          not NULL,
+	
+	private Date    createt;          //         datetime          not NULL,
+	@Column(name = "create_t", nullable = false)
+	public Date getCreatet() {
+		return createt;
+	}
+
+	public void setCreatet(Date createt) {
+		this.createt = createt;
+	}
 
 	public String getSurveyee_id() {
 		return surveyee_id;
@@ -61,12 +70,6 @@ public class Answer {
 		this.available_option = available_option;
 	}
 
-	public Date getCreate_t() {
-		return create_t;
-	}
-
-	public void setCreate_t(Date create_t) {
-		this.create_t = create_t;
-	}
+	
 
 }

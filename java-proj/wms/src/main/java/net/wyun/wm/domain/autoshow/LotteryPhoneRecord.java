@@ -20,7 +20,7 @@ import javax.persistence.Table;
 @Table(name = "lottery_pool")
 public class LotteryPhoneRecord {
 	
-	public LotteryPhoneRecord() { this.create_t = new Date();	}
+	public LotteryPhoneRecord() { this.createt = new Date();	}
 
 	private Long    id; //             smallint unsigned     NOT NULL auto_increment primary key,
     
@@ -38,7 +38,17 @@ public class LotteryPhoneRecord {
 	private boolean  disabled = false;  //       boolean           NOT NULL default 0,
 	private boolean  selected = false; //         boolean           not null default 0,
 	private boolean  used = false; //             boolean           not null default 0,
-	private Date     create_t;  //         datetime          not NULL,
+	
+	private Date     createt;  //         datetime          not NULL,
+	@Column(name = "create_t", nullable = false)
+	public Date getCreatet() {
+		return createt;
+	}
+
+	public void setCreatet(Date createt) {
+		this.createt = createt;
+	}
+
 	private String   show_location = "";      //city name where show is performed
 
 
@@ -82,13 +92,6 @@ public class LotteryPhoneRecord {
 		this.used = used;
 	}
 
-	public Date getCreate_t() {
-		return create_t;
-	}
-
-	public void setCreate_t(Date create_t) {
-		this.create_t = create_t;
-	}
 	
 	public String getShow_location() {
 		return show_location;

@@ -24,7 +24,7 @@ import org.hibernate.annotations.GenericGenerator;
 @Table(name = "surveyee")
 public class Surveyee {
 	
-	public Surveyee() { create_t = new Date();	}
+	public Surveyee() { createt = new Date();	}
 	
 	@GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid")
@@ -38,7 +38,18 @@ public class Surveyee {
 	private String  city;   //           varchar(36)       not null DEFAULT '',
 	private String  phone; //          varchar(10)       not null DEFAULT '',
 	private boolean has_car; //        boolean           not null DEFAULT 0,
-	private Date    create_t; //      datetime          not NULL,
+	
+	@Column(name = "create_t", nullable = false)
+	private Date    createt; //      datetime          not NULL,
+	
+	
+	public Date getCreatet() {
+		return createt;
+	}
+	public void setCreatet(Date createt) {
+		this.createt = createt;
+	}
+
 	private Date    modify_t; //       datetime          DEFAULT NULL,
 	private String  show_location;  //  VARCHAR(36)       NOT NULL DEFAULT '',
 	
@@ -84,12 +95,7 @@ public class Surveyee {
 	public void setHas_car(boolean has_car) {
 		this.has_car = has_car;
 	}
-	public Date getCreate_t() {
-		return create_t;
-	}
-	public void setCreate_t(Date create_t) {
-		this.create_t = create_t;
-	}
+	
 	public Date getModify_t() {
 		return modify_t;
 	}
