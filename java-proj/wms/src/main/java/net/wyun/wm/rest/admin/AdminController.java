@@ -36,6 +36,8 @@ public class AdminController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
 	
+	private static final String CMD_PREFIX = "sudo /root/";
+	
 	/**
 	 * ihostset.sh reboot
 	 * ihostset.sh systime local '2015-05-23 21:03:01
@@ -45,7 +47,7 @@ public class AdminController {
 	@RequestMapping(value="/ihostset", method=RequestMethod.POST)
 	public String configureIhost(@RequestBody IhostCmdRequest cmdReq){
 		//reboot ihost
-		String cmd = cmdReq.getCommand();
+		String cmd = CMD_PREFIX + cmdReq.getCommand();
 		logger.info("configure ihost now: " + cmd);
 		WmsProcessExecutorHandler chHandler = new WmsProcessExecutorHandler();
 		Future<Long> future;
