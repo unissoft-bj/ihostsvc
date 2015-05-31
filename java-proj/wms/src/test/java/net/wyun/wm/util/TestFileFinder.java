@@ -24,14 +24,14 @@ public class TestFileFinder {
 
 	@Test
 	public void testFindWavFileOlderThan() throws IOException {
-		FileFinder finder = new FileFinder("*.wav", 60);
+		FileFinder finder = new FileFinder("*.wav", 30);
 		Files.walkFileTree(Paths.get("/home/michael/temp"), finder);
 		
 		Collection<Path> matchedFiles = finder.getMatchedPaths();
 		
 		for(Path path : matchedFiles){
 			System.out.println(path.getParent().toString() + '/' + path.getFileName());
-			path.toFile().delete();
+			//path.toFile().delete();
 		}
 	}
 
