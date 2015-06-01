@@ -121,7 +121,7 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                     }).success(function(response) {                    
                         window.location.href="#/diaocha_over";                    
                     }).error(function(response) {
-                        alert("非法操作");
+                        //alert("非法操作");
                         window.location.href="#/diaocha1"; 
                         //alert(response);
                         if (response.code=="phone_login") {
@@ -210,12 +210,12 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                     }).success(function(response) {                    
                         window.location.href="#/main";                    
                     }).error(function(response) {
-                        alert("非法操作");
+                        //alert("非法操作");
                         //alert(response);
                         if (response.code=="phone_login") {
                             alert("phone_login");
                         } else{
-                            alert("非法操作");
+                           // alert("非法操作");
                         };
                         
                     });
@@ -648,12 +648,12 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                         window.location.href="#/manage/register";                    
                     }).error(function(response) {
                         window.location.href="#/manage/register";
-                        alert("非法操作");
+                        //alert("非法操作");
                         //alert(response);
                         if (response.code=="phone_login") {
                             alert("phone_login");
                         } else{
-                            alert("非法操作");
+                            //alert("非法操作");
                         };
                         
                     });
@@ -762,7 +762,7 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                         if (response.code=="phone_login") {
                             alert("phone_login");
                         } else{
-                            alert("非法操作");
+                            //alert("非法操作");
                         };
                         
                     });
@@ -813,10 +813,8 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                     $http.post("/manage/location",$scope.formdata)
                     .success(function(response) {                    
                         alert($scope.formdata.location0);           
-                    }).error(function(response) {
-                        
-                        alert($scope.formdata.location0);
-                        
+                    }).error(function(response) {                        
+                        alert($scope.formdata.location0);                       
                         
                     });
                 }
@@ -873,7 +871,16 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                     postData+=$scope.formData.para2+" ";
                     postData+=$scope.formData.para3+" ";
                     postData+=$scope.formData.para4+" ";
-                    alert(postData);
+                    
+                    postD={};
+                    postD.command = postData;
+                    
+                    $http.post("/admin/ihostset",postD)
+                    .success(function(response) {                    
+                        alert("提交成功");           
+                    }).error(function(response) {                        
+                        alert("提交失败"); 
+                    });
                 }
                 
             }
@@ -926,7 +933,15 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                     postData+=$scope.selectedOrg.values+" ";
                     postData+=$scope.selectedState.values+" ";
                     
-                    alert(postData);
+                    postD={};
+                    postD.command = postData;
+                    
+                    $http.post("/admin/ihostset",postD)
+                    .success(function(response) {                    
+                        alert("提交成功");           
+                    }).error(function(response) {                        
+                        alert("提交失败"); 
+                    });
                 }
                 
             }
@@ -962,7 +977,15 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                     postData+=$scope.formData.para1+" ";
                     postData+=$scope.formData.para2+" ";
                     
-                    alert(postData);
+                    postD={};
+                    postD.command = postData;
+                    
+                    $http.post("/admin/ihostset",postD)
+                    .success(function(response) {                    
+                        alert("提交成功");           
+                    }).error(function(response) {                        
+                        alert("提交失败"); 
+                    });
                 }
                 
             }
@@ -986,7 +1009,15 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                     postData+=$scope.formData.para3+" ";
                     postData+=$scope.formData.para4+" ";
                     
-                    alert(postData);
+                    postD={};
+                    postD.command = postData;
+                    
+                    $http.post("/admin/ihostset",postD)
+                    .success(function(response) {                    
+                        alert("提交成功");           
+                    }).error(function(response) {                        
+                        alert("提交失败"); 
+                    });
                 }
                 
             }
@@ -1036,7 +1067,15 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                     postData+=$scope.isopen.values+" ";
                     postData+=$scope.formData.psk ;
                     
-                    alert(postData);
+                    postD={};
+                    postD.command = postData;
+                    
+                    $http.post("/admin/ihostset",postD)
+                    .success(function(response) {                    
+                        alert("提交成功");           
+                    }).error(function(response) {                        
+                        alert("提交失败"); 
+                    });
                 }
                 
             }
@@ -1070,7 +1109,15 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                     postData+=$scope.isopen.values+" ";
                     postData+=$scope.formData.psk ;
                     
-                    alert(postData);
+                    postD={};
+                    postD.command = postData;
+                    
+                    $http.post("/admin/ihostset",postD)
+                    .success(function(response) {                    
+                        alert("提交成功");           
+                    }).error(function(response) {                        
+                        alert("提交失败"); 
+                    });
                 }
                 
             }
@@ -1093,16 +1140,30 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                 $scope.formData={localTime:'',ntp:'202.120.2.101'};
                 $scope.formData.localTime=CurentTime();
                 $scope.localSet = function(){
-                    postData = "ihostset.sh systime local ";
-                    postData+=$scope.formData.localTime;
-                    alert(postData);
+                    postData = "ihostset.sh systime local '";
+                    postData+=$scope.formData.localTime+"'";
+                    postD={};
+                    postD.command = postData;                    
+                    $http.post("/admin/ihostset",postD)
+                    .success(function(response) {                    
+                        alert("提交成功");           
+                    }).error(function(response) {                        
+                        alert("提交失败"); 
+                    });
                 }
                 $scope.ntpSet = function(){
                     postData = "ihostset.sh systime ntp ";
                     
                     postData+=$scope.formData.ntp ;
+                    postD={};
+                    postD.command = postData;
                     
-                    alert(postData);
+                    $http.post("/admin/ihostset",postD)
+                    .success(function(response) {                    
+                        alert("提交成功");           
+                    }).error(function(response) {                        
+                        alert("提交失败"); 
+                    });
                 }
                 
             }
@@ -1119,7 +1180,17 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                 $scope.login = function(){
                     postData = "";
                     postData+=$scope.formData.timeLength;
-                    alert(postData);
+                    
+
+                    postD={};
+                    postD.minutes = postData;
+                    console.log(postD);
+                    $http.post("/admin/clean/testdata",postD)
+                    .success(function(response) {                    
+                        alert("提交成功");           
+                    }).error(function(response) {                        
+                        alert("提交失败"); 
+                    });
                 }
                 
                 
