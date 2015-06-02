@@ -1,3 +1,20 @@
+function isjsMobile(obj){
+    if(obj.length!=11) return false;
+    else if(obj.substring(0,2)!="13" && obj.substring(0,2)!="15" && obj.substring(0,2)!="18") return false;
+    else if(isNaN(obj)) return false;
+    else  return true;
+}
+
+function hasDig(str)
+{
+    for(var i = 0;i < 10;i++)
+        if(str.indexOf(i.toString()) != -1)
+        {
+            //alert("字符串含有数字");
+            return true;
+        }
+    return false;
+}
 function CurentTime()
     { 
         var now = new Date();
@@ -459,6 +476,10 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                         alert("请输入姓名");
                         return false;
                     }
+                    if(hasDig($scope.formData.name)==true){
+                        alert("姓名中不能包含数字");
+                        return false;
+                    }
                     if($scope.formData.age==null){
                         alert("请输入年龄");
                         return false;
@@ -473,6 +494,10 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                     }
                     if($scope.formData.phone==null){
                         alert("请输入手机号");
+                        return false;
+                    }
+                    if(isjsMobile($scope.formData.phone)==false){
+                        alert("请输入合法的手机号");
                         return false;
                     }
                     if($scope.formData.has_car==null){
