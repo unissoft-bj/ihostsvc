@@ -144,7 +144,7 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                         if (response.code=="phone_login") {
                             alert("phone_login");
                         } else{
-                            alert("非法操作");
+                            //alert("非法操作");
                         };
                         
                     });
@@ -173,7 +173,7 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                     //alert($cookieStore.get("user").name);
                 })
                 .error(function() {
-                     alert("非法登录");
+                     //alert("非法登录");
                      window.location.href="#/login2"; 
                 });
 
@@ -186,7 +186,7 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                         window.location.href="#/login1";
                     })
                     .error(function(){
-                        alert("未知错误");
+                        //alert("未知错误");
                     });
 
                 };
@@ -230,7 +230,7 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                         //alert("非法操作");
                         //alert(response);
                         if (response.code=="phone_login") {
-                            alert("phone_login");
+                            //alert("phone_login");
                         } else{
                            // alert("非法操作");
                         };
@@ -651,7 +651,16 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
             controller:function($scope,$http,$cookieStore){
                 $scope.ihostReset=function($scope,$http){
                     var postData="ihostset.sh reboot";
-                    alert(postData);
+                    //alert(postData);
+                    postD={};
+                    postD.command = postData;
+                    
+                    $http.post("/admin/ihostset",postD)
+                    .success(function(response) {                    
+                        alert("系统重启，请确认！");           
+                    }).error(function(response) {                        
+                        alert("提交失败"); 
+                    });
                 }
                     
             }
