@@ -34,12 +34,15 @@ public class AccountBootStrap {
 	@PostConstruct
 	public void checkTokenTable() throws IOException {
 		int cnt = tokenRepo.findCount(); 
+		logger.info("{} tokens found", cnt);
+		
 		if(cnt == 0){
 			logger.info("create the bootstrap token for system now");
 			
 			Token first = new Token("2064916276", 2015168);
 			first.setUser_role(UserRole.ROLE_MANAGER);
 			tokenRepo.save(first);
+			return;
 		}
 		
 		if(cnt == 1){
@@ -47,12 +50,28 @@ public class AccountBootStrap {
 			for(Token t:ts){
 				if(t.isUsed()) {
 					logger.info("token has been used.");
-					break;
+					//break;
+					t.setUsed(false);
 				}
 				
 				t.setCreate_t(new Date());
 				tokenRepo.save(t);
 			}
+			return;
+		}
+		
+		//more than 1 token in table; to be removed in the future
+		Iterable<Token> ts = tokenRepo.findAll();
+		for(Token t:ts){
+			
+			if(t.getPhone().equals("2064916276")){
+				logger.info("manager token has been used. re-activate it.");
+				t.setUsed(false);
+				t.setCreate_t(new Date());
+				tokenRepo.save(t);
+				break;
+			}
+			
 		}
 	}
 	
