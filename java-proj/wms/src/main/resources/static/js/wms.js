@@ -654,14 +654,37 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
                     //alert(postData);
                     postD={};
                     postD.command = postData;
-                    
+                    console.log(postD);
                     $http.post("/admin/ihostset",postD)
                     .success(function(response) {                    
-                        alert("系统重启，请确认！");           
+                        alert("提交成功");           
                     }).error(function(response) {                        
                         alert("提交失败"); 
                     });
                 }
+                    
+            }
+        })
+
+        .state('manage_reset', {
+            url: "/manage/reset",
+            //templateUrl: "tpls/manage/login.htm",
+            
+            controller:function($scope,$http,$cookieStore){
+                
+                    var postData="ihostset.sh reboot";
+                    //alert(postData);
+                    postD={};
+                    postD.command = postData;
+                    console.log(postD);
+                    $http.post("/admin/ihostset",postD)
+                    .success(function(response) {                    
+                        alert("提交成功"); 
+                        window.location.href="#/manage";         
+                    }).error(function(response) {                        
+                        window.location.href="#/manage";
+                    });
+                
                     
             }
         })
@@ -1163,10 +1186,10 @@ myUIRoute.config(function($stateProvider, $urlRouterProvider) {
             templateUrl: "tpls/manage/sysTime.htm",
             controller: function($scope,$http) {
                 $scope.ihostTime ="";
-                $http.get("/sysTime"). 
+                $http.get("/secure/resource"). 
                 success(function(response) {                    
                        $scope.ihostTime = response;
-                       $scope.msg="ihost时间为"+$scope.ihostTime;                   
+                       $scope.msg="ihost时间为"+$scope.ihostTime.now;                   
                     }).error(function(response) {
                         $scope.msg="获取ihost时间失败";
                     });
