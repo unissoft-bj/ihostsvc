@@ -13,6 +13,7 @@ import net.wyun.wm.domain.token.TokenRepository;
 import net.wyun.wm.domain.token.TokenRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Xuecheng
  *
  */
+@PreAuthorize("hasRole('ROLE_MANAGER')") //not working, need configuration
 @RequestMapping("/secure")
 @RestController
 public class TokenController {

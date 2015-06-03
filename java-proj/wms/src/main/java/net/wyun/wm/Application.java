@@ -5,13 +5,21 @@
 package net.wyun.wm;
 
 
+import java.text.SimpleDateFormat;
+
+import net.wyun.wm.util.CustomDateSerializer;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
-@ComponentScan("net.wyun")
+@ComponentScan(basePackages = {"net.wyun.wm"},
+                  excludeFilters = @ComponentScan.Filter(type = FilterType.ASPECTJ, pattern = "net.wyun.wm.audio.*"))
 @EnableAutoConfiguration
 public class Application {
 	
@@ -23,7 +31,7 @@ public class Application {
 	
 	public Application(){
 		super();
-		logger.info("initialize wlsp service now...");
+		logger.info("initialize wms service now...");
 		logger.info("set up global unhandled exception handler.");
 		Thread.setDefaultUncaughtExceptionHandler(
                 new Thread.UncaughtExceptionHandler() {
@@ -31,5 +39,12 @@ public class Application {
                         logger.error(t.getName()+": "+e);
                     }
                 });
+	}
+	
+	@Bean
+	public Jackson2ObjectMapperBuilder jacksonBuilder() {
+	    Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder();
+	    builder.indentOutput(true).dateFormat(new SimpleDateFormat(CustomDateSerializer.WMS_DATE_FORMAT));
+	    return builder;
 	}
 }

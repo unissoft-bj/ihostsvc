@@ -15,6 +15,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import net.wyun.wm.domain.account.Account;
@@ -28,11 +30,14 @@ import net.wyun.wm.domain.mac.Mac;
 @Table(name = "mac_account")
 @JsonIgnoreProperties({"id", "mac"})
 public class MacAccount {
+	
+	public MacAccount(){ this.create_t = new Date();}
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "id")
-	private Integer id; // int unsigned NOT NULL auto_increment primary key,
+	@GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid")
+    @Column(name= "id", columnDefinition = "VARCHAR(36)")
+    @Id
+	private String id; // int unsigned NOT NULL auto_increment primary key,
 
 	@ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "mac_id", referencedColumnName="mac_id")  //id in Mac class
@@ -63,11 +68,11 @@ public class MacAccount {
 
 	
 	
-	public Integer getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

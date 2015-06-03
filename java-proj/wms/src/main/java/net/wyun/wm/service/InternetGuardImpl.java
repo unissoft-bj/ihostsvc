@@ -47,10 +47,10 @@ public class InternetGuardImpl implements InternetGuard{
 	}
 	
 	private final static String open_prefix = "chilli_query authorize ip ";
-	private final static String open_affix = " sessiontimeout 86400";
+	private final static String open_affix = " sessiontimeout 86400"; //in configuration file
 	private static ChilliQueryProcessExecutorHandler openInternet(String ip) throws IOException, InterruptedException, ExecutionException, TimeoutException{
 		ChilliQueryProcessExecutorHandler chHandler = new ChilliQueryProcessExecutorHandler();
-		String command = open_prefix + ip  +  open_affix;
+		String command = open_prefix + ip; // +  open_affix;
 		Future<Long> future =	ProcessExecutor.runProcess(CommandLine.parse(command), chHandler, 1500);
 		Long ret = future.get(1, TimeUnit.SECONDS);
 		logger.debug("return code: {}", ret);

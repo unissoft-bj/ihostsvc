@@ -18,7 +18,12 @@ DROP TABLE IF EXISTS recpt_activity;
 DROP TABLE IF EXISTS role;              
 DROP TABLE IF EXISTS role_permission;   
 DROP TABLE IF EXISTS token;             
-DROP TABLE IF EXISTS user_info;         
+DROP TABLE IF EXISTS user_info;       
+DROP TABLE IF EXISTS eth_packet;
+DROP TABLE IF EXISTS lottery_pool;
+DROP TABLE IF EXISTS auto_q;
+DROP TABLE IF EXISTS auto_q_ans;
+DROP TABLE IF EXISTS surveyee;
 
 
 ## Tables for user registration
@@ -40,19 +45,19 @@ DROP TABLE IF EXISTS user_info;
 ###############################################################
 CREATE TABLE if not exists user_info (
     id             VARCHAR(36)       primary key NOT NULL,
-    first_name     varchar(20)       DEFAULT NULL,	        #	名字 
-    last_name      varchar(20)       DEFAULT NULL,	        #	姓   
+    name           varchar(40)       DEFAULT NULL,	        #	姓   
     email          varchar(64)       NOT NULL DEFAULT '',
     byear          smallint          DEFAULT NULL,	        #	生日，年 // move to user_info. It can be obtained in different ways.
     bmonth         smallint          DEFAULT NULL,	        #	生日，月
     bday           smallint          DEFAULT NULL,	        #	生日，日
-    gender         char(1)           NOT NULL DEFAULT 'M',	#	性别  //user info.
+    age            smallint          DEFAULT 0,
+    gender         varchar(6)        NOT NULL DEFAULT 'MALE',	#	性别  //user info.
     occupation     varchar(30)       NOT NULL DEFAULT '',	#	职业 // user info
-    company        varchar(64)       DEFAULT NULL,	        #	工作单位 //user info
-    title          varchar(32)       DEFAULT NULL,	        #	职务 // user info.
+    company        varchar(64)       NOT NULL DEFAULT '',	        #	工作单位 //user info
+    title          varchar(32)       NOT NULL DEFAULT '',	        #	职务 // user info.
     cid            varchar(30)       DEFAULT '000000',	    #	证件号, cid + ctype
     ctype          varchar(10)       DEFAULT NULL,	        #	证件类别 //remove.
-    address        varchar(128)      DEFAULT NULL,	        #	地址 // to memo
+    address        varchar(128)      NOT NULL DEFAULT '',	        #	地址 // to memo
     location       varchar(32)       DEFAULT NULL	        #	所在区域 //to memo
 )  DEFAULT CHARSET=utf8;
 
@@ -65,7 +70,7 @@ CREATE TABLE if not exists user_info (
 ##2，基于业务逻辑的上传，集中到iserver（与基于统计分析的上传不同）
 ##3，在另一个ihost上创建account时，可以选择下载，实现同步。如果不选择下载，则不同步（user account不同步不影响数据分析层面的identification）
 CREATE TABLE if not exists account (
-    account_id               VARCHAR(36)     primary key,                       #   id int unsigned NOT NULL auto_increment primary key, the same user can have differennt account at different ihost
+    account_id       VARCHAR(36)     primary key,                       #   id int unsigned NOT NULL auto_increment primary key, the same user can have differennt account at different ihost
     phone            varchar(30)     DEFAULT NULL,	                    #	常用电话号码 , mobile phone number for receiving sms., one account --> one phone number
     password         varchar(20)     DEFAULT '',                         #   password use for secure login, optional, try mac/password login first. For internal users
     point            int             DEFAULT 0,	                    #	userid下的积分 ?? better name
@@ -85,14 +90,15 @@ CREATE TABLE if not exists account (
 # mac
 #############################################################
 CREATE TABLE if not exists mac (
-    mac_id            int unsigned       NOT NULL auto_increment primary key,
+    mac_id        VARCHAR(36)        primary key,
     mac           BIGINT UNSIGNED    NOT NULL,
-#    token         int UNSIGNED       NOT NULL,                         #   history. use the latest to verify account, sms 上网码/
+#    token        int UNSIGNED       NOT NULL,                         #   history. use the latest to verify account, sms 上网码/
     password      VARCHAR(36)        NOT NULL,                          #   password for mac/pw login
     smscheck      boolean            NOT NULL default 0,                #   if the user needs to be verified by sms
     enabled       boolean            NOT NULL default 0,                #   if false, disable the account login with mac/password, user login with phone/pw
     create_t      datetime           NOT NULL,
-    modify_t      datetime           DEFAULT NULL
+    modify_t      datetime           DEFAULT NULL,
+    unique        index              mac_idx1 (mac)
 )DEFAULT CHARSET=utf8;
 
 # one phone number mapping to an account, but it could be mapped to multiple mac
@@ -102,8 +108,8 @@ CREATE TABLE if not exists mac (
 # mac_account
 #############################################################
 CREATE TABLE if not exists mac_account (
-    id                int unsigned        NOT NULL auto_increment primary key,
-    mac_id            int unsigned        NOT NULL,
+    id                varchar(36)         primary key,
+    mac_id            varchar(36)         NOT NULL,
     account_id        varchar(36)         NOT NULL,
     create_t          timestamp           NOT NULL,
     modify_t          timestamp           DEFAULT 0,
@@ -244,7 +250,7 @@ CREATE TABLE if not exists device_ipvisit (
    id int             UNSIGNED              NOT NULL AUTO_INCREMENT,
    pkt_time           datetime              NOT NULL,
    pkt_time_ms        SMALLINT UNSIGNED     DEFAULT NULL,
-   pkt_src_mac        BIGINT UNSIGNED           DEFAULT NULL,
+   pkt_src_mac        BIGINT UNSIGNED       DEFAULT NULL,
    pkt_src_ip         varchar(64)           DEFAULT NULL,
    pkt_target_ip      varchar(64)           DEFAULT NULL,
    url                varchar(1024)         DEFAULT NULL,
@@ -276,25 +282,18 @@ CREATE TABLE IF not EXISTS device_act_history (
 #############################################################
 # 802_11_packet
 #############################################################
-CREATE TABLE if not exists `802_11_packet` (
-  `id`           int            NOT NULL AUTO_INCREMENT primary key,
-  `mac`          BIGINT UNSIGNED    DEFAULT NULL,
-  `ssid`         varchar(36)    DEFAULT NULL,
-  `rssi`         smallint       DEFAULT NULL,
-  `stat`         tinyint        DEFAULT NULL,
-  `type`         varchar(36)    DEFAULT NULL,
-  `subtype`      varchar(36)    DEFAULT NULL,
-  `pmac`         BIGINT UNSIGNED    DEFAULT NULL,
-  `bssid`        varchar(36)    DEFAULT NULL,
-  `pkttime`      datetime       DEFAULT NULL,
-  `timefrac`     float          DEFAULT NULL,
-  `frameproto`   varchar(36)    DEFAULT NULL,
-  `chan`         varchar(36)    DEFAULT NULL,
-  `create_t`     datetime       DEFAULT NULL,
-  `src_ip_mac`   BIGINT UNSIGNED    DEFAULT NULL,
-  KEY `packettime` (`pkttime`),
-  KEY `mac` (`mac`)
-)  DEFAULT CHARSET=utf8;
+CREATE TABLE 802_11_packet (
+  id              int(11) NOT      NULL AUTO_INCREMENT,
+  mac             varchar(17)      DEFAULT NULL,
+  pkttime         varchar(10)      DEFAULT NULL,
+  pktsignal       varchar(2048)    DEFAULT NULL,
+  create_t        datetime         DEFAULT NULL,
+  src_ip_mac      varchar(17)      DEFAULT NULL,
+  PRIMARY KEY (id),
+  KEY packettime (pkttime),
+  KEY mac (mac)
+) DEFAULT CHARSET=utf8;
+
 
 
 ## ----------------------------
@@ -327,4 +326,82 @@ CREATE TABLE if not exists ihost (
    create_t       datetime          not NULL,
    modify_t       datetime          DEFAULT NULL
 ) DEFAULT CHARSET=utf8;
+
+#############################################################
+# surveyee
+#############################################################
+CREATE TABLE if not exists surveyee (
+   id             VARCHAR(36)       primary key,
+   name           varchar(20)       not null DEFAULT '',
+   age            smallint          not null DEFAULT 0,
+   gender         varchar(6)        not null DEFAULT 'MALE',
+   city           varchar(36)       not null DEFAULT '',
+   phone          varchar(20)       not null DEFAULT '',
+   has_car        boolean           not null DEFAULT 0,
+   create_t       datetime          not NULL,
+   modify_t       datetime          DEFAULT NULL,
+   show_location  VARCHAR(36)       NOT NULL DEFAULT '',
+   unique         index             surveyee_idx1 (phone)
+) DEFAULT CHARSET=utf8;
+
+#############################################################
+# auto_q
+#############################################################
+CREATE TABLE if not exists auto_q (
+   id               int               NOT NULL AUTO_INCREMENT,
+   content          varchar(350)      not null DEFAULT '',
+   available_option varchar(350)      not null DEFAULT '',   ## json string  {"1", 
+   year             smallint          not null default 2015,
+   create_t         timestamp         not NULL default CURRENT_TIMESTAMP,
+   modify_t         timestamp         DEFAULT 0,
+   PRIMARY KEY     (id)
+) DEFAULT CHARSET=utf8;
+
+#############################################################
+# auto_q_ans
+#############################################################
+CREATE TABLE if not exists auto_q_ans (
+   id               int               NOT NULL AUTO_INCREMENT,
+   surveyee_id      VARCHAR(36)       NOT NULL,
+   q_id             int               NOT NULL,
+   available_option varchar(350)      not null DEFAULT '',   ## json string
+   create_t         datetime          not NULL,
+   PRIMARY KEY     (id),
+   unique index    surveyee_q_idx1  (surveyee_id, q_id)
+) DEFAULT CHARSET=utf8;
+
+#############################################################
+# lottery_pool
+#############################################################
+CREATE TABLE if not exists lottery_pool (
+   id               int               NOT NULL AUTO_INCREMENT,
+   surveyee_id      varchar(36)       NOT NULL default '',               ## without surveyee_id, then the phone number is added in gui
+   phone            varchar(20)       NOT NULL,
+   disabled         boolean           NOT NULL default 0,
+   selected         boolean           not null default 0,
+   used             boolean           not null default 0,
+   create_t         datetime          not NULL,
+   show_location    varchar(36)       not null default '',
+   PRIMARY KEY     (id)
+) DEFAULT CHARSET=utf8;
+
+#############################################################
+# eth_packet
+#############################################################
+CREATE TABLE eth_packet (
+  id               int(11)            NOT NULL AUTO_INCREMENT,
+  mac              varchar(17)        DEFAULT NULL,
+  pkttime          varchar(10)        DEFAULT NULL,
+  srcip            varchar(16)        DEFAULT NULL,
+  destip           varchar(16)        DEFAULT NULL,
+  uri              varchar(4096)      DEFAULT NULL,
+  create_t         datetime           DEFAULT NULL,
+  src_ip_mac       varchar(17)        DEFAULT NULL,
+  PRIMARY KEY (id),
+  KEY packettime (pkttime),
+  KEY mac (mac)
+) DEFAULT CHARSET=utf8;
+
+
+
 

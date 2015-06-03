@@ -32,6 +32,14 @@ public class MacAddressController {
 			return mac;
 		}
 		
+		@RequestMapping("/mac")
+		public String getMac(HttpServletRequest req) {
+			
+		    String ipAddress = req.getRemoteAddr();  
+		    String mac = lookupSvc.getMacAddrByIP(ipAddress);   
+			String json = "{'mac':'" + mac + "'}";
+			return json;
+		}
 
 
 }

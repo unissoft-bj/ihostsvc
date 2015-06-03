@@ -1,3 +1,5 @@
+This branch is for Auto Show 2015.
+
 # for development.
 
 # build the customized Spring security lib from https://github.com/michaelyin/spring-security.git. 

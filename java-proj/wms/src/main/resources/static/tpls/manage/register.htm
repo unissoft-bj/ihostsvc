@@ -1,0 +1,47 @@
+
+<div class="main_body">
+<header class="header">
+<div class="header_cont">
+ <div class="left-box"> <a class="hd-lbtn" href="javascript:history.back()"><span>返回</span></a></div>
+<div class="header_name">注册活动</div>
+<div class="header_user"><a href="/index/"></a></div>
+</div>
+</header>
+
+<div class="msg-err" style="opacity: 1;-webkit-animation:shake 0.5s linear 0s;">请选择相关信息</div>
+<section class="wap_login">
+	
+	
+	<hr>
+	
+  <form role="form" ng-submit="login()">
+     
+    <p>
+      请选择组织
+      <select ng-model="selectedOrg" ng-options="obj.Organization for obj in people" class="input-common placeholder" ></select>
+      请选择项目
+    <select ng-model="selectedPro" class="input-common placeholder">
+        <option ng-repeat="label in people[selectedOrg.id].project">{{label.projectName}}</option>
+    </select>
+    请选择活动
+    <select ng-model="selectedAct" class="input-common placeholder">
+        <option ng-repeat="label2 in people[selectedOrg.id].project[0].Activity">{{label2}}</option>
+    </select>
+    
+  
+    
+    <input type="submit" name="submit" value="登录" class="btn-large" />
+  </form>
+  
+  
+ 
+</section>
+<nav class="footer_nav">
+
+<a href="javascript:window.scrollTo(0,0);">TOP</a><a href="#/index">首页</a> &nbsp;-<a href="">{{username}}</a>
+</nav>
+<div ng-include="'tpls/footer.htm'"></div>
+</div>
+
+
+

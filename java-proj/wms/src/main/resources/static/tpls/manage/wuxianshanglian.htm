@@ -1,0 +1,37 @@
+
+<div class="main_body">
+<header class="header">
+<div class="header_cont">
+ <div class="left-box"> <a class="hd-lbtn" href="javascript:history.back()"><span>返回</span></a></div>
+<div class="header_name">无线上联参数</div>
+<div class="header_user"><a href="/index/"></a></div>
+</div>
+</header>
+
+<div class="msg-err" style="opacity: 1;-webkit-animation:shake 0.5s linear 0s;">请输入无线上联参数</div>
+<section class="wap_login">	
+	<hr>
+	
+  <form role="form" ng-submit="login()">
+   
+    <input name="ssid  " id="ssid " type="text" class="input-common placeholder" placeholder="请输入ssid " ng-model="formData.ssid "  />
+    <select ng-model="isopen" ng-options="obj.Organization for obj in cang" class="input-common placeholder" class="input-common placeholder" class="input-common placeholder" ></select>
+    <input name="psk" id="psk" type="text" class="input-common placeholder" placeholder="请输入密码" ng-model="formData.psk"  />
+    
+  
+    
+    <input type="submit" name="submit" value="设置" class="btn-large" />
+  </form>
+  
+  
+ 
+</section>
+<nav class="footer_nav">
+
+<a href="javascript:window.scrollTo(0,0);">TOP</a><a href="#/index">首页</a> &nbsp;-<a href="">{{username}}</a>
+</nav>
+<div ng-include="'tpls/footer.htm'"></div>
+</div>
+
+
+

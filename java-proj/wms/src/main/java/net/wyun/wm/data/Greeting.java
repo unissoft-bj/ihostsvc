@@ -4,6 +4,8 @@
 
 package net.wyun.wm.data;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 
 /**
@@ -17,10 +19,20 @@ public class Greeting {
 
 	private final long id;
 	private final String content;
+	private Date now;
+
+	public Date getNow() {
+		return now;
+	}
+
+	public void setNow(Date now) {
+		this.now = now;
+	}
 
 	public Greeting(long id, String content) {
 		this.id = id;
 		this.content = content;
+		this.now = new Date();
 	}
 
 	public long getId() {

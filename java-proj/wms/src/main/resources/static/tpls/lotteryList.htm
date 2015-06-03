@@ -1,0 +1,26 @@
+<div class="main_body">
+<header class="header">
+<div class="header_cont">
+ <div class="left-box"> <a class="hd-lbtn" href="javascript:history.back()"><span>返回</span></a></div>
+<div class="header_name">奖池列表</div>
+</div>
+</header>
+
+
+
+
+<section class="wap_member">
+<div class="wap_member_top">
+<a ui-sref="lotteryAdd">添加手机号</a>
+</div>
+<div class="wap_member_mrecord">
+
+
+<a  class="wap_member_mrecord_list" ng-repeat="item in lottery">{{item}}</a>
+
+
+</div>
+
+</section>
+<div ng-include="'tpls/footer.htm'"></div>
+</div>

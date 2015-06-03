@@ -135,6 +135,7 @@ public class TokenRegisterController {
 		Role role = roleRepo.findByName(ur.toString());
 		
 		if (mac.contains(t_phone)) {
+			logger.info("existing account with mac " + t_phone + ", " + macStr);
 			mac.getAccount().addRole(role);
 			mac = this.macRepo.save(mac);
 			ud = new UserDto(mac);
