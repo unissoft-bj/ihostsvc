@@ -30,7 +30,7 @@ import net.wyun.wm.audio.utils.AudioUtil;
  *
  */
 
-@Component
+//@Component
 public class TcpAudioServer {
 
 	AsynchronousServerSocketChannel listener;
