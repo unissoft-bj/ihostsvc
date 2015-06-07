@@ -6,6 +6,7 @@ package net.wyun.wm.service;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 /**
@@ -13,14 +14,15 @@ import org.springframework.stereotype.Component;
  *
  */
 @Component
+@Profile("dev")
 public class IPLookupMock implements IPLookup {
 	
 	public IPLookupMock() {
 		u_map = new HashMap<String, String>();
-		u_map.put("192.168.1.7", "lenovo");
-		
 		m_map = new HashMap<String, String>();
-		m_map.put("192.168.1.7", "lenovo-mac");
+		
+		
+		addUser("192.168.1.2", "5016548878", "22-88-88-FF-FF-22");
 	}
 
 	private static HashMap<String, String> u_map; //ip --> user
@@ -42,6 +44,11 @@ public class IPLookupMock implements IPLookup {
 			u_map.put(ip, u);
 		}
 		return u;
+	}
+	@Override
+	public void addUser(String ip, String name, String mac) {
+		u_map.put(ip, name);
+		m_map.put(ip, mac);
 	}
 
 }
