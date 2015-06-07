@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import net.wyun.wm.domain.Gender;
+import net.wyun.wm.domain.WmsData;
 
 
 /**
@@ -21,11 +22,11 @@ import net.wyun.wm.domain.Gender;
  */
 @Entity
 @Table(name = "reception")
-public class Reception {
+public class Reception extends WmsData{
 	
 	
 	
-	    public Reception() {this.start_t = new Date(); }
+	    public Reception() {this.createt = new Date(); }
 
 		private enum CarUsageType {
 	    	PRIVATE, GOV, ALL;
@@ -38,19 +39,18 @@ public class Reception {
 	    private enum Status {
 	    	NEW, UPDATE, CLOSED, OPEN;
 	    }
-	
-	    private Long    id; //             smallint unsigned     NOT NULL auto_increment primary key,
-	    
-	    @Id
-		@GeneratedValue(strategy = GenerationType.AUTO)
-		@Column(name = "id")
-		public Long getId() { return id; }
 		
-		@SuppressWarnings("unused")
-		public void setId(Long id) { this.id = id; }
-		
-	    private String agent_id;   //    varchar(36)           NOT NULL,                             # this is binded with the phone which records the audio, account id
-	    private String agent_phone = "";   //optional, in case agent has multiple phone being used in the system
+	    @Column(name = "agent_id", nullable = false)
+	    private String agentId;   //    varchar(36)           NOT NULL,                             # this is binded with the phone which records the audio, account id
+	    public String getAgentId() {
+			return agentId;
+		}
+
+		public void setAgentId(String agentId) {
+			this.agentId = agentId;
+		}
+
+		private String agent_phone = "";   //optional, in case agent has multiple phone being used in the system
 	    private String agent_mac = "";     //optional, the mac of the agent's phone
 
 		private int    person_cnt;  //     smallint unsigned     NOT NULL default 1,
@@ -75,8 +75,7 @@ public class Reception {
 	    private String memo = ""; //           varchar(150)          NOT NULL default '',                 #备注：输入内容，可口述录音 audio or text
 	    
 	    private Status status = Status.NEW; //         enum('new', 'update', 'delete') NOT NULL default 'new'      # 新建，更新，删除
-	    private int sibling_id; //        smallint unsigned,    NOT NULL default 0,                  # id of reception which occurs after current reception in time
-		private Date start_t; //        datetime              NOT NULL,                            #when record button is pressed
+	    private int  sibling_id; //        smallint unsigned,    NOT NULL default 0,                  # id of reception which occurs after current reception in time
 	    private Date end_t; //          datetime              default NULL                         #when reception ends, agent opens the app, press the "stop recording"
         private Date modify_t;
 	    
@@ -96,13 +95,6 @@ public class Reception {
 			this.sibling_id = sibling_id;
 		}
 		
-		public String getAgent_id() {
-			return agent_id;
-		}
-
-		public void setAgent_id(String agent_id) {
-			this.agent_id = agent_id;
-		}
 
 		public String getAgent_phone() {
 			return agent_phone;
@@ -275,14 +267,6 @@ public class Reception {
 
 		public void setStatus(Status status) {
 			this.status = status;
-		}
-
-		public Date getStart_t() {
-			return start_t;
-		}
-
-		public void setStart_t(Date start_t) {
-			this.start_t = start_t;
 		}
 
 		public Date getEnd_t() {
