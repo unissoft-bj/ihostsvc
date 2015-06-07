@@ -177,7 +177,7 @@ CREATE TABLE if not exists role_permission (
 # reception
 #############################################################
 CREATE TABLE if not exists reception (
-    id             int unsigned          NOT NULL auto_increment primary key,
+    id             varchar(36)           primary key,
     agent_id       varchar(36)           NOT NULL,                             # this is binded with the phone which records the audio, account id
     agent_phone    varchar(20)           NOT NULL default '',
     agent_mac      varchar(20)           NOT NULL default '',
@@ -201,7 +201,7 @@ CREATE TABLE if not exists reception (
     memo           varchar(150)          NOT NULL default '',                 #备注：输入内容，可口述录音 audio or text
     status         varchar(10)           NOT NULL default 'new',               # 新建，更新，删除         enum('new', 'update', 'closed', 'open')
     sibling_id     int unsigned          default NULL,                  # id of reception which occurs after current reception in time
-    start_t        datetime              NOT NULL,                            #when record button is pressed
+    create_t        datetime              NOT NULL,                            #when record button is pressed
     end_t          datetime              default NULL,                         #when reception ends, agent opens the app, press the "stop recording"
     modify_t       datetime              default NULL,
     foreign key    (agent_id)            references account (account_id)    
@@ -211,10 +211,15 @@ CREATE TABLE if not exists reception (
 # recpt_activity
 #############################################################
 create table if not exists recpt_activity (
-     id              smallint unsigned      NOT NULL auto_increment primary key,
-     reception_id    smallint unsigned      NOT NULL,
+     id              varchar(36)            primary key,
+     reception_id    varchar(36)            NOT NULL,
      resource_type   varchar(10)            NOT NULL default '',                  #mac address, photo, audio etc.
-     resource_info   varchar(25)            NOT NULL default ''                   #possible id, description
+     resource_info   varchar(25)            NOT NULL default '',                   #possible id, description
+     file            varchar(25)            NOT NULL default '',
+     keep            boolean                NOT NULL default 0,
+     sent_to_server  boolean                NOT NULL DEFAULT 0,
+     create_t        datetime                 NOT NULL,
+     foreign key    (reception_id)          references reception (id)
 ) default CHARSET=utf8;
 
 
