@@ -14,5 +14,7 @@ public interface IPLookup {
 	
 	String getMAC(String ip);
 	String getUserName(String ip);
+	
+	void addUser(String ip, String name, String mac);
 
 }
