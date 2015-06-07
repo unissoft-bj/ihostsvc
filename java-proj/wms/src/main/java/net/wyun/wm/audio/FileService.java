@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Calendar;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import net.wyun.wm.Application;
@@ -35,14 +37,23 @@ public class FileService {
 	
 	public static String YMD;
 	
-	public FileService() { YMD = this.getYMD(Calendar.getInstance());	}
+	public static Set<String> users;
+	
+	public FileService() { 
+		YMD = this.getYMD(Calendar.getInstance());	
+		users = new HashSet<String>();
+	}
 	
 	@Scheduled (cron = "0 0 0 * * *") // everyday at midnight (cron= "0 0/2 * * * ?") //every 2 minutes
     public void updatYMD() throws InterruptedException{
 		TimeUnit.SECONDS.sleep(5);
 		YMD = this.getYMD(Calendar.getInstance());
         logger.info("update Today YMD number : {}", YMD);
-        System.out.println("cron job every 2 minutes");
+        System.out.println("cron job every day at midnight.");
+        
+        for(String user:users){
+        	checkUserDir(user);    //assume that there is no recording going on
+        }
         
     }
 	
@@ -57,10 +68,12 @@ public class FileService {
     }
     
     public void checkUserDir(String user){
+    	users.add(user);
+    	
     	File f = new File(audioDir + user);
     	checkDir(f);
     	
-    	f = new File(audioDir+user + "/" + getYMD(Calendar.getInstance()));
+    	f = new File(audioDir+user + "/" + YMD);
     	checkDir(f);
     }
     
