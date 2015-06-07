@@ -21,9 +21,9 @@ public class ReceptionTest {
 	@Test
 	public void testReception() throws JsonProcessingException {
 		Reception reception = new Reception();
-		reception.setId(999L);
-		reception.setStart_t(new Date());
-		reception.setAgent_id("90b1e606-dfd3-11e4-90f4-000c29c5df73");
+		reception.setId("606-dfd3-11e4-90f4");
+		reception.setCreatet(new Date());
+		reception.setAgentId("90b1e606-dfd3-11e4-90f4-000c29c5df73");
 		ObjectMapper mapper = new ObjectMapper();
 		String r_str = mapper.writeValueAsString(reception);
 		System.out.println(r_str);
