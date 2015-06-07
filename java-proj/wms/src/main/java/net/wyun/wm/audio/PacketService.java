@@ -55,7 +55,8 @@ public class PacketService extends Thread{
 			try {
 				DatagramPacket v = pktQ.poll(30, TimeUnit.SECONDS);
 				if(null != v) {
-					String ip = v.getAddress().toString();
+					String ip = v.getAddress().getHostAddress();
+					//logger.debug("pkt source ip {}", ip);
 					AudioAgent aam = audioAgentFactory.getAgent(ip);
 					aam.add(v);
 				}
