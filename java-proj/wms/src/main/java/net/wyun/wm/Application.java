@@ -18,8 +18,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
-@ComponentScan(basePackages = {"net.wyun.wm"},
-                  excludeFilters = @ComponentScan.Filter(type = FilterType.ASPECTJ, pattern = "net.wyun.wm.audio.*"))
+@ComponentScan /*(basePackages = {"net.wyun.wm"},
+                  excludeFilters = @ComponentScan.Filter(type = FilterType.ASPECTJ, pattern = "net.wyun.wm.audio.*")) */
 @EnableAutoConfiguration
 public class Application {
 	
