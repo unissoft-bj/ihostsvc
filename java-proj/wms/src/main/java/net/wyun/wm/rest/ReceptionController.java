@@ -41,7 +41,7 @@ public class ReceptionController {
 			                        @CurrentlyLoggedUser Mac mac,
 			                        HttpServletResponse response){
 		
-		String acct_id = reception.getAgent_id();
+		String acct_id = reception.getAgentId();
 		
 		if(reception.getId() != null){
 			//update
@@ -56,7 +56,7 @@ public class ReceptionController {
 			
 		}else{
 			Account acct = mac.getAccount();
-			reception.setAgent_id(acct.getId());
+			reception.setAgentId(acct.getId());
 			response.setStatus(HttpServletResponse.SC_CREATED);
 		}
 		
@@ -66,7 +66,7 @@ public class ReceptionController {
 	}
 	
 	@RequestMapping(value="/reception/{id}", method = {RequestMethod.GET})
-	Reception getReception(@PathVariable("id") long id){
+	Reception getReception(@PathVariable("id") String id){
 		return receptionRepo.findOne(id);
 	}
 	
