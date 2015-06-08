@@ -67,7 +67,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 		http.formLogin().and().logout();
 		http.authorizeRequests()
 				.antMatchers("/index.html", "/home.html", "/login", "/login.html", 
-						     "/index-wms.html", "/ihost", "/mymac", "/wms", "/tpls/**", "/survey",
+						     "/index-wms.html", "/ihost", "/mymac", "/mac", "/wms", "/tpls/**", "/survey",
 						     "/", "/reception", "/register")
 						     .permitAll()
 						     .antMatchers("/secure/lottery/**").hasAuthority("PERM_CREATE_LOTTERY")
