@@ -53,7 +53,7 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        //·½·¨Ò»
+        //æ–¹æ³•ä¸€
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         UtilHelper.brightnessPreview(this,br);
@@ -235,8 +235,8 @@ public class MainActivity extends ActionBarActivity {
                 }
                 pktCount +=1;
                 if(pktCount == 15000){
-                    long [] pattern = {100,400,100,400};   // Í£Ö¹ ¿ªÆô Í£Ö¹ ¿ªÆô
-                    vibrator.vibrate(AppConstant.ServiceTag.VIBRATOR_PATTERN_REMIND,-1);           //ÖØ¸´Á½´ÎÉÏÃæµÄpattern Èç¹ûÖ»ÏëÕğ¶¯Ò»´Î£¬indexÉèÎª-1
+                    long [] pattern = {100,400,100,400};   // åœæ­¢ å¼€å¯ åœæ­¢ å¼€å¯
+                    vibrator.vibrate(AppConstant.ServiceTag.VIBRATOR_PATTERN_REMIND,-1);          //é‡å¤ä¸¤æ¬¡ä¸Šé¢çš„pattern å¦‚æœåªæƒ³éœ‡åŠ¨ä¸€æ¬¡ï¼Œindexè®¾ä¸º-1
                     pktCount = 0;
                 }
 
