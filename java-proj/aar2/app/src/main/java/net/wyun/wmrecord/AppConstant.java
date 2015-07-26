@@ -9,9 +9,9 @@ public interface AppConstant {
     public class ServiceTag {
         public static final boolean IS_RUNNING = false;
 
-        // long [] pattern = {100,2000,1000,2000};   // Í£Ö¹ ¿ªÆô Í£Ö¹ ¿ªÆô
-        public static final long[] VIBRATOR_PATTERN_START = {100, 400, 100, 400};      // Æô¶¯ÌáÊ¾
-        public static final long[] VIBRATOR_PATTERN_REMIND = {100, 200, 1, 400};       // ÔËĞĞÌáĞÑ
-        public static final long[] VIBRATOR_PATTERN_STOP = {100, 2000, 1000, 2000};    // ÖÕÖ¹ÌáÊ¾
+        // long [] pattern = {100,2000,1000,2000};   // åœæ­¢ å¼€å¯ åœæ­¢ å¼€å¯
+        public static final long[] VIBRATOR_PATTERN_START = {100, 400, 100, 400};      // å¯åŠ¨æç¤º
+        public static final long[] VIBRATOR_PATTERN_REMIND = {100, 200, 1, 400};       // è¿è¡Œæé†’
+        public static final long[] VIBRATOR_PATTERN_STOP = {100, 2000, 1000, 2000};    // ç»ˆæ­¢æç¤º
     }
 }
