@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/aar2.iml" filepath="$PROJECT_DIR$/aar2.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/wmrecord.iml" filepath="$PROJECT_DIR$/wmrecord.iml" />
+      <module fileurl="file://$PROJECT_DIR$/google-http-client-gson-1.20.0/google-http-client-gson-1.20.0.iml" filepath="$PROJECT_DIR$/google-http-client-gson-1.20.0/google-http-client-gson-1.20.0.iml" />
+      <module fileurl="file://$PROJECT_DIR$/retrofit-1.9.0/retrofit-1.9.0.iml" filepath="$PROJECT_DIR$/retrofit-1.9.0/retrofit-1.9.0.iml" />
     </modules>
   </component>
 </project>

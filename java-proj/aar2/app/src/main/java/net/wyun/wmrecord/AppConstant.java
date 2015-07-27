@@ -12,5 +12,6 @@ public interface AppConstant {
         public static final long[] VIBRATOR_PATTERN_REMIND = {100, 200, 1, 400};       // 运行提醒
         public static final long[] VIBRATOR_PATTERN_STOP = {100, 2000, 1000, 2000};    // 终止提示
 
+        public static final String APP_NAME= "职语录";
     }
 }

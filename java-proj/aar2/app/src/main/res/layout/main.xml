@@ -43,10 +43,22 @@
         android:text="@string/btnStartService"/>
 
     <Button
-        android:id="@+id/btnStopService"
+        android:id="@+id/btnEndService"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/btnStopService"/>
+        android:text="@string/btnEndService"/>
+
+    <Button
+        android:id="@+id/btnStartRecording"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btnStartRecording"/>
+
+    <Button
+        android:id="@+id/btnEndRecording"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btnEndRecording"/>
 
     <Button
         android:layout_width="fill_parent"

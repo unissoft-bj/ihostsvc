@@ -1,14 +1,21 @@
 package net.wyun.wmrecord;
 
+import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.Message;
+import android.os.Messenger;
+import android.os.RemoteException;
 import android.os.StrictMode;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
@@ -47,6 +54,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.List;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -64,7 +72,9 @@ public class MainActivity extends ActionBarActivity {
     private ArrayAdapter<String> adapter;
 
     Spinner spFrequency;
-    Button startRec, stopRec, setting;
+    Button btnStartService, btnEndService, setting;
+
+    Button btnStartRecording,btnEndRecording;
 
     Button setPhone, setiHostIP, moreSettings;
 
@@ -90,6 +100,83 @@ public class MainActivity extends ActionBarActivity {
     Button btnPost;
     Context mcontext;
 
+    /**
+     * 向Service发送Message的Messenger对象
+     */
+    Messenger mService = null;
+
+    /**
+     * 判断有没有绑定Service
+     */
+    boolean mBound;
+
+    boolean IsRecording=false;
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            // Activity已经绑定了Service
+            // 通过参数service来创建Messenger对象，这个对象可以向Service发送Message，与Service进行通信
+            mService = new Messenger(service);
+            mBound = true;
+        }
+
+        public void onServiceDisconnected(ComponentName className) {
+            mService = null;
+            mBound = false;
+        }
+    };
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // 绑定Service
+        bindService(new Intent(this, MessengerService.class), mConnection,
+                Context.BIND_AUTO_CREATE);
+
+
+        //Toast.makeText(getApplicationContext(), "测试启动服务成功完成... ", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        /*
+        // 解绑
+        if (mBound) {
+            unbindService(mConnection);
+            mBound = false;
+        }
+*/
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        Message msg;
+        IsRecording=IsRecording;
+        if(IsRecording) {
+
+            msg = Message.obtain(null, MessengerService.MSG_START_RECORDING, 0, 0);
+
+        }
+        else
+        {
+            msg = Message.obtain(null, MessengerService.MSG_END_RECORDING, 0, 0);
+        }
+        try {
+            mService.send(msg);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+
+        if (mBound) {
+            unbindService(mConnection);
+            mBound = false;
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,11 +198,120 @@ public class MainActivity extends ActionBarActivity {
 
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
-        startRec = (Button) findViewById(R.id.btnStartService);
-        stopRec = (Button) findViewById(R.id.btnStopService);
+        /*
+        btnStartService = (Button) findViewById(R.id.btnStartService);
+        btnEndService = (Button) findViewById(R.id.btnStopService);
 
-        startRec.setOnClickListener(startRecOnClickListener);
-        stopRec.setOnClickListener(stopRecOnClickListener);
+
+        btnStartService.setOnClickListener(startRecOnClickListener);
+        btnEndService.setOnClickListener(stopRecOnClickListener);
+        */
+
+
+        btnStartService = (Button) findViewById(R.id.btnStartService);
+        btnStartService.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //sayHello();
+                Log.i(LOG_TAG, "Start service command.");
+                //Hello();
+                //if (isServiceRunning(getApplicationContext(), "net.wyun.wmrecord.MessengerService"))
+                if (isServiceRunning(getApplicationContext(), getLocalClassName().toString()))
+                {
+                    Toast.makeText(getApplicationContext(), "监听已经启动成功-----无需再启动", Toast.LENGTH_LONG).show();
+                } else {
+                    Intent s = new Intent(getApplicationContext(), net.wyun.wmrecord.MessengerService.class);
+                    getApplicationContext().startService(s);
+                    Toast.makeText(getApplicationContext(), "监听启动成功---------", Toast.LENGTH_LONG).show();
+                }
+
+
+//                if (!mBound) return;
+
+                if (!mBound) return;
+                /*
+                Context context = getApplicationContext();
+                Intent s = new Intent(context, net.wyun.wmrecord.MessengerService.class);
+                context.startService(s);
+                */
+
+                // 向Service发送一个Message
+                Message msg = Message.obtain(null, MessengerService.MSG_START_SERVICE, 0, 0);
+                try {
+                    mService.send(msg);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+
+                // Notice2();
+            }
+        });
+
+        btnEndService = (Button) findViewById(R.id.btnEndService);
+        btnEndService.setEnabled(false);
+        btnEndService.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (!mBound) return;
+                // 向Service发送一个Message
+                Message msg = Message.obtain(null, MessengerService.MSG_END_SERVICE, 0, 0);
+                try {
+                    mService.send(msg);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+
+                // Notice2();
+            }
+        });
+
+
+
+        btnStartRecording = (Button) findViewById(R.id.btnStartRecording);
+        btnStartRecording.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //sayHello();
+                Log.i(LOG_TAG, "MSG_START_RECORDING service command.");
+
+//                if (!mBound) return;
+
+                if (!mBound) return;
+
+                // 向Service发送一个Message
+                Message msg = Message.obtain(null, MessengerService.MSG_START_RECORDING, 0, 0);
+
+                try {
+                    mService.send(msg);
+                    IsRecording=true;
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+
+                // Notice2();
+            }
+        });
+
+        btnEndRecording = (Button) findViewById(R.id.btnEndRecording);
+        btnEndRecording.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (!mBound) return;
+                // 向Service发送一个Message
+                Message msg = Message.obtain(null, MessengerService.MSG_END_RECORDING, 0, 0);
+                try {
+                    mService.send(msg);
+                    IsRecording = false;
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+
+                // Notice2();
+            }
+        });
+
         //setting.setOnClickListener(playBackOnClickListener);
 
         /*
@@ -125,7 +321,7 @@ public class MainActivity extends ActionBarActivity {
         spFrequency.setAdapter(adapter);
         //spFrequency.setFocusable(false);
         */
-        stopRec.setEnabled(false);
+        btnEndService.setEnabled(false);
 
         // restful webservice
         serverAddr = UtilHelper.getSetting(this, "prefIhostIp");
@@ -207,6 +403,9 @@ public class MainActivity extends ActionBarActivity {
         mac = UtilHelper.getSetting(this, "prefMac");
 
         UpdateSettings();
+
+
+
     }
 
     private void UpdateSettings() {
@@ -454,8 +653,8 @@ public class MainActivity extends ActionBarActivity {
                 });
 
                 recordThread.start();
-                startRec.setEnabled(false);
-                stopRec.setEnabled(true);
+                btnStartService.setEnabled(false);
+                btnEndService.setEnabled(true);
             } catch (Exception e) {
                 ShowMessage("Exp gone when started: " + e.getMessage());
             }
@@ -469,8 +668,8 @@ public class MainActivity extends ActionBarActivity {
         public void onClick(View arg0) {
             UtilHelper.brightnessPreview(MainActivity.this, brn);
             recording = false;
-            startRec.setEnabled(true);
-            stopRec.setEnabled(false);
+            btnStartService.setEnabled(true);
+            btnEndService.setEnabled(false);
         }
     };
 
@@ -614,8 +813,8 @@ public class MainActivity extends ActionBarActivity {
                     });
 
                     recordThread.start();
-                    startRec.setEnabled(false);
-                    stopRec.setEnabled(true);
+                    btnStartService.setEnabled(false);
+                    btnEndService.setEnabled(true);
                 } else {
                     vibrator.vibrate(AppConstant.ServiceTag.VIBRATOR_PATTERN_REMIND, -1);
                 }
@@ -641,5 +840,32 @@ public class MainActivity extends ActionBarActivity {
     // public methods
     private void SetMessage(String msg) {
         tv.setText(msg);
+    }
+
+    /**
+     * 用来判断服务是否运行.
+     *
+     * @param mContext
+     * @param className 判断的服务名字
+     * @return true 在运行 false 不在运行
+     */
+    public static boolean isServiceRunning(Context mContext, String className) {
+        boolean isRunning = false;
+        ActivityManager activityManager = (ActivityManager)
+                mContext.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningServiceInfo> serviceList
+                = activityManager.getRunningServices(30);
+        if (!(serviceList.size() > 0)) {
+            return false;
+        }
+        for (int i = 0; i < serviceList.size(); i++) {
+            String serviceName=serviceList.get(i).service.getClassName();
+            //Log.i("this",serviceName);
+            if (serviceList.get(i).service.getClassName().equals(className) == true) {
+                isRunning = true;
+                break;
+            }
+        }
+        return isRunning;
     }
 }

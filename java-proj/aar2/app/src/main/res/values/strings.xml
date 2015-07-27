@@ -1,11 +1,13 @@
 <resources>
-    <string name="app_name">Matrix Recp</string>
+    <string name="app_name">职语录</string>
 
-    <string name="app_title">MATRIX 顾客接待</string>
+    <string name="app_title">职语教练</string>
     <string name="action_settings">Settings</string>
 
-    <string name="btnStartService">开始</string>
-    <string name="btnStopService">停止</string>
+    <string name="btnStartService">开始service</string>
+    <string name="btnEndService">停止service</string>
+    <string name="btnStartRecording">开始录音</string>
+    <string name="btnEndRecording">停止录音</string>
     <string name="btnSetPhone">设置手机号码</string>
     <string name="btnMoreSettings">更多设置</string>
     <string name="btnSetIpAddress">设置iHost IP</string>
