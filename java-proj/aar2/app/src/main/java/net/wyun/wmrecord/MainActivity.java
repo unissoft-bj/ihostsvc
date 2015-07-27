@@ -1,15 +1,18 @@
 package net.wyun.wmrecord;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
+import android.os.Bundle;
+import android.os.StrictMode;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -18,20 +21,43 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import net.wyun.wmrecord.API.macapi;
+import net.wyun.wmrecord.API.wmsapi;
+import net.wyun.wmrecord.model.macmodel;
+import net.wyun.wmrecord.model.wmsmodel;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.CoreConnectionPNames;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Arrays;
 
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class MainActivity extends ActionBarActivity {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
     float br = (float) 0.01;
+    float brn = (float) 0.5;
 
     private static String[] freqText = {"11.025 KHz"}; //, "16.000 KHz", "22.050 KHz", "44.100 KHz (Highest)"};
     private static Integer[] freqset = {11025}; //, 16000, 22050, 44100};
@@ -40,43 +66,331 @@ public class MainActivity extends ActionBarActivity {
     Spinner spFrequency;
     Button startRec, stopRec, setting;
 
+    Button setPhone, setiHostIP, moreSettings;
+
     Boolean recording = false;
 
     public static DatagramSocket socket;
-    private String serverAddr = "192.168.1.7";
+    private String serverAddr = "172.16.0.1";
     private int port = 8888;
 
     Vibrator vibrator = null;
+
+    Button click;
+    Button buttonwms;
+    TextView tv;
+    EditText edit_user;
+    ProgressBar pbar;
+
+    String wmsAPI = "http://" + serverAddr + ":8080";
+
+    private String phone;
+    private String mac;
+
+    Button btnPost;
+    Context mcontext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        //方法一
+        // 解决在4.0版本下，不能使用HttpClient的问题。
+        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectDiskReads().detectDiskWrites().detectNetwork().penaltyLog().build());
+        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectLeakedSqlLiteObjects().detectLeakedClosableObjects().penaltyLog().penaltyDeath().build());
+
+        // 禁止程序休眠
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        UtilHelper.brightnessPreview(this,br);
+        // 将亮度调至最低
+        // UtilHelper.brightnessPreview(this, br);
 
-        Log.d(this.LOG_TAG, "aar activity created.");
+        //Log.d(this.LOG_TAG, "aar activity created.");
+
+        mcontext = this.getApplicationContext();
 
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
-        startRec = (Button)findViewById(R.id.btnStartService);
-        stopRec = (Button)findViewById(R.id.btnStopService);
+        startRec = (Button) findViewById(R.id.btnStartService);
+        stopRec = (Button) findViewById(R.id.btnStopService);
 
         startRec.setOnClickListener(startRecOnClickListener);
         stopRec.setOnClickListener(stopRecOnClickListener);
         //setting.setOnClickListener(playBackOnClickListener);
 
-        spFrequency = (Spinner)findViewById(R.id.frequency);
+        /*
+        spFrequency = (Spinner) findViewById(R.id.frequency);
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, freqText);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spFrequency.setAdapter(adapter);
         //spFrequency.setFocusable(false);
-
+        */
         stopRec.setEnabled(false);
+
+        // restful webservice
+        serverAddr = UtilHelper.getSetting(this, "prefIhostIp");
+        wmsAPI = "http://" + serverAddr + ":8080";
+        click = (Button) findViewById(R.id.button);
+        tv = (TextView) findViewById(R.id.tv);
+        edit_user = (EditText) findViewById(R.id.edit);
+        pbar = (ProgressBar) findViewById(R.id.pb);
+        pbar.setVisibility(View.INVISIBLE);
+        buttonwms = (Button) findViewById(R.id.buttonwms);
+        buttonwms.setOnClickListener(buttonWmsServerListner);
+
+
+        // 设置手机号码
+        setPhone = (Button) findViewById(R.id.btnSetphone);
+        setPhone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final EditText inputServer = new EditText(v.getContext());
+                String tmp = UtilHelper.getSetting(mcontext,"prefUserPhone");
+                inputServer.setText(tmp);
+                inputServer.selectAll();
+                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                builder.setTitle("Set User Phone").setIcon(android.R.drawable.ic_dialog_info).setView(inputServer)
+                        .setNegativeButton("Cancel", null);
+                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        String txt = inputServer.getText().toString();
+                        UtilHelper.setSetting(mcontext, "prefUserPhone", txt);
+                        UpdateSettings();
+                        ShowMessage("New User Phone: " + txt);
+                    }
+                });
+                builder.show();
+            }
+        });
+
+        // 设置 iHost IP
+        setiHostIP = (Button) findViewById(R.id.btnSetIpAddress);
+        setiHostIP.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final EditText inputServer = new EditText(v.getContext());
+                 String tmp = UtilHelper.getSetting(mcontext,"prefIhostIp");
+                inputServer.setText(tmp);
+                inputServer.selectAll();
+                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                builder.setTitle("Set iHost IP").setIcon(android.R.drawable.ic_dialog_info).setView(inputServer)
+                        .setNegativeButton("Cancel", null);
+                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int which) {
+                        String txt = inputServer.getText().toString();
+                        UtilHelper.setSetting(mcontext, "prefIhostIp", txt);
+                        UpdateSettings();
+                        ShowMessage("New iHost IP: " + txt);
+                    }
+                });
+                builder.show();
+            }
+        });
+
+        // 更多设置
+        moreSettings = (Button) findViewById(R.id.btnMoreSettings);
+        moreSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent("android.intent.action.MAIN");
+                intent.setClassName("net.wyun.wmrecord",
+                        "net.wyun.wmrecord.UserSettingActivity");
+                startActivity(intent);
+            }
+        });
+
+        phone = UtilHelper.getSetting(this, "prefUserPhone");
+
+        mac = UtilHelper.getSetting(this, "prefMac");
+
+        UpdateSettings();
+    }
+
+    private void UpdateSettings() {
+        serverAddr = UtilHelper.getSetting(this, "prefIhostIp");
+        wmsAPI = "http://" + serverAddr + ":8080";
+        phone = UtilHelper.getSetting(this, "prefUserPhone");
+
         updateServerIP();
+        //Toast.makeText(getApplicationContext(), wmsAPI, Toast.LENGTH_LONG).show();
+    }
+
+
+    View.OnClickListener buttonWmsServerListner = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Log.i(LOG_TAG, "buttonWmsServerListner");
+            HttpPostDataGetWms();
+        }
+    };
+
+    private void HttpPostDataCreateReception() {
+        try {
+            pbar.setVisibility(View.VISIBLE);
+            Log.i(LOG_TAG, "HttpClient init");
+            SetMessage("HttpClient init");
+            HttpClient httpclient = new DefaultHttpClient();
+            httpclient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 5000);
+            String uri = wmsAPI;
+            String postUrl = uri + "/reception";
+            HttpPost httppost = new HttpPost(postUrl);
+
+            //添加http头信息
+            Log.i(LOG_TAG, "添加http头信息");
+            //httppost.addHeader("Authorization", "your token"); //认证token
+            httppost.addHeader("Content-Type", "application/json");
+            //httppost.addHeader("User-Agent", "imgfornote");
+            httppost.addHeader("Charset", "UTF-8");
+
+            //http post的json数据格式：  {"name": "your name","parentId": "id_of_parent"}
+            Log.i(LOG_TAG, "http post的json数据格式");
+            JSONObject obj = new JSONObject();
+            obj.put("phone", phone);
+            obj.put("mac", mac);
+
+            httppost.setEntity(new StringEntity(obj.toString()));
+            //httppost.setEntity(new StringEntity( "{\"phone\": \"5016548878\",\"mac\":\"88-36-AA-FF-FF-BB\"}"));
+
+            HttpResponse response;
+            response = httpclient.execute(httppost);
+
+            //检验状态码，如果成功接收数据
+            Log.i(LOG_TAG, "检验状态码，如果成功接收数据");
+            int code = response.getStatusLine().getStatusCode();
+            Log.i(LOG_TAG, "状态码: " + String.valueOf(code));
+
+            String rString = response.toString();
+            Log.i(LOG_TAG, "response: " + rString);
+
+            SetMessage("状态码: " + String.valueOf(code));
+
+            if (code == 200) {
+                String rev = EntityUtils.toString(response.getEntity());//返回json格式： {"id": "27JpL~j4vsL0LX00E00005","version": "abc"}
+                obj = new JSONObject(rev);
+                String id = obj.getString("id");
+                String version = obj.getString("version");
+            }
+
+            if (code == 201) {
+                Log.i(LOG_TAG, "Created");
+            }
+
+            Log.i(LOG_TAG, "完成");
+
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+            Log.e(LOG_TAG, "ClientProtocolException: " + e.getMessage());
+            SetMessage("ClientProtocolException: " + e.getMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e(LOG_TAG, "IOException: " + e.getMessage());
+            SetMessage("IOException: " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(LOG_TAG, "Exception: " + e.getMessage());
+            SetMessage("Exception: " + e.getMessage());
+        } finally {
+            pbar.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private String HttpPostDataGetWms() {
+        try {
+            String user = edit_user.getText().toString();
+            pbar.setVisibility(View.VISIBLE);
+            Log.i(this.LOG_TAG, "wmsAPI: " + wmsAPI);
+            tv.setText(wmsAPI);
+
+            // Retrofit section start from here...
+            // create an adapter for retrofit with base url
+            RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(wmsAPI).build();
+
+
+            // creating a service for adapter with our GET class
+            wmsapi git = restAdapter.create(wmsapi.class);
+
+            // Now ,we need to call for response
+            // Retrofit using gson for JSON-POJO conversion
+
+            git.getFeed(new Callback<wmsmodel>() {
+                @Override
+                public void success(wmsmodel gitmodel, Response response) {
+                    // we get json object from github server to our POJO or model class
+
+                    tv.setText("Wms Name :" + gitmodel.getWms() +
+                            "\nVersion :" + gitmodel.getVersion());
+
+                    Log.i(LOG_TAG, "wms: " + gitmodel.getWms());
+                    pbar.setVisibility(View.INVISIBLE); // disable progressbar
+                    Toast.makeText(getApplicationContext(), "测试连通性成功完成... ", Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    tv.setText(error.getMessage());
+                    pbar.setVisibility(View.INVISIBLE); // disable progressbar
+                    Log.i(LOG_TAG, "wms error: ");
+                    Toast.makeText(getApplicationContext(), "测试连通性失败: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(LOG_TAG, "Exception: " + e.getMessage());
+            SetMessage("Exception: " + e.getMessage());
+            Toast.makeText(getApplicationContext(), "测试连通性异常: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        } finally {
+            pbar.setVisibility(View.INVISIBLE);
+            return "";
+        }
+    }
+
+    private String HttpPostDataGetMac() {
+        try {
+            String user = edit_user.getText().toString();
+            pbar.setVisibility(View.VISIBLE);
+
+            // Retrofit section start from here...
+            // create an adapter for retrofit with base url
+
+            RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(wmsAPI).build();
+
+            // creating a service for adapter with our GET class
+            macapi git = restAdapter.create(macapi.class);
+
+            // Now ,we need to call for response
+            // Retrofit using gson for JSON-POJO conversion
+
+            git.getFeed(new Callback<macmodel>() {
+                @Override
+                public void success(macmodel gitmodel, Response response) {
+                    // we get json object from github server to our POJO or model class
+
+                    tv.setText("Github Name :" + gitmodel.getMac());
+
+                    Log.i(LOG_TAG, "mac: " + gitmodel.getMac());
+                    mac = gitmodel.getMac();
+                    UtilHelper.setSetting(mcontext,"prefMac",mac);
+                    pbar.setVisibility(View.INVISIBLE); // disable progressbar
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    tv.setText(error.getMessage());
+                    pbar.setVisibility(View.INVISIBLE); // disable progressbar
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(LOG_TAG, "Exception: " + e.getMessage());
+            SetMessage("Exception: " + e.getMessage());
+        } finally {
+            pbar.setVisibility(View.INVISIBLE);
+            return "";
+        }
     }
 
     @Override
@@ -106,66 +420,62 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private static String KEY_IP = "prefIhostIp";
-    private String getSetting(String key){
+
+    private String getSetting(String key) {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         String value = sharedPrefs.getString(KEY_IP, "");
         return value;
     }
-    private void showUserSettings() {
-        SharedPreferences sharedPrefs = PreferenceManager
-                .getDefaultSharedPreferences(this);
 
-        StringBuilder builder = new StringBuilder();
-
-        builder.append("\n Username: "
-                + sharedPrefs.getString("prefUsername", "NULL"));
-
-        builder.append("\n Send report:"
-                + sharedPrefs.getBoolean("prefSendReport", false));
-
-        builder.append("\n Sync Frequency: "
-                + sharedPrefs.getString("prefSyncFrequency", "NULL"));
-
-    }
-
-    View.OnClickListener startRecOnClickListener = new View.OnClickListener(){
+    View.OnClickListener startRecOnClickListener = new View.OnClickListener() {
 
         @Override
         public void onClick(View arg0) {
+            try {
+                UtilHelper.brightnessPreview(MainActivity.this, br);
 
-            Thread recordThread = new Thread(new Runnable(){
+                HttpPostDataGetMac();
 
-                @Override
-                public void run() {
-                    recording = true;
-                    try {
-                        startRecord();
-                    } catch (UnknownHostException e) {
-                        e.printStackTrace();
+                HttpPostDataCreateReception();
+
+                Thread recordThread = new Thread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        recording = true;
+                        try {
+                            startRecord();
+                        } catch (UnknownHostException e) {
+                            e.printStackTrace();
+                        }
                     }
-                }
 
-            });
+                });
 
-            recordThread.start();
-            startRec.setEnabled(false);
-            stopRec.setEnabled(true);
-
-        }};
+                recordThread.start();
+                startRec.setEnabled(false);
+                stopRec.setEnabled(true);
+            } catch (Exception e) {
+                ShowMessage("Exp gone when started: " + e.getMessage());
+            }
+        }
+    };
 
     View.OnClickListener stopRecOnClickListener
-            = new View.OnClickListener(){
+            = new View.OnClickListener() {
 
         @Override
         public void onClick(View arg0) {
+            UtilHelper.brightnessPreview(MainActivity.this, brn);
             recording = false;
             startRec.setEnabled(true);
             stopRec.setEnabled(false);
-        }};
+        }
+    };
 
     View.OnClickListener playBackOnClickListener
-            = new View.OnClickListener(){
+            = new View.OnClickListener() {
 
         @Override
         public void onClick(View v) {
@@ -174,15 +484,15 @@ public class MainActivity extends ActionBarActivity {
 
     };
 
-    private void startSettingActivity(){
+    private void startSettingActivity() {
         Intent i = new Intent(this, UserSettingActivity.class);
         startActivityForResult(i, RESULT_SETTINGS);
     }
 
-    private void updateServerIP(){
+    private void updateServerIP() {
         //get ihost ip if available
         String ip = this.getSetting(KEY_IP);
-        serverAddr = ip.isEmpty()?serverAddr:ip;
+        serverAddr = ip.isEmpty() ? serverAddr : ip;
         Log.d(this.LOG_TAG, "audio server: " + serverAddr);
     }
 
@@ -193,8 +503,10 @@ public class MainActivity extends ActionBarActivity {
         final InetAddress destination = InetAddress.getByName(serverAddr);
         Log.d(this.LOG_TAG, "Address retrieved: " + serverAddr);
 
-        int selectedFreqInd = spFrequency.getSelectedItemPosition();
-        int sampleFreq = freqset[selectedFreqInd];
+        //int selectedFreqInd = spFrequency.getSelectedItemPosition();
+        //int sampleFreq = freqset[selectedFreqInd];
+
+        int sampleFreq = freqset[0];
 
         AudioRecord audioRecord = null;
         try {
@@ -204,10 +516,9 @@ public class MainActivity extends ActionBarActivity {
                     AudioFormat.ENCODING_PCM_16BIT);
 
             Log.d(this.LOG_TAG, "min buffer size for audio recording: " + minBufferSize);
-            if(minBufferSize < 8192) minBufferSize = 8192;  //to get better recording, 8192
+            if (minBufferSize < 8192) minBufferSize = 8192;  //to get better recording, 8192
 
-            //to work with chilli, use smaller udp packet
-            minBufferSize = 8960;  //1280 * 7
+            minBufferSize = 1280;
 
             byte[] audioData = new byte[minBufferSize];
 
@@ -222,21 +533,28 @@ public class MainActivity extends ActionBarActivity {
 
             vibrator.vibrate(AppConstant.ServiceTag.VIBRATOR_PATTERN_START, -1);
 
-            while(recording){
+            while (recording) {
                 int numberOfShort = audioRecord.read(audioData, 0, minBufferSize);
 
                 //putting buffer in the packet
-
+                /*
                 for(int bInd = 0; bInd < 7; bInd++){
-                    byte[] slice = Arrays.copyOfRange(audioData, bInd*1280, (bInd + 1)*1280);
+                    byte[] slice = Arrays.copyOfRange(audioData, bInd * 1280, (bInd + 1) * 1280);
                     DatagramPacket packet = new DatagramPacket(slice, slice.length, destination, port);
                     socket.send(packet);
                     Log.d(this.LOG_TAG, "send pkt to server.");
                 }
-                pktCount +=1;
-                if(pktCount == 15000){
-                    long [] pattern = {100,400,100,400};   // 停止 开启 停止 开启
-                    vibrator.vibrate(AppConstant.ServiceTag.VIBRATOR_PATTERN_REMIND,-1);          //重复两次上面的pattern 如果只想震动一次，index设为-1
+                */
+
+                DatagramPacket packet = new DatagramPacket(audioData, audioData.length, destination, port);
+
+                socket.send(packet);
+                Log.d(this.LOG_TAG, "send pkt to server.");
+
+                pktCount += 1;
+                if (pktCount == 15000) {
+                    long[] pattern = {100, 400, 100, 400};   // 停止 开启 停止 开启
+                    vibrator.vibrate(AppConstant.ServiceTag.VIBRATOR_PATTERN_REMIND, -1);           //重复两次上面的pattern 如果只想震动一次，index设为-1
                     pktCount = 0;
                 }
 
@@ -247,11 +565,11 @@ public class MainActivity extends ActionBarActivity {
         } catch (IOException e) {
             e.printStackTrace();
             String msg = e.getMessage();
-            Log.i(this.LOG_TAG,msg);
+            Log.i(this.LOG_TAG, msg);
         } finally {
             //release resource
             Log.d(this.LOG_TAG, "remember release resource here");
-            if(audioRecord != null) audioRecord.release();
+            if (audioRecord != null) audioRecord.release();
 
             vibrator.vibrate(AppConstant.ServiceTag.VIBRATOR_PATTERN_STOP, -1);
             recording = false;
@@ -263,25 +581,25 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        Log.i(this.LOG_TAG,"key code: "+String.valueOf(keyCode));
+        Log.i(this.LOG_TAG, "key code: " + String.valueOf(keyCode));
         switch (keyCode) {
 
             case KeyEvent.KEYCODE_VOLUME_DOWN:
                 Log.i(this.LOG_TAG, "KEYCODE_VOLUME_DOWN");
-
+                ShowMessage("KEYCODE_VOLUME_DOWN is pressed.");
                 return true;
 
             case KeyEvent.KEYCODE_MENU:
                 //onOptionsItemSelected()
-
+                ShowMessage("KEYCODE_MENU is pressed.");
                 return true;
 
             case KeyEvent.KEYCODE_VOLUME_UP:
                 Log.i(this.LOG_TAG, "KEYCODE_VOLUME_UP");
                 Context mcon = getApplicationContext();
 
-                if(!recording){
-                    Thread recordThread = new Thread(new Runnable(){
+                if (!recording) {
+                    Thread recordThread = new Thread(new Runnable() {
 
                         @Override
                         public void run() {
@@ -298,22 +616,30 @@ public class MainActivity extends ActionBarActivity {
                     recordThread.start();
                     startRec.setEnabled(false);
                     stopRec.setEnabled(true);
-                }
-                else
-                {
-                    vibrator.vibrate(AppConstant.ServiceTag.VIBRATOR_PATTERN_REMIND,-1);
+                } else {
+                    vibrator.vibrate(AppConstant.ServiceTag.VIBRATOR_PATTERN_REMIND, -1);
                 }
 
                 return true;
             case KeyEvent.KEYCODE_VOLUME_MUTE:
 
-
+                ShowMessage("KEYCODE_VOLUME_MUTE is pressed.");
                 return true;
             case KeyEvent.KEYCODE_ENTER:
-                Log.i(this.LOG_TAG,"Enter");
+                Log.i(this.LOG_TAG, "Enter");
+                ShowMessage("KEYCODE_ENTER is pressed.");
                 return false;
         }
         //return super.onKeyDown(keyCode, event);
         return false;
+    }
+
+    private void ShowMessage(String msg) {
+        Toast.makeText(this.getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+    }
+
+    // public methods
+    private void SetMessage(String msg) {
+        tv.setText(msg);
     }
 }

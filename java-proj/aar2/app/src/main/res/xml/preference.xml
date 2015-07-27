@@ -7,12 +7,37 @@
             android:defaultValue="user1"
             >
         </EditTextPreference>
-        <EditTextPreference android:title="@string/ihost_ip"
-            android:summary="@string/pref_ihost_ip"
+
+        <EditTextPreference android:title="@string/pref_user_phone"
+            android:summary="@string/pref_user_phone_summary"
+            android:key="prefUserPhone"
+            android:defaultValue="2064916276"
+            >
+        </EditTextPreference>
+
+        <EditTextPreference android:title="@string/pref_ihost_ip"
+            android:summary="@string/pref_ihost_ip_summary"
             android:key="prefIhostIp"
-            android:defaultValue="192.168.199.208"
+            android:defaultValue="172.16.0.1"
             >
 
+        </EditTextPreference>
+
+        <EditTextPreference android:title="@string/pref_mac"
+            android:summary="@string/pref_mac_summary"
+            android:key="prefMac"
+            android:defaultValue="88-36-AA-FF-FF-BB"
+            >
+
+        </EditTextPreference>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/pref_transactions_settings">
+        <EditTextPreference android:title="@string/pref_packet_size"
+            android:summary="@string/pref_packet_size_summary"
+            android:key="prefPacketSize"
+            android:defaultValue="1280"
+            >
         </EditTextPreference>
     </PreferenceCategory>
 

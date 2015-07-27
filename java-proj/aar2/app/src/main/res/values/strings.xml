@@ -1,10 +1,12 @@
 <resources>
-    <string name="app_name">WMRecord</string>
+    <string name="app_name">Matrix Recp</string>
 
-    <string name="app_title">MATRIX 录音程序</string>
+    <string name="app_title">MATRIX 顾客接待</string>
     <string name="action_settings">Settings</string>
 
     <string name="btnStartService">开始</string>
     <string name="btnStopService">停止</string>
-
+    <string name="btnSetPhone">设置手机号码</string>
+    <string name="btnMoreSettings">更多设置</string>
+    <string name="btnSetIpAddress">设置iHost IP</string>
 </resources>

@@ -3,15 +3,23 @@
     <string name="menu_settings">Settings</string>
     <string name="title_activity_main">MainActivity</string>
 
-    <string name="pref_send_report">Send crash reports</string>
+    <string name="pref_send_report">Send Crash Reports</string>
     <string name="pref_send_report_summary">Helps to fix bugs</string>
-    <string name="pref_sync_frequency">Sync frequency</string>
+    <string name="pref_sync_frequency">Sync Frequency</string>
     <string name="pref_sync_frequency_summary">Set the sync frequency</string>
-    <string name="pref_user_name">Set username</string>
+    <string name="pref_user_name">User Name</string>
     <string name="pref_user_name_summary">Set your username[default is user1]</string>
+    <string name="pref_user_phone">User Phone</string>
+    <string name="pref_user_phone_summary">Set your phone</string>
 
     <string name="pref_user_profile">User Profile</string>
     <string name="pref_update_setting">Update Settings</string>
-    <string name="ihost_ip">ihost ip</string>
-    <string name="pref_ihost_ip">ihost ip[default is 192.168.199.208]</string>
+    <string name="pref_ihost_ip">iHost IP</string>
+    <string name="pref_ihost_ip_summary">ihost ip[default is 172.16.0.1]</string>
+    <string name="pref_mac">MAC</string>
+    <string name="pref_mac_summary">Set your mac address</string>
+
+    <string name="pref_transactions_settings">Transactions Settings</string>
+    <string name="pref_packet_size">Packet Size</string>
+    <string name="pref_packet_size_summary">Set your packet size</string>
 </resources>
