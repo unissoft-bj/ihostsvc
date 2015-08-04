@@ -7,3 +7,8 @@
 /captures
 *.iml
 .idea/
+/aar2.iml
+/app.iml
+/.idea/misc.xml
+/.idea/modules.xml
+
