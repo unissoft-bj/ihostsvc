@@ -23,6 +23,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 
 /**
  * Created by guof on 7/25/2015.
@@ -257,9 +258,10 @@ public class MessengerService extends Service {
                     AudioFormat.ENCODING_PCM_16BIT);
 
             Log.d(this.LOG_TAG, "min buffer size for audio recording: " + minBufferSize);
+            int blockSize = 1280;  // or 1024 * 8
+            int blockNum = 7;
+            minBufferSize = blockSize * blockNum;
             if (minBufferSize < 8192) minBufferSize = 8192;  //to get better recording, 8192
-
-            minBufferSize = 1024;
 
             byte[] audioData = new byte[minBufferSize];
 
@@ -280,19 +282,20 @@ public class MessengerService extends Service {
                 int numberOfShort = audioRecord.read(audioData, 0, minBufferSize);
 
                 //putting buffer in the packet
-                /*
-                for(int bInd = 0; bInd < 7; bInd++){
-                    byte[] slice = Arrays.copyOfRange(audioData, bInd * 1280, (bInd + 1) * 1280);
+
+                 for(int bInd = 0; bInd < blockNum; bInd++){
+                    byte[] slice = Arrays.copyOfRange(audioData, bInd * blockSize, (bInd + 1) * blockSize);
                     DatagramPacket packet = new DatagramPacket(slice, slice.length, destination, port);
                     socket.send(packet);
                     Log.d(this.LOG_TAG, "send pkt to server.");
                 }
-                */
 
-                DatagramPacket packet = new DatagramPacket(audioData, audioData.length, destination, port);
 
-                socket.send(packet);
-                Log.i(this.LOG_TAG, "send pkt to server.");
+
+                //DatagramPacket packet = new DatagramPacket(audioData, audioData.length, destination, port);
+
+                //socket.send(packet);
+                //Log.i(this.LOG_TAG, "send pkt to server.");
 
                 pktCount += 1;
                 if (pktCount == 15000) {
