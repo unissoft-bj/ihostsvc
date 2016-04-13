@@ -6,8 +6,10 @@
 9)  run 'chown -R sboot:sboot wms/'.
 4)  in /opt/wms, configure wyun_svc.sh to set the APP_HOME to /opt/wms
 11)  run 'chmod +x /opt/wms/wyun_svc.sh' to have it executable.
-12)  run 'update-rc.d sboot defaults' for wyun_svc run-level settings.
-
+12)  
+   a. sudo ln -sf /opt/wlsp/wyun_svc.sh /etc/init.d/wyun_svc
+   b. run 'update-rc.d wyun_svc defaults' for wyun_svc run-level settings.
+   
 13)  sudo usermod -a -G chilli sboot
 14)  sudo chown root:chilli chilli_query
      sudo chmod u+s chilli_query
